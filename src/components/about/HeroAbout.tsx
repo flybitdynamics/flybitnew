@@ -1,0 +1,131 @@
+'use client';
+
+import React, { useEffect } from 'react';
+import Link from 'next/link';
+
+export default function HeroAbout() {
+  useEffect(() => {
+    // Simple intersection observer for fade-in animations
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    document.querySelectorAll('.fade-up, .fade-left, .fade-right').forEach((el) => {
+      observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <section
+      id="hero"
+      className="relative min-h-screen flex items-center overflow-hidden bg-gradient-to-br from-[#060c18] via-[#060606] to-[#0a0a0a]"
+    >
+      {/* Background Grid */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          backgroundImage: `
+            linear-gradient(rgba(201, 168, 76, 0.025) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(201, 168, 76, 0.025) 1px, transparent 1px)
+          `,
+          backgroundSize: '70px 70px',
+          WebkitMaskImage: 'radial-gradient(ellipse at 30% 60%, black 5%, transparent 60%)',
+          maskImage: 'radial-gradient(ellipse at 30% 60%, black 5%, transparent 60%)',
+        }}
+      />
+      
+      {/* Glow */}
+      <div 
+        className="absolute top-[20%] left-0 w-[45%] h-[60%] pointer-events-none"
+        style={{
+          background: 'radial-gradient(ellipse, rgba(10,18,45,0.7), transparent 70%)'
+        }}
+      />
+
+      <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-16 items-center px-6 md:px-20 pt-32 pb-20 max-w-[1440px] w-full mx-auto">
+        <div className="fade-left opacity-0 translate-x-[-24px] transition-all duration-700 ease-out">
+          {/* <div className="text-[0.6rem] tracking-[0.45em] uppercase text-gold mb-8 flex items-center gap-4 font-sans">
+            <span className="w-[36px] h-[1px] bg-gold-dim" />
+            Company Profile
+          </div> */}
+          
+          <h1 className="font-bebas text-[clamp(4rem,9vw,9rem)] leading-[0.86] tracking-[0.03em] mb-8">
+            <span className="text-text block">About</span>
+            <span className="text-gold block">FLYBIT</span>
+            <span className="text-text block">Dynamics</span>
+          </h1>
+          
+          <p className="font-cormorant text-[1.2rem] italic font-light text-text-muted leading-[1.75] max-w-[440px] mb-4">
+            Lighting up the sky isn't just a show — it's an experience your audience will <em className="text-gold">never forget.</em>
+          </p>
+          
+          <p className="font-cormorant text-[1.5rem] italic text-gold mb-10">
+            "Precision. Creativity. Technology."
+          </p>
+          
+          <div className="flex gap-4 flex-wrap mb-14">
+            <Link
+              href="#work"
+              className="bg-gold hover:bg-gold-light text-black font-medium px-9 py-3.5 text-[0.73rem] tracking-[0.18em] uppercase rounded-[2px] transition-all duration-200 hover:-translate-y-0.5 inline-block font-sans"
+            >
+              See Our Work
+            </Link>
+            <Link
+              href="#contact"
+              className="bg-transparent border border-white/10 hover:border-gold hover:text-gold text-text font-light px-9 py-3.5 text-[0.73rem] tracking-[0.18em] uppercase rounded-[2px] transition-all duration-200 hover:-translate-y-0.5 inline-block font-sans"
+            >
+              Book a Show
+            </Link>
+          </div>
+          
+          <div className="flex gap-10">
+            <div>
+              <div className="font-bebas text-[2.4rem] text-gold leading-none tracking-[0.04em]">250+</div>
+              <div className="text-[0.6rem] tracking-[0.2em] uppercase text-text-dim mt-1">Drones Available</div>
+            </div>
+            <div>
+              <div className="font-bebas text-[2.4rem] text-gold leading-none tracking-[0.04em]">5+</div>
+              <div className="text-[0.6rem] tracking-[0.2em] uppercase text-text-dim mt-1">Show Categories</div>
+            </div>
+            <div>
+              <div className="font-bebas text-[2.4rem] text-gold leading-none tracking-[0.04em]">2km</div>
+              <div className="text-[0.6rem] tracking-[0.2em] uppercase text-text-dim mt-1">Sky Engagement</div>
+            </div>
+          </div>
+        </div>
+        
+        <div className="relative fade-right opacity-0 translate-x-[24px] transition-all duration-700 ease-out delay-100">
+          <div className="relative border border-border rounded-[3px] overflow-hidden">
+            <div className="absolute top-[-1px] left-[-1px] w-4 h-4 border-t-2 border-l-2 border-gold z-10" />
+            <div className="absolute top-[-1px] right-[-1px] w-4 h-4 border-t-2 border-r-2 border-gold z-10" />
+            <div className="absolute bottom-[-1px] left-[-1px] w-4 h-4 border-b-2 border-l-2 border-gold z-10" />
+            <div className="absolute bottom-[-1px] right-[-1px] w-4 h-4 border-b-2 border-r-2 border-gold z-10" />
+            
+            <img 
+              src="/about_hero.png" 
+              alt="India drone formation — FLYBIT Dynamics" 
+              className="w-full h-[520px] object-cover block saturate-[0.9]"
+            />
+            
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/60 via-transparent via-[60%]" />
+          </div>
+          
+          <div className="absolute bottom-[-1px] left-[-1px] bg-gold text-black px-6 py-4 z-20 rounded-tr-[3px]">
+            <span className="font-bebas text-[2.4rem] leading-none block">100%</span>
+            <span className="text-[0.56rem] tracking-[0.18em] uppercase font-medium">Made in India</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
