@@ -46,7 +46,7 @@ export default function StoryModal({
       aria-labelledby="story-modal-title"
     >
       <div
-        className="relative bg-dark-2 border border-border rounded-[3px] w-[90vw] max-w-[1400px] h-[85vh] flex flex-col overflow-hidden shadow-2xl"
+        className="relative bg-dark-2 border border-border rounded-[3px] w-[90vw] max-w-[1400px] h-[93vh] flex flex-col overflow-hidden shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         <button

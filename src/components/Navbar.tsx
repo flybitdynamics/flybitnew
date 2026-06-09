@@ -58,14 +58,14 @@ export default function Navbar({ onOpenModal }: NavbarProps) {
             Stories
           </Link>
         </li>
-        <li>
+        {/* <li>
           <Link
             href="/portfolio"
             className="text-text-muted hover:text-gold text-[0.72rem] tracking-[0.14em] uppercase transition-colors duration-200 relative after:content-[''] after:absolute after:bottom-[-4px] after:left-0 after:right-0 after:h-[1px] after:bg-gold after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 md:cursor-none"
           >
             Portfolio
           </Link>
-        </li>
+        </li> */}
         <li>
           <Link
             href="/technology"

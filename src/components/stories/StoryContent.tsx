@@ -48,17 +48,38 @@ export default function StoryContent({ story, showCta = true, compact = false }:
         dangerouslySetInnerHTML={{ __html: story.content }}
       />
 
+      {(story.tags.length > 0 || story.seoKeywords.length > 0) && (
+        <div className="flex flex-wrap gap-2 mt-6">
+          {story.tags.map((tag) => (
+            <span
+              key={tag}
+              className="text-[0.62rem] tracking-[0.12em] uppercase text-gold bg-gold/8 border border-gold/15 px-2.5 py-1 rounded-full"
+            >
+              #{tag}
+            </span>
+          ))}
+          {story.seoKeywords.map((kw) => (
+            <span
+              key={kw}
+              className="text-[0.62rem] tracking-[0.12em] uppercase text-text-muted bg-white/4 border border-white/8 px-2.5 py-1 rounded-full"
+            >
+              {kw}
+            </span>
+          ))}
+        </div>
+      )}
+
       <div className="mt-8 pt-6 border-t border-border space-y-5 shrink-0">
         <StoryShareButtons story={story} />
 
         {showCta && (
           <div className="flex flex-wrap gap-3">
-            <Link
+            {/* <Link
               href={`/stories/${story.slug}`}
-              className="border border-text/18 hover:border-gold text-text hover:text-gold font-light px-6 py-3 text-[0.7rem] tracking-[0.16em] uppercase rounded-[2px] transition-all"
+              className=""
             >
               Full Story Page →
-            </Link>
+            </Link> */}
             <Link
               href="/contact"
               className="bg-gold hover:bg-gold-light text-black font-medium px-6 py-3 text-[0.7rem] tracking-[0.16em] uppercase rounded-[2px] transition-all hover:-translate-y-0.5"

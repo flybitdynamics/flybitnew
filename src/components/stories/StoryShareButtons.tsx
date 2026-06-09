@@ -8,7 +8,7 @@ interface StoryShareButtonsProps {
 }
 
 export default function StoryShareButtons({ story }: StoryShareButtonsProps) {
-  const url = typeof window !== 'undefined' ? window.location.href : getCanonicalUrl(story.slug);
+  const url = getCanonicalUrl(story.slug);
   const text = encodeURIComponent(story.title);
 
   const shareLinks = [

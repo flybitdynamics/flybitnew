@@ -2,6 +2,7 @@ export type StoryStatus = 'draft' | 'published';
 
 export const SHOW_TYPES = [
   'Corporate',
+  'Spiritual',
   'Wedding',
   'Fashion',
   'Product Shoot',

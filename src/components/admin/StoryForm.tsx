@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import TiptapEditor from './TiptapEditor';
 import { SHOW_TYPES, type ContentStory, type ContentStoryInput, type ShowType } from '@/lib/stories/types';
 import { slugify, calculateReadingTime } from '@/lib/stories/utils';
@@ -30,6 +30,69 @@ const emptyForm = (): ContentStoryInput => ({
   featured: false,
   status: 'draft',
 });
+
+function ShowTypeSelect({
+  value,
+  onChange,
+}: {
+  value: ShowType;
+  onChange: (val: ShowType) => void;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  return (
+    <div ref={containerRef} className="relative w-full">
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full bg-dark-3 border border-border text-text p-3 text-[0.85rem] rounded-[2px] outline-none focus:border-gold/40 flex justify-between items-center cursor-pointer text-left"
+      >
+        <span>{value}</span>
+        <svg
+          className={`w-4 h-4 text-text-muted transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+
+      {isOpen && (
+        <div className="absolute z-[300] left-0 right-0 mt-1 bg-[#0b0b0c] border border-border rounded-[2px] shadow-2xl max-h-[300px] overflow-y-auto">
+          {SHOW_TYPES.map((t) => (
+            <button
+              key={t}
+              type="button"
+              onClick={() => {
+                onChange(t);
+                setIsOpen(false);
+              }}
+              className={`w-full text-left px-4 py-3 text-[0.85rem] transition-colors duration-150 cursor-pointer ${
+                value === t
+                  ? 'bg-gold text-black font-semibold'
+                  : 'text-text hover:bg-gold/10 hover:text-gold'
+              }`}
+            >
+              {t}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function StoryForm({ initial, onSaved }: StoryFormProps) {
   const [form, setForm] = useState<ContentStoryInput>(
@@ -123,18 +186,10 @@ export default function StoryForm({ initial, onSaved }: StoryFormProps) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label className="block text-[0.65rem] uppercase tracking-wider text-text-dim mb-2">Show Type *</label>
-          <select
-            className={inputClass}
+          <ShowTypeSelect
             value={form.showType}
-            onChange={(e) => set('showType', e.target.value as ShowType)}
-            required
-          >
-            {SHOW_TYPES.map((t) => (
-              <option key={t} value={t}>
-                {t}
-              </option>
-            ))}
-          </select>
+            onChange={(val) => set('showType', val)}
+          />
         </div>
         <div>
           <label className="block text-[0.65rem] uppercase tracking-wider text-text-dim mb-2">Author</label>

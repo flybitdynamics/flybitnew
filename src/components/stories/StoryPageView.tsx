@@ -47,14 +47,14 @@ export default function StoryPageView({ story, relatedStories }: StoryPageViewPr
 
         <div className="flex flex-col lg:flex-row gap-10 lg:gap-14">
           <div className="w-full lg:w-[45%] shrink-0">
-            <StoryVideoPlayer story={story} className="w-full aspect-video lg:aspect-[4/5] lg:min-h-[480px] sticky top-28" />
+            <StoryVideoPlayer story={story} autoPlay className="w-full aspect-video lg:aspect-[4/5] lg:min-h-[480px] sticky top-28" />
           </div>
           <div className="w-full lg:w-[55%]">
             <StoryContent story={story} showCta={false} />
           </div>
         </div>
 
-        {relatedStories.length > 0 && (
+        {/* {relatedStories.length > 0 && (
           <div className="mt-20 pt-12 border-t border-border">
             <h2 className="font-cormorant text-2xl md:text-3xl text-text mb-8">Related Stories</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center">
@@ -63,7 +63,7 @@ export default function StoryPageView({ story, relatedStories }: StoryPageViewPr
               ))}
             </div>
           </div>
-        )}
+        )} */}
 
         <div className="mt-16 p-8 border border-border bg-dark-2 rounded-[3px] text-center">
           <h3 className="font-cormorant text-2xl text-text mb-3">Ready to light up your sky?</h3>

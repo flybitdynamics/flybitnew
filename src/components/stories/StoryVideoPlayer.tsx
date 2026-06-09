@@ -24,6 +24,7 @@ export default function StoryVideoPlayer({
     const video = videoRef.current;
     if (!video) return;
 
+    video.muted = true;
     video.currentTime = 0;
     const playPromise = video.play();
     if (playPromise) {
@@ -42,6 +43,8 @@ export default function StoryVideoPlayer({
           src={story.videoUrl}
           controls
           autoPlay={autoPlay}
+          muted
+          loop
           playsInline
           preload="auto"
           poster={story.thumbnailUrl || story.coverImageUrl || undefined}
@@ -59,17 +62,21 @@ export default function StoryVideoPlayer({
     if (embedUrl) {
       const src = autoPlay ? `${embedUrl}?autoplay=1` : embedUrl;
       return (
-        <div className={`relative bg-black rounded-[3px] overflow-hidden ${className}`}>
-          <iframe
-            key={story.id}
-            src={src}
-            title={`${story.title} — Instagram`}
-            className="absolute inset-0 w-full h-full border-0"
-            allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
-            allowFullScreen
-            loading="eager"
-            referrerPolicy="no-referrer-when-downgrade"
-          />
+        <div className={`w-full h-full flex items-center justify-center bg-black/40 rounded-[3px] ${className}`}>
+          <div className="relative w-full max-w-[385px] h-full max-h-[695px] aspect-[9/16] bg-black rounded-[12px] border border-border/20 overflow-hidden shadow-2xl">
+            <iframe
+              key={story.id}
+              src={src}
+              title={`${story.title} — Instagram`}
+              className="absolute inset-0 w-full h-full border-0"
+              scrolling="no"
+              style={{ overflow: 'hidden' }}
+              allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+              allowFullScreen
+              loading="eager"
+              referrerPolicy="no-referrer-when-downgrade"
+            />
+          </div>
         </div>
       );
     }

@@ -26,7 +26,8 @@ export async function listAllStoriesAdminDb(): Promise<ContentStory[]> {
       .get();
     if (snap.empty) return sortStories(SEED_STORIES);
     return snap.docs.map((d) => mapFirestoreDoc(d.id, d.data() as Record<string, unknown>));
-  } catch {
+  } catch (error) {
+    console.error('listAllStoriesAdminDb failed fetching from Firestore:', error);
     return sortStories(SEED_STORIES);
   }
 }
@@ -50,7 +51,8 @@ export async function getPublishedStoriesDb(limitCount?: number): Promise<Conten
     if (published.length > 0) {
       return limitCount ? published.slice(0, limitCount) : published;
     }
-  } catch {
+  } catch (error) {
+    console.error('getPublishedStoriesDb failed fetching from Firestore:', error);
     /* fall through */
   }
 
