@@ -1,4 +1,5 @@
 export const FIREBASE_COLLECTION = 'contentStories';
+export const FIREBASE_BLOGS_COLLECTION = 'contentBlogs';
 
 export function isFirebaseConfigured(): boolean {
   return !!(

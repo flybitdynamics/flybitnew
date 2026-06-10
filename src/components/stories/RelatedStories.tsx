@@ -26,4 +26,5 @@ export default function RelatedStories({
   //     </div>
   //   </div>
   // );
+  return null;
 }

@@ -9,6 +9,8 @@ const NAV = [
   { href: '/admin', label: 'Dashboard' },
   { href: '/admin/stories', label: 'Stories' },
   { href: '/admin/stories/create', label: 'Create Story' },
+  { href: '/admin/blogs', label: 'Blogs' },
+  { href: '/admin/blogs/create', label: 'Create Blog' },
 ];
 
 export default function AdminShell({ children }: { children: React.ReactNode }) {

@@ -24,6 +24,16 @@
 }
 
 /* Base resets & utilities matching original */
+html {
+  font-size: 16px;
+}
+
+@media (max-width: 767px) {
+  html {
+    font-size: 13.5px !important;
+  }
+}
+
 body {
   background: #060607;
   color: #EDE8DF;
@@ -194,6 +204,11 @@ input, textarea {
   grid-template-columns: repeat(3, 1fr);
   gap: 2px;
   background: var(--color-border);
+}
+@media (max-width: 767px) {
+  .srv-grid {
+    grid-template-columns: 1fr;
+  }
 }
 .srv-img {
   aspect-ratio: 1.1;

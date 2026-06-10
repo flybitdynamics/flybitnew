@@ -44,7 +44,7 @@ export default function StoryContent({ story, showCta = true, compact = false }:
       )}
 
       <div
-        className="story-article prose-story text-[0.88rem] text-text-muted leading-[1.95] flex-1 overflow-y-auto pr-1"
+        className="story-article prose-story text-[0.88rem] text-text-muted leading-[1.95] pr-1"
         dangerouslySetInnerHTML={{ __html: story.content }}
       />
 

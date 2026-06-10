@@ -113,7 +113,7 @@ export default function Services({ onOpenModal }: ServicesProps) {
             key={idx}
             delay={(idx % 3) * 80}
             onClick={() => onOpenModal(srv.modalTitle, srv.modalDesc)}
-            className="srv-card bg-dark p-12 relative overflow-hidden transition-colors duration-300 cursor-pointer md:cursor-none hover:bg-dark-3 group border-none"
+            className="srv-card bg-dark p-8 md:p-12 relative overflow-hidden transition-colors duration-300 cursor-pointer md:cursor-none hover:bg-dark-3 group border-none"
           >
             {/* Massive backdrop number */}
             <div className="srv-num absolute top-6 right-8 font-bebas text-8xl text-gold/[0.05] leading-none pointer-events-none select-none">
