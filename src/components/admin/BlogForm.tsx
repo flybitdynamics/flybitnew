@@ -1,14 +1,15 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import TiptapEditor from './TiptapEditor';
 import type { BlogPost, BlogPostInput, BlogPostFaq } from '@/lib/blogs/types';
 import { slugify, calculateReadingTime } from '@/lib/stories/utils';
 import { createBlog, updateBlog, uploadBlogFile } from '@/lib/firebase/blogs-admin';
+import UploadField from './UploadField';
 
 interface BlogFormProps {
   initial?: BlogPost;
-  onSaved: (id: string) => void;
+  onSaved: (id: string, status: 'draft' | 'published') => void;
 }
 
 const emptyForm = (): BlogPostInput => ({
@@ -55,6 +56,9 @@ export default function BlogForm({ initial, onSaved }: BlogFormProps) {
   );
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
+  const [blogId, setBlogId] = useState<string | null>(initial?.id ?? null);
+  const [saveMode, setSaveMode] = useState<'draft' | 'published' | null>(null);
+  const [pendingFiles, setPendingFiles] = useState<Partial<Record<'image' | 'authorImage', File>>>({});
 
   const set = <K extends keyof BlogPostInput>(key: K, value: BlogPostInput[K]) => {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -65,18 +69,20 @@ export default function BlogForm({ initial, onSaved }: BlogFormProps) {
     if (!initial) set('slug', slugify(title));
   };
 
-  const handleFileUpload = async (
-    file: File,
-    field: 'image' | 'authorImage',
-    folder: 'blog-thumbnails' | 'blog-contents'
-  ) => {
-    try {
-      const id = initial?.id || `temp_${Date.now()}`;
-      const url = await uploadBlogFile(file, folder, id);
-      set(field, url);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'Upload failed');
+  const handleFileSelect = (file: File, field: 'image' | 'authorImage') => {
+    setPendingFiles((prev) => ({ ...prev, [field]: file }));
+  };
+
+  const uploadPendingMedia = async (id: string) => {
+    const urls: Partial<Pick<BlogPostInput, 'image' | 'authorImage'>> = {};
+
+    for (const field of Object.keys(pendingFiles) as Array<keyof typeof pendingFiles>) {
+      const file = pendingFiles[field];
+      if (!file) continue;
+      urls[field] = await uploadBlogFile(file, field, id);
     }
+
+    return urls;
   };
 
   const addFaq = () => {
@@ -101,25 +107,54 @@ export default function BlogForm({ initial, onSaved }: BlogFormProps) {
 
   const save = async (status: 'draft' | 'published') => {
     setSaving(true);
+    setSaveMode(status);
     setError('');
+
     try {
+      let id = blogId;
+      let mediaUrls: Partial<Pick<BlogPostInput, 'image' | 'authorImage'>> = {};
+
+      if (status === 'published' && Object.keys(pendingFiles).length > 0) {
+        if (!id) {
+          const draftSlug = form.slug || slugify(form.title) || `draft-${Date.now()}`;
+          id = await createBlog({
+            ...form,
+            title: form.title || 'Untitled Blog',
+            slug: draftSlug,
+            status: 'draft',
+            published: false,
+            readingTime: calculateReadingTime(form.content),
+          });
+          setBlogId(id);
+        }
+        mediaUrls = await uploadPendingMedia(id);
+        setPendingFiles({});
+        if (Object.keys(mediaUrls).length > 0) {
+          setForm((prev) => ({ ...prev, ...mediaUrls }));
+        }
+      }
+
       const payload: BlogPostInput = {
         ...form,
+        ...mediaUrls,
         status,
         published: status === 'published',
         readingTime: calculateReadingTime(form.content),
       };
-      if (initial) {
-        await updateBlog(initial.id, payload);
-        onSaved(initial.id);
+
+      if (id) {
+        await updateBlog(id, payload);
+        onSaved(id, status);
       } else {
-        const id = await createBlog(payload);
-        onSaved(id);
+        const newId = await createBlog(payload);
+        setBlogId(newId);
+        onSaved(newId, status);
       }
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Failed to save');
     } finally {
       setSaving(false);
+      setSaveMode(null);
     }
   };
 
@@ -199,32 +234,16 @@ export default function BlogForm({ initial, onSaved }: BlogFormProps) {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label className="block text-[0.65rem] uppercase tracking-wider text-text-dim mb-2">
-            Author Image URL
-          </label>
-          <input
-            type="file"
-            accept="image/*"
-            className="text-sm text-text-muted"
-            onChange={(e) =>
-              e.target.files?.[0] && handleFileUpload(e.target.files[0], 'authorImage', 'blog-thumbnails')
-            }
-          />
-          {form.authorImage && <p className="text-xs text-gold mt-1 truncate">Uploaded ✓</p>}
-        </div>
-        <div>
-          <label className="block text-[0.65rem] uppercase tracking-wider text-text-dim mb-2">
-            Author Bio
-          </label>
-          <input
-            className={inputClass}
-            value={form.authorBio || ''}
-            onChange={(e) => set('authorBio', e.target.value)}
-            placeholder="Short bio about the author..."
-          />
-        </div>
+      <div>
+        <label className="block text-[0.65rem] uppercase tracking-wider text-text-dim mb-2">
+          Author Bio
+        </label>
+        <input
+          className={inputClass}
+          value={form.authorBio || ''}
+          onChange={(e) => set('authorBio', e.target.value)}
+          placeholder="Short bio about the author..."
+        />
       </div>
 
       <div>
@@ -251,21 +270,28 @@ export default function BlogForm({ initial, onSaved }: BlogFormProps) {
         />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label className="block text-[0.65rem] uppercase tracking-wider text-text-dim mb-2">
-            Featured Image *
-          </label>
-          <input
-            type="file"
+      <div className="p-4 border border-border/60 rounded-[3px] bg-dark/30 space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <UploadField
+            label="Author Image"
             accept="image/*"
-            className="text-sm text-text-muted"
-            onChange={(e) =>
-              e.target.files?.[0] && handleFileUpload(e.target.files[0], 'image', 'blog-thumbnails')
-            }
+            field="authorImage"
+            selectedFileName={pendingFiles.authorImage?.name}
+            disabled={saving}
+            onSelect={handleFileSelect}
           />
-          {form.image && <p className="text-xs text-gold mt-1 truncate">Uploaded ✓</p>}
+          <UploadField
+            label="Featured Image *"
+            accept="image/*"
+            field="image"
+            selectedFileName={pendingFiles.image?.name}
+            disabled={saving}
+            onSelect={handleFileSelect}
+          />
         </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label className="block text-[0.65rem] uppercase tracking-wider text-text-dim mb-2">
             Tags (comma-separated)
@@ -356,7 +382,7 @@ export default function BlogForm({ initial, onSaved }: BlogFormProps) {
           onClick={() => save('draft')}
           className="border border-border hover:border-gold text-text px-6 py-3 text-[0.72rem] tracking-[0.14em] uppercase rounded-[2px] disabled:opacity-50 transition-colors cursor-pointer bg-transparent"
         >
-          Save Draft
+          {saving && saveMode === 'draft' ? 'Saving...' : 'Save Draft'}
         </button>
         <button
           type="button"
@@ -364,7 +390,7 @@ export default function BlogForm({ initial, onSaved }: BlogFormProps) {
           onClick={() => save('published')}
           className="bg-gold hover:bg-gold-light text-black font-semibold px-6 py-3 text-[0.72rem] tracking-[0.14em] uppercase rounded-[2px] disabled:opacity-50 transition-colors cursor-pointer border-none"
         >
-          {saving ? 'Saving...' : 'Publish'}
+          {saving && saveMode === 'published' ? 'Publishing...' : 'Publish'}
         </button>
       </div>
     </div>

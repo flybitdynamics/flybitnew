@@ -92,8 +92,11 @@ export default function AdminBlogsPage() {
           <tbody>
             {filtered.length === 0 ? (
               <tr>
-                <td colSpan={6} className="p-8 text-center text-text-dim italic">
-                  No blogs found.
+                <td colSpan={6} className="p-8 text-center text-text-dim">
+                  <p className="italic mb-2">No blogs in Firebase yet.</p>
+                  <p className="text-xs text-text-muted">
+                    Create a blog — it saves to the <span className="text-gold">contentBlogs</span> collection (separate from Stories).
+                  </p>
                 </td>
               </tr>
             ) : (

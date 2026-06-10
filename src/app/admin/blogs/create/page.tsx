@@ -9,7 +9,11 @@ export default function CreateBlogPage() {
   return (
     <div>
       <h1 className="font-cormorant text-3xl text-text mb-8">Create Blog</h1>
-      <BlogForm onSaved={() => router.push('/admin/blogs')} />
+      <BlogForm
+        onSaved={(id, status) => {
+          if (status === 'published') router.push(`/admin/blogs/${id}/edit`);
+        }}
+      />
     </div>
   );
 }

@@ -22,7 +22,7 @@ export default function EditBlogPage() {
   return (
     <div>
       <h1 className="font-cormorant text-3xl text-text mb-8">Edit Blog</h1>
-      <BlogForm initial={blog} onSaved={() => {}} />
+      <BlogForm initial={blog} onSaved={() => undefined} />
     </div>
   );
 }

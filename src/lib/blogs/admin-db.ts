@@ -1,6 +1,7 @@
 import { FieldValue } from 'firebase-admin/firestore';
 import { FIREBASE_BLOGS_COLLECTION } from '../firebase/config';
-import { getAdminFirestore, getAdminStorage, isAdminSdkConfigured } from '../firebase/admin-server';
+import { getAdminFirestore, isAdminSdkConfigured } from '../firebase/admin-server';
+import { buildBlogMediaKey, isZataConfigured, uploadBufferToZata, type BlogMediaField } from '../zata/client';
 import { mapFirestoreDoc, blogToFirestore } from './firestore-mapper';
 import { SEED_BLOGS } from './seed';
 import type { BlogPost, BlogPostInput } from './types';
@@ -8,8 +9,16 @@ import { calculateReadingTime } from '../stories/utils';
 
 function sortBlogs(blogs: BlogPost[]): BlogPost[] {
   return [...blogs].sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+    (a, b) => new Date(b.createdAt || b.date).getTime() - new Date(a.createdAt || a.date).getTime()
   );
+}
+
+function publishedSeed(): BlogPost[] {
+  return sortBlogs(SEED_BLOGS.filter((b) => b.published || b.status === 'published'));
+}
+
+function isPublished(blog: BlogPost): boolean {
+  return blog.status === 'published' || blog.published;
 }
 
 export async function listAllBlogsAdminDb(): Promise<BlogPost[]> {
@@ -18,7 +27,7 @@ export async function listAllBlogsAdminDb(): Promise<BlogPost[]> {
   try {
     const snap = await getAdminFirestore()
       .collection(FIREBASE_BLOGS_COLLECTION)
-      .orderBy('date', 'desc')
+      .orderBy('createdAt', 'desc')
       .get();
     if (snap.empty) return [];
     return snap.docs.map((d) => mapFirestoreDoc(d.id, d.data() as Record<string, unknown>));
@@ -46,12 +55,16 @@ export async function getBlogByIdAdminDb(id: string): Promise<BlogPost | null> {
 }
 
 export async function createBlogDb(input: BlogPostInput): Promise<string> {
-  const contentHtml = input.content;
+  const published = input.status === 'published' || input.published;
   const ref = await getAdminFirestore()
     .collection(FIREBASE_BLOGS_COLLECTION)
     .add({
-      ...blogToFirestore(input as Partial<BlogPost>),
-      readingTime: input.readingTime || calculateReadingTime(contentHtml),
+      ...blogToFirestore({
+        ...input,
+        status: published ? 'published' : 'draft',
+        published,
+      } as Partial<BlogPost>),
+      readingTime: input.readingTime || calculateReadingTime(input.content),
       views: 0,
       createdAt: FieldValue.serverTimestamp(),
       updatedAt: FieldValue.serverTimestamp(),
@@ -64,6 +77,12 @@ export async function updateBlogDb(id: string, input: Partial<BlogPostInput>): P
     ...blogToFirestore(input as Partial<BlogPost>),
     updatedAt: FieldValue.serverTimestamp(),
   };
+
+  if (input.status !== undefined || input.published !== undefined) {
+    const published = input.status === 'published' || input.published === true;
+    data.status = published ? 'published' : 'draft';
+    data.published = published;
+  }
 
   if (input.content) {
     data.readingTime = calculateReadingTime(input.content);
@@ -91,43 +110,42 @@ export async function duplicateBlogDb(blog: BlogPost): Promise<string> {
 export async function uploadBlogFileDb(
   buffer: Buffer,
   mimeType: string,
-  folder: 'blog-thumbnails' | 'blog-contents',
+  field: BlogMediaField,
   blogId: string,
   ext: string
 ): Promise<string> {
-  const path = `content/${folder}/${blogId}.${ext}`;
-  const bucket = getAdminStorage().bucket();
-  const file = bucket.file(path);
+  if (!isZataConfigured()) {
+    throw new Error('Zata storage is not configured. Add ZATA_* variables to .env.local');
+  }
 
-  await file.save(buffer, {
-    metadata: { contentType: mimeType },
-    resumable: false,
-  });
-
-  await file.makePublic();
-
-  const bucketName = bucket.name;
-  return `https://storage.googleapis.com/${bucketName}/${path}`;
+  const objectKey = buildBlogMediaKey(blogId, field, ext);
+  return uploadBufferToZata(objectKey, buffer, mimeType);
 }
+
+export const BLOG_MEDIA_FIELD: Record<BlogMediaField, 'image' | 'authorImage'> = {
+  image: 'image',
+  authorImage: 'authorImage',
+};
 
 export async function getPublishedBlogsDb(limitCount?: number): Promise<BlogPost[]> {
   if (!isAdminSdkConfigured()) {
-    const seed = SEED_BLOGS.filter((b) => b.published || b.status === 'published');
+    const seed = publishedSeed();
     return limitCount ? seed.slice(0, limitCount) : seed;
   }
 
   try {
     const snap = await getAdminFirestore()
       .collection(FIREBASE_BLOGS_COLLECTION)
-      .where('status', '==', 'published')
+      .orderBy('createdAt', 'desc')
       .get();
 
-    const published = snap.docs.map((d) => mapFirestoreDoc(d.id, d.data() as Record<string, unknown>));
-    
-    // Sort in memory by date descending to avoid requiring composite Firestore index
-    published.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    const published = snap.docs
+      .map((d) => mapFirestoreDoc(d.id, d.data() as Record<string, unknown>))
+      .filter(isPublished);
 
-    return limitCount ? published.slice(0, limitCount) : published;
+    if (published.length > 0) {
+      return limitCount ? published.slice(0, limitCount) : published;
+    }
   } catch (error) {
     console.error('getPublishedBlogsDb failed fetching from Firestore:', error);
   }
@@ -150,12 +168,11 @@ export async function getBlogBySlugDb(slug: string): Promise<BlogPost | null> {
     if (!snap.empty) {
       const d = snap.docs[0]!;
       const blog = mapFirestoreDoc(d.id, d.data() as Record<string, unknown>);
-      if (blog.status === 'published' || blog.published) return blog;
+      if (isPublished(blog)) return blog;
     }
   } catch {
     /* fall through */
   }
 
-  return SEED_BLOGS.find((b) => b.slug === slug && (b.published || b.status === 'published')) ?? null;
+  return null;
 }
-

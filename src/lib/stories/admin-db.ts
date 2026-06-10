@@ -1,6 +1,7 @@
 import { FieldValue } from 'firebase-admin/firestore';
 import { FIREBASE_COLLECTION } from '../firebase/config';
-import { getAdminFirestore, getAdminStorage, isAdminSdkConfigured } from '../firebase/admin-server';
+import { getAdminFirestore, isAdminSdkConfigured } from '../firebase/admin-server';
+import { buildStoryMediaKey, isZataConfigured, uploadBufferToZata, type StoryMediaFolder } from '../zata/client';
 import { mapFirestoreDoc, storyToFirestore } from './firestore-mapper';
 import { SEED_STORIES } from './seed';
 import type { ContentStory, ContentStoryInput } from './types';
@@ -145,21 +146,20 @@ export async function duplicateStoryDb(story: ContentStory): Promise<string> {
 export async function uploadStoryFileDb(
   buffer: Buffer,
   mimeType: string,
-  folder: 'thumbnails' | 'videos' | 'cover-images',
+  folder: StoryMediaFolder,
   storyId: string,
   ext: string
 ): Promise<string> {
-  const path = `content/${folder}/${storyId}.${ext}`;
-  const bucket = getAdminStorage().bucket();
-  const file = bucket.file(path);
+  if (!isZataConfigured()) {
+    throw new Error('Zata storage is not configured. Add ZATA_* variables to .env.local');
+  }
 
-  await file.save(buffer, {
-    metadata: { contentType: mimeType },
-    resumable: false,
-  });
-
-  await file.makePublic();
-
-  const bucketName = bucket.name;
-  return `https://storage.googleapis.com/${bucketName}/${path}`;
+  const objectKey = buildStoryMediaKey(storyId, folder, ext);
+  return uploadBufferToZata(objectKey, buffer, mimeType);
 }
+
+export const STORY_MEDIA_FIELD: Record<StoryMediaFolder, 'thumbnailUrl' | 'coverImageUrl' | 'videoUrl'> = {
+  thumbnails: 'thumbnailUrl',
+  'cover-images': 'coverImageUrl',
+  videos: 'videoUrl',
+};
