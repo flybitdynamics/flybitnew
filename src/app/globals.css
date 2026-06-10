@@ -625,6 +625,11 @@ input, textarea {
   background: var(--color-dark-2);
   padding: 7rem 5rem;
 }
+@media (max-width: 767px) {
+  #why {
+    padding: 5rem 0.75rem;
+  }
+}
 .why-head {
   text-align: center;
   margin-bottom: 4rem;
@@ -634,6 +639,11 @@ input, textarea {
   grid-template-columns: repeat(3, 1fr);
   gap: 2px;
   background: var(--color-border);
+}
+@media (max-width: 767px) {
+  .why-grid {
+    grid-template-columns: 1fr;
+  }
 }
 .why-card {
   background: var(--color-dark);
@@ -1018,6 +1028,92 @@ input, textarea {
 .prose-story code {
   font-size: 0.85em;
   color: var(--color-gold-light);
+}
+
+@media (max-width: 767px) {
+  /* Global Section Padding Overrides */
+  #clients, #work, #fleet, #process, #faq, #addons, #mission, #contact {
+    padding: 5rem 1.5rem !important;
+  }
+
+  /* About Introduction */
+  .about-pills {
+    grid-template-columns: 1fr;
+  }
+
+  /* Clients Section */
+  .clients-head {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    margin-bottom: 2.5rem;
+  }
+  .clients-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .client-card {
+    padding: 1.5rem 1rem;
+  }
+
+  /* Our Work / Portfolio */
+  .work-head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+  }
+  .work-masonry {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    gap: 1.5rem;
+  }
+  .work-item.large {
+    grid-row: auto;
+  }
+  .work-item {
+    height: 260px;
+  }
+
+  /* Fleet */
+  .fleet-inner {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+  .fleet-steps {
+    grid-template-columns: 1fr;
+  }
+
+  /* Process */
+  .process-head {
+    margin-bottom: 3rem;
+  }
+  .proc-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  .proc-grid::before {
+    display: none;
+  }
+
+  /* FAQ */
+  #faq {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  /* Addons */
+  #addons {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+  .addon-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Contact */
+  #contact {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
 }
 
 
