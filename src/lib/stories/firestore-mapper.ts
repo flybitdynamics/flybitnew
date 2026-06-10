@@ -14,7 +14,7 @@ function toIso(value: unknown): string {
 export function mapFirestoreDoc(id: string, data: Record<string, unknown>): ContentStory {
   const showType = SHOW_TYPES.includes(data.showType as ShowType)
     ? (data.showType as ShowType)
-    : 'Other';
+    : 'Social Events';
 
   return {
     id,
@@ -45,7 +45,7 @@ export function storyToFirestore(story: Partial<ContentStory>): Record<string, u
   return {
     title: story.title ?? '',
     slug: story.slug ?? '',
-    showType: story.showType ?? 'Other',
+    showType: story.showType ?? 'Social Events',
     shortDescription: story.shortDescription ?? '',
     content: story.content ?? '',
     thumbnailUrl: story.thumbnailUrl ?? '',

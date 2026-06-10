@@ -38,11 +38,11 @@ export default function ServicesDetailed({ onOpenModal }: ServicesDetailedProps)
     <p className="sec-body">Every show is a bespoke creation — designed around your event's purpose, scale, and audience.</p>
   </div>
   <div className="srv-tabs fu">
-    <button className="stab active" onClick={() => setActiveTab('social')}>Social Events</button>
-    <button className="stab" onClick={() => setActiveTab('corporate')}>Corporate</button>
-    <button className="stab" onClick={() => setActiveTab('government')}>Government</button>
-    <button className="stab" onClick={() => setActiveTab('spiritual')}>Spiritual</button>
-    <button className="stab" onClick={() => setActiveTab('sports')}>Sports & Entertainment</button>
+    <button className={`stab ${activeTab === 'social' ? 'active' : ''}`} onClick={() => setActiveTab('social')}>Social Events</button>
+    <button className={`stab ${activeTab === 'corporate' ? 'active' : ''}`} onClick={() => setActiveTab('corporate')}>Corporate</button>
+    <button className={`stab ${activeTab === 'government' ? 'active' : ''}`} onClick={() => setActiveTab('government')}>Government</button>
+    <button className={`stab ${activeTab === 'spiritual' ? 'active' : ''}`} onClick={() => setActiveTab('spiritual')}>Spiritual</button>
+    <button className={`stab ${activeTab === 'sports' ? 'active' : ''}`} onClick={() => setActiveTab('sports')}>Sports & Entertainment</button>
   </div>
   {activeTab === "social" && <div className="srv-panel active" id="srv-social">
     <div style={{ textAlign: "center", marginBottom: "1.5rem", fontSize: ".78rem", color: "var(--text-muted)", letterSpacing: ".1em" }}>Wedding · Anniversary · Birthdays · Love Stories · Family Reunion</div>

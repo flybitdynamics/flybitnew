@@ -104,7 +104,7 @@ export default function HeroAbout() {
           </div>
         </div>
         
-        <div className="relative fade-right opacity-0 translate-x-[24px] transition-all duration-700 ease-out delay-100">
+        <div className="relative fade-right transition-all duration-700 ease-out delay-100 mx-auto md:mx-0 w-full">
           <div className="relative border border-border rounded-[3px] overflow-hidden">
             <div className="absolute top-[-1px] left-[-1px] w-4 h-4 border-t-2 border-l-2 border-gold z-10" />
             <div className="absolute top-[-1px] right-[-1px] w-4 h-4 border-t-2 border-r-2 border-gold z-10" />

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import FadeUp from './FadeUp';
 
 interface ShowcaseProps {
@@ -28,8 +28,21 @@ const TABS = [
 
 export default function Showcase({ onOpenModal }: ShowcaseProps) {
   const [activeTab, setActiveTab] = useState('all');
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   const filteredShows = SHOWS.filter((s) => activeTab === 'all' || s.cat === activeTab);
+
+  const scrollLeft = () => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({ left: -260, behavior: 'smooth' });
+    }
+  };
+
+  const scrollRight = () => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({ left: 260, behavior: 'smooth' });
+    }
+  };
 
   const renderSVGContent = (type: string) => {
     switch (type) {
@@ -172,61 +185,84 @@ export default function Showcase({ onOpenModal }: ShowcaseProps) {
       </div>
 
       {/* Showcase Horizontal Scroll Wrapper */}
-      <div
-        className="showcase-scroll flex overflow-x-auto gap-[2px] px-6 md:px-20 pb-8 scrollbar-none font-sans"
-        style={{ scrollbarWidth: 'none' }}
-      >
-        {filteredShows.map((show, idx) => (
-          <FadeUp
-            key={idx}
-            delay={idx * 60}
-            onClick={() =>
-              onOpenModal(
-                show.name,
-                `Category: ${show.tag}\n\nThis ${show.tag.toLowerCase()} show featured stunning formations tailored specifically for the event.`
-              )
-            }
-            className="show-card shrink-0 w-[340px] h-[440px] bg-dark-3 relative overflow-hidden border border-gold/[0.06] hover:border-gold/25 cursor-pointer md:cursor-none transition-colors duration-300 group"
-          >
-            <div className="show-card-bg absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-105">
-              <svg width="340" height="440" viewBox="0 0 340 440">
-                <rect width="340" height="440" fill="#111" />
-                <circle
-                  cx="170"
-                  cy="220"
-                  r="100"
-                  fill="none"
-                  stroke="rgba(201,168,76,0.04)"
-                  strokeWidth="60"
-                />
-                {renderSVGContent(show.svg)}
-                <text
-                  x="170"
-                  y="380"
-                  textAnchor="middle"
-                  fill="rgba(201,168,76,0.2)"
-                  fontFamily="var(--font-bebas)"
-                  fontSize="9"
-                  letterSpacing="4"
-                >
-                  {show.name.toUpperCase()}
-                </text>
-              </svg>
-            </div>
+      <div className="relative">
+        {/* Mobile Scroll Controls */}
+        <button
+          onClick={scrollLeft}
+          className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-10 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full border border-gold/20 bg-black/80 text-gold hover:bg-gold/20 transition-colors backdrop-blur-sm shadow-lg cursor-pointer"
+          aria-label="Scroll left"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5 md:w-6 md:h-6">
+            <polyline points="15 18 9 12 15 6" />
+          </svg>
+        </button>
+        <button
+          onClick={scrollRight}
+          className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-10 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full border border-gold/20 bg-black/80 text-gold hover:bg-gold/20 transition-colors backdrop-blur-sm shadow-lg cursor-pointer"
+          aria-label="Scroll right"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5 md:w-6 md:h-6">
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </button>
 
-            <div className="show-card-content absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-black/97 via-black/60 to-transparent">
-              <div className="show-tag text-[0.58rem] tracking-[0.3em] uppercase text-gold mb-2">
-                {show.tag}
+        <div
+          ref={scrollRef}
+          className="showcase-scroll flex overflow-x-auto gap-[2px] px-6 md:px-20 pb-8 scrollbar-none font-sans"
+          style={{ scrollbarWidth: 'none' }}
+        >
+          {filteredShows.map((show, idx) => (
+            <FadeUp
+              key={idx}
+              delay={idx * 60}
+              onClick={() =>
+                onOpenModal(
+                  show.name,
+                  `Category: ${show.tag}\n\nThis ${show.tag.toLowerCase()} show featured stunning formations tailored specifically for the event.`
+                )
+              }
+              className="show-card shrink-0 w-[280px] md:w-[340px] h-[380px] md:h-[440px] bg-dark-3 relative overflow-hidden border border-gold/[0.06] hover:border-gold/25 cursor-pointer md:cursor-none transition-colors duration-300 group"
+            >
+              <div className="show-card-bg absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-105">
+                <svg width="100%" height="100%" viewBox="0 0 340 440" preserveAspectRatio="xMidYMid slice">
+                  <rect width="340" height="440" fill="#111" />
+                  <circle
+                    cx="170"
+                    cy="220"
+                    r="100"
+                    fill="none"
+                    stroke="rgba(201,168,76,0.04)"
+                    strokeWidth="60"
+                  />
+                  {renderSVGContent(show.svg)}
+                  <text
+                    x="170"
+                    y="380"
+                    textAnchor="middle"
+                    fill="rgba(201,168,76,0.2)"
+                    fontFamily="var(--font-bebas)"
+                    fontSize="9"
+                    letterSpacing="4"
+                  >
+                    {show.name.toUpperCase()}
+                  </text>
+                </svg>
               </div>
-              <div className="show-name font-cormorant text-2xl text-text leading-snug">
-                {show.name}
+
+              <div className="show-card-content absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-black/97 via-black/60 to-transparent">
+                <div className="show-tag text-[0.58rem] tracking-[0.3em] uppercase text-gold mb-2">
+                  {show.tag}
+                </div>
+                <div className="show-name font-cormorant text-2xl text-text leading-snug">
+                  {show.name}
+                </div>
+                <div className="show-view flex items-center gap-2 mt-4 text-[0.7rem] tracking-[0.15em] uppercase text-gold-dim transition-all duration-300 group-hover:gap-[0.9rem] group-hover:text-gold">
+                  View Details →
+                </div>
               </div>
-              <div className="show-view flex items-center gap-2 mt-4 text-[0.7rem] tracking-[0.15em] uppercase text-gold-dim transition-all duration-300 group-hover:gap-[0.9rem] group-hover:text-gold">
-                View Details →
-              </div>
-            </div>
-          </FadeUp>
-        ))}
+            </FadeUp>
+          ))}
+        </div>
       </div>
     </section>
   );

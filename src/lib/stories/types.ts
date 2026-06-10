@@ -1,30 +1,12 @@
 export type StoryStatus = 'draft' | 'published';
 
 export const SHOW_TYPES = [
+  'All Stories',
+  'Social Events',
   'Corporate',
+  'Government',
   'Spiritual',
-  'Wedding',
-  'Fashion',
-  'Product Shoot',
-  'Real Estate',
-  'Architecture',
-  'Interior Design',
-  'Hospitality',
-  'Commercial',
-  'Industrial',
-  'Lifestyle',
-  'Food',
-  'Travel',
-  'Automotive',
-  'Technology',
-  'Healthcare',
-  'Education',
-  'Branding',
-  'Event',
-  'Entertainment',
-  'Photography',
-  'Videography',
-  'Other',
+  'Sports & Entertainment',
 ] as const;
 
 export type ShowType = (typeof SHOW_TYPES)[number];

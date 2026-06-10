@@ -8,7 +8,7 @@ interface StoryFiltersProps {
 }
 
 export default function StoryFilters({ activeCategory, onCategoryChange }: StoryFiltersProps) {
-  const categories = ['all', ...SHOW_TYPES];
+  const categories = [...SHOW_TYPES];
 
   return (
     <div className="flex gap-2 flex-wrap mb-10">
@@ -23,7 +23,7 @@ export default function StoryFilters({ activeCategory, onCategoryChange }: Story
               : 'bg-transparent border-border text-text-muted hover:border-gold hover:text-gold'
           }`}
         >
-          {cat === 'all' ? 'All Stories' : cat}
+          {cat}
         </button>
       ))}
     </div>

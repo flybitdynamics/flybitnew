@@ -172,6 +172,9 @@ export default function Navbar({ onOpenModal }: NavbarProps) {
         </button>
         {/* Scrollable links container */}
         <div className="flex-1 overflow-y-auto flex flex-col gap-5 pr-2 overscroll-contain">
+          <Link href="/" className={getMobileLinkClass('/')}>
+            Home
+          </Link>
           <Link href="/about" className={getMobileLinkClass('/about')}>
             About
           </Link>

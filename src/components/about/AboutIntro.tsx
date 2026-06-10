@@ -38,7 +38,7 @@ export default function AboutIntro() {
             </cite>
           </div>
           
-          <div className="about-pills mt-10">
+          <div className="about-pills mt-10 ml-6 md:ml-0">
             <div className="apill">Precision aerial choreography</div>
             <div className="apill">Made-in-India drone fleet</div>
             <div className="apill">Custom formations & branding</div>

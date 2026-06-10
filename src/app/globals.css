@@ -176,6 +176,19 @@ input, textarea {
   flex-wrap: wrap;
   margin-bottom: 3rem;
 }
+@media (max-width: 767px) {
+  .srv-tabs {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding-bottom: 0.5rem;
+  }
+  .srv-tabs::-webkit-scrollbar {
+    display: none;
+  }
+}
 .stab {
   background: transparent;
   border: 1px solid var(--color-border);
@@ -187,6 +200,7 @@ input, textarea {
   transition: all .2s;
   border-radius: 2px;
   font-family: var(--font-sans), sans-serif;
+  flex-shrink: 0;
 }
 .stab.active, .stab:hover {
   background: var(--color-gold);
@@ -207,13 +221,28 @@ input, textarea {
 }
 @media (max-width: 767px) {
   .srv-grid {
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 0.5rem;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    background: transparent;
+    padding-bottom: 0.5rem;
+  }
+  .srv-grid::-webkit-scrollbar {
+    display: none;
   }
 }
 .srv-img {
   aspect-ratio: 1.1;
   overflow: hidden;
   position: relative;
+}
+@media (max-width: 767px) {
+  .srv-img {
+    flex: 0 0 85%;
+  }
 }
 .srv-img img {
   width: 100%;
@@ -1032,7 +1061,7 @@ input, textarea {
 
 @media (max-width: 767px) {
   /* Global Section Padding Overrides */
-  #clients, #work, #fleet, #process, #faq, #addons, #mission, #contact {
+  #clients, #work, #fleet, #process, #faq, #addons, #mission, #contact, #services {
     padding: 5rem 1.5rem !important;
   }
 

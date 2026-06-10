@@ -5,7 +5,7 @@ export const SEED_STORIES: ContentStory[] = [
     id: 'story_001',
     title: 'Luxury Wedding Production in Udaipur',
     slug: 'luxury-wedding-production-udaipur',
-    showType: 'Wedding',
+    showType: 'Social Events',
     shortDescription:
       'Behind the scenes of our 300-drone grand finale above Lake Palace — planning, choreography, and the night the sky became a canvas.',
     content: `<h2>Project Overview</h2>
@@ -37,7 +37,7 @@ export const SEED_STORIES: ContentStory[] = [
     id: 'story_002',
     title: 'Republic Day Spectacular — Kartavya Path',
     slug: 'republic-day-spectacular-kartavya-path',
-    showType: 'Event',
+    showType: 'Social Events',
     shortDescription:
       "India's largest drone formation — 500 drones painting the Tricolour and map of India above New Delhi's Kartavya Path.",
     content: `<h2>National Event Brief</h2>
@@ -97,7 +97,7 @@ export const SEED_STORIES: ContentStory[] = [
     id: 'story_004',
     title: 'Diwali Spectacular — Ahmedabad Skyline',
     slug: 'diwali-spectacular-ahmedabad',
-    showType: 'Entertainment',
+    showType: 'Sports & Entertainment',
     shortDescription:
       '350 drones tracing expanding mandala patterns across the Ahmedabad sky on Diwali night, captivating 50,000+ viewers.',
     content: `<h2>Festival Context</h2>
@@ -125,7 +125,7 @@ export const SEED_STORIES: ContentStory[] = [
     id: 'story_005',
     title: 'How Drone Shows Are Redefining Indian Weddings',
     slug: 'drone-shows-redefining-indian-weddings',
-    showType: 'Wedding',
+    showType: 'Social Events',
     shortDescription:
       'The Indian wedding industry is seeing a revolution — drone light shows replacing fireworks as the most sought-after grand finale.',
     content: `<h2>The Shift</h2>
@@ -160,7 +160,7 @@ export const SEED_STORIES: ContentStory[] = [
     id: 'story_006',
     title: 'IPL Opening Ceremony — Narendra Modi Stadium',
     slug: 'ipl-opening-narendra-modi-stadium',
-    showType: 'Entertainment',
+    showType: 'Sports & Entertainment',
     shortDescription:
       'Ring-shaped drone formation kicking off the IPL season opener at the world\'s largest cricket stadium in Ahmedabad.',
     content: `<h2>Sports Spectacle</h2>

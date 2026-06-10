@@ -13,7 +13,7 @@ import type { ContentStory } from '@/lib/stories/types';
 
 export default function StoriesPage() {
   const [stories, setStories] = useState<ContentStory[]>([]);
-  const [category, setCategory] = useState('all');
+  const [category, setCategory] = useState<string>('All Stories');
   const [modalOpen, setModalOpen] = useState(false);
   const [modalTitle, setModalTitle] = useState('');
   const [modalDesc, setModalDesc] = useState('');
@@ -36,8 +36,7 @@ export default function StoriesPage() {
     setRelated(rel);
   }, []);
 
-  const filtered =
-    category === 'all' ? stories : stories.filter((s) => s.showType === category);
+  const filtered = category === 'All Stories' ? stories : stories.filter((s) => s.showType === category);
 
   return (
     <div className="min-h-screen bg-black text-text">
