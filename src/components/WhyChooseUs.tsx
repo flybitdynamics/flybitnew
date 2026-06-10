@@ -106,7 +106,7 @@ export default function WhyChooseUs({ onOpenModal }: WhyChooseUsProps) {
             key={idx}
             delay={idx * 80}
             onClick={() => onOpenModal(adv.modalTitle, adv.modalDesc)}
-            className={`why-item p-10 md:p-14 hover:bg-dark-2 transition-colors duration-300 cursor-pointer md:cursor-none relative overflow-hidden group select-none
+            className={`why-item p-6 sm:p-10 md:p-14 hover:bg-dark-2 transition-colors duration-300 cursor-pointer md:cursor-none relative overflow-hidden group select-none
               ${idx % 3 !== 2 ? 'md:border-r border-border' : 'md:border-r-0'}
               ${idx < 3 ? 'md:border-b border-border' : 'md:border-b-0'}
               ${idx < 5 ? 'border-b border-border' : 'border-b-0 md:border-b-0'}

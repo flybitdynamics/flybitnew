@@ -53,13 +53,13 @@ export default function HeroAbout() {
       />
 
       <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-16 items-center px-6 md:px-20 pt-32 pb-20 max-w-[1440px] w-full mx-auto">
-        <div className="fade-left opacity-0 translate-x-[-24px] transition-all duration-700 ease-out">
+        <div className="fade-left transition-all duration-700 ease-out">
           {/* <div className="text-[0.6rem] tracking-[0.45em] uppercase text-gold mb-8 flex items-center gap-4 font-sans">
             <span className="w-[36px] h-[1px] bg-gold-dim" />
             Company Profile
           </div> */}
           
-          <h1 className="font-bebas text-[clamp(4rem,9vw,9rem)] leading-[0.86] tracking-[0.03em] mb-8">
+          <h1 className="font-bebas text-[3.2rem] md:text-[clamp(4rem,9vw,9rem)] leading-[0.86] tracking-[0.03em] mb-8">
             <span className="text-text block">About</span>
             <span className="text-gold block">FLYBIT</span>
             <span className="text-text block">Dynamics</span>
@@ -69,7 +69,7 @@ export default function HeroAbout() {
             Lighting up the sky isn't just a show — it's an experience your audience will <em className="text-gold">never forget.</em>
           </p>
           
-          <p className="font-cormorant text-[1.5rem] italic text-gold mb-10">
+          <p className="font-cormorant text-[1.3rem] md:text-[1.5rem] italic text-gold mb-10">
             "Precision. Creativity. Technology."
           </p>
           
@@ -88,7 +88,7 @@ export default function HeroAbout() {
             </Link>
           </div>
           
-          <div className="flex gap-10">
+          <div className="flex gap-8 md:gap-10 flex-wrap md:flex-nowrap">
             <div>
               <div className="font-bebas text-[2.4rem] text-gold leading-none tracking-[0.04em]">250+</div>
               <div className="text-[0.6rem] tracking-[0.2em] uppercase text-text-dim mt-1">Drones Available</div>
@@ -114,7 +114,7 @@ export default function HeroAbout() {
             <img 
               src="/about_hero.png" 
               alt="India drone formation — FLYBIT Dynamics" 
-              className="w-full h-[520px] object-cover block saturate-[0.9]"
+              className="w-full h-[300px] md:h-[520px] object-cover block saturate-[0.9]"
             />
             
             <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/60 via-transparent via-[60%]" />
