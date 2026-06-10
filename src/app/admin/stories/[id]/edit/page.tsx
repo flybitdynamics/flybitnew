@@ -22,7 +22,7 @@ export default function EditStoryPage() {
   return (
     <div>
       <h1 className="font-cormorant text-3xl text-text mb-8">Edit Story</h1>
-      <StoryForm initial={story} onSaved={() => {}} />
+      <StoryForm initial={story} onSaved={() => undefined} />
     </div>
   );
 }

@@ -11,12 +11,12 @@ async function adminFetch(path: string, init?: RequestInit) {
 
 export async function uploadBlogFile(
   file: File,
-  folder: 'blog-thumbnails' | 'blog-contents',
+  field: 'image' | 'authorImage',
   blogId: string
 ): Promise<string> {
   const form = new FormData();
   form.append('file', file);
-  form.append('folder', folder);
+  form.append('field', field);
   form.append('blogId', blogId);
 
   const data = await adminFetch('/api/admin/blogs/upload', { method: 'POST', body: form });

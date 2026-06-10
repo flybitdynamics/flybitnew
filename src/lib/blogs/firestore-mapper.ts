@@ -17,7 +17,14 @@ export function mapFirestoreDoc(id: string, data: Record<string, unknown>): Blog
     slug: String(data.slug || ''),
     description: String(data.description || ''),
     content: String(data.content || ''),
-    date: String(data.date || new Date().toISOString().split('T')[0]),
+    date: String(
+      data.date ||
+        (data.createdAt && typeof data.createdAt === 'object' && 'toDate' in data.createdAt
+          ? (data.createdAt as Timestamp).toDate().toISOString().split('T')[0]
+          : typeof data.createdAt === 'string'
+            ? data.createdAt.split('T')[0]
+            : new Date().toISOString().split('T')[0])
+    ),
     author: String(data.author || 'Admin'),
     authorImage: String(data.authorImage || '/logo.png'),
     authorBio: String(data.authorBio || ''),

@@ -5,10 +5,11 @@ import TiptapEditor from './TiptapEditor';
 import { SHOW_TYPES, type ContentStory, type ContentStoryInput, type ShowType } from '@/lib/stories/types';
 import { slugify, calculateReadingTime } from '@/lib/stories/utils';
 import { createStory, updateStory, uploadStoryFile } from '@/lib/firebase/stories-admin';
+import UploadField from './UploadField';
 
 interface StoryFormProps {
   initial?: ContentStory;
-  onSaved: (id: string) => void;
+  onSaved: (id: string, status: 'draft' | 'published') => void;
 }
 
 const emptyForm = (): ContentStoryInput => ({
@@ -120,6 +121,17 @@ export default function StoryForm({ initial, onSaved }: StoryFormProps) {
   );
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
+  const [storyId, setStoryId] = useState<string | null>(initial?.id ?? null);
+  const [saveMode, setSaveMode] = useState<'draft' | 'published' | null>(null);
+  const [pendingFiles, setPendingFiles] = useState<
+    Partial<Record<'thumbnailUrl' | 'coverImageUrl' | 'videoUrl', File>>
+  >({});
+
+  const MEDIA_FOLDERS = {
+    thumbnailUrl: 'thumbnails',
+    coverImageUrl: 'cover-images',
+    videoUrl: 'videos',
+  } as const;
 
   const set = <K extends keyof ContentStoryInput>(key: K, value: ContentStoryInput[K]) => {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -130,36 +142,73 @@ export default function StoryForm({ initial, onSaved }: StoryFormProps) {
     if (!initial) set('slug', slugify(title));
   };
 
-  const handleFileUpload = async (
+  const handleFileSelect = (
     file: File,
-    field: 'thumbnailUrl' | 'coverImageUrl' | 'videoUrl',
-    folder: 'thumbnails' | 'cover-images' | 'videos'
+    field: 'thumbnailUrl' | 'coverImageUrl' | 'videoUrl'
   ) => {
-    const id = initial?.id || `temp_${Date.now()}`;
-    const url = await uploadStoryFile(file, folder, id);
-    set(field, url);
+    setPendingFiles((prev) => ({ ...prev, [field]: file }));
+  };
+
+  const uploadPendingMedia = async (id: string) => {
+    const urls: Partial<Pick<ContentStoryInput, 'thumbnailUrl' | 'coverImageUrl' | 'videoUrl'>> = {};
+
+    for (const field of Object.keys(pendingFiles) as Array<keyof typeof pendingFiles>) {
+      const file = pendingFiles[field];
+      if (!file) continue;
+      urls[field] = await uploadStoryFile(file, MEDIA_FOLDERS[field], id);
+    }
+
+    return urls;
   };
 
   const save = async (status: 'draft' | 'published') => {
     setSaving(true);
+    setSaveMode(status);
     setError('');
+
     try {
+      let id = storyId;
+      let mediaUrls: Partial<Pick<ContentStoryInput, 'thumbnailUrl' | 'coverImageUrl' | 'videoUrl'>> = {};
+
+      if (status === 'published' && Object.keys(pendingFiles).length > 0) {
+        if (!id) {
+          const draftSlug = form.slug || slugify(form.title) || `draft-${Date.now()}`;
+          id = await createStory({
+            ...form,
+            title: form.title || 'Untitled Story',
+            slug: draftSlug,
+            status: 'draft',
+            readingTime: calculateReadingTime(form.content),
+          });
+          setStoryId(id);
+        }
+        mediaUrls = await uploadPendingMedia(id);
+        setPendingFiles({});
+        if (Object.keys(mediaUrls).length > 0) {
+          setForm((prev) => ({ ...prev, ...mediaUrls }));
+        }
+      }
+
       const payload: ContentStoryInput = {
         ...form,
+        ...mediaUrls,
         status,
         readingTime: calculateReadingTime(form.content),
       };
-      if (initial) {
-        await updateStory(initial.id, payload);
-        onSaved(initial.id);
+
+      if (id) {
+        await updateStory(id, payload);
+        onSaved(id, status);
       } else {
-        const id = await createStory(payload);
-        onSaved(id);
+        const newId = await createStory(payload);
+        setStoryId(newId);
+        onSaved(newId, status);
       }
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Failed to save');
     } finally {
       setSaving(false);
+      setSaveMode(null);
     }
   };
 
@@ -212,36 +261,32 @@ export default function StoryForm({ initial, onSaved }: StoryFormProps) {
         <TiptapEditor content={form.content} onChange={(html) => set('content', html)} />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div>
-          <label className="block text-[0.65rem] uppercase tracking-wider text-text-dim mb-2">Thumbnail</label>
-          <input
-            type="file"
+      <div className="p-4 border border-border/60 rounded-[3px] bg-dark/30 space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <UploadField
+            label="Thumbnail"
             accept="image/*"
-            className="text-sm text-text-muted"
-            onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0], 'thumbnailUrl', 'thumbnails')}
+            field="thumbnailUrl"
+            selectedFileName={pendingFiles.thumbnailUrl?.name}
+            disabled={saving}
+            onSelect={handleFileSelect}
           />
-          {form.thumbnailUrl && <p className="text-xs text-gold mt-1 truncate">Uploaded ✓</p>}
-        </div>
-        <div>
-          <label className="block text-[0.65rem] uppercase tracking-wider text-text-dim mb-2">Cover Image (OG)</label>
-          <input
-            type="file"
+          <UploadField
+            label="Cover Image (OG)"
             accept="image/*"
-            className="text-sm text-text-muted"
-            onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0], 'coverImageUrl', 'cover-images')}
+            field="coverImageUrl"
+            selectedFileName={pendingFiles.coverImageUrl?.name}
+            disabled={saving}
+            onSelect={handleFileSelect}
           />
-          {form.coverImageUrl && <p className="text-xs text-gold mt-1 truncate">Uploaded ✓</p>}
-        </div>
-        <div>
-          <label className="block text-[0.65rem] uppercase tracking-wider text-text-dim mb-2">Video (MP4)</label>
-          <input
-            type="file"
+          <UploadField
+            label="Video (MP4)"
             accept="video/mp4,video/*"
-            className="text-sm text-text-muted"
-            onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0], 'videoUrl', 'videos')}
+            field="videoUrl"
+            selectedFileName={pendingFiles.videoUrl?.name}
+            disabled={saving}
+            onSelect={handleFileSelect}
           />
-          {form.videoUrl && <p className="text-xs text-gold mt-1 truncate">Uploaded ✓</p>}
         </div>
       </div>
 
@@ -294,7 +339,7 @@ export default function StoryForm({ initial, onSaved }: StoryFormProps) {
           onClick={() => save('draft')}
           className="border border-border hover:border-gold text-text px-6 py-3 text-[0.72rem] tracking-[0.14em] uppercase rounded-[2px] disabled:opacity-50"
         >
-          Save Draft
+          {saving && saveMode === 'draft' ? 'Saving...' : 'Save Draft'}
         </button>
         <button
           type="button"
@@ -302,7 +347,7 @@ export default function StoryForm({ initial, onSaved }: StoryFormProps) {
           onClick={() => save('published')}
           className="bg-gold hover:bg-gold-light text-black font-medium px-6 py-3 text-[0.72rem] tracking-[0.14em] uppercase rounded-[2px] disabled:opacity-50"
         >
-          {saving ? 'Saving...' : 'Publish'}
+          {saving && saveMode === 'published' ? 'Publishing...' : 'Publish'}
         </button>
       </div>
     </div>
