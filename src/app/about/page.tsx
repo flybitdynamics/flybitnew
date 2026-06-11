@@ -68,7 +68,7 @@ export default function AboutPage() {
   };
 
   return (
-    <div className="relative min-h-screen bg-black text-text selection:bg-gold selection:text-black">
+    <div className="relative min-h-screen bg-black text-text selection:bg-gold selection:text-black overflow-x-hidden w-full">
       {/* Navigation Header */}
       <Navbar onOpenModal={openModal} />
 

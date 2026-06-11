@@ -91,7 +91,7 @@ export default function Navbar({ onOpenModal }: NavbarProps) {
           </li>
           <li>
             <Link href="/stories" className={getLinkClass('/stories')}>
-              Stories
+              Portfolio
             </Link>
           </li>
           <li>
@@ -182,7 +182,7 @@ export default function Navbar({ onOpenModal }: NavbarProps) {
             Services
           </Link>
           <Link href="/stories" className={getMobileLinkClass('/stories')}>
-            Stories
+            Portfolio
           </Link>
           <Link href="/blog" className={getMobileLinkClass('/blog')}>
             Blog

@@ -38,7 +38,7 @@ export default function StoriesInsightsSection({ onOpenModal }: StoriesInsightsS
 
   return (
     <>
-      <section id="stories" className="bg-dark-2 px-6 md:px-20 py-28 select-none">
+      <section id="stories" className="bg-dark-2 px-6 py-16 md:px-20 select-none">
         <div className="max-w-[1440px] mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 font-sans">
             <FadeUp>

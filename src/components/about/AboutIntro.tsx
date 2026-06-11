@@ -25,10 +25,11 @@ export default function AboutIntro() {
   }, []);
 
   return (
-    <section id="about-intro" className="bg-dark py-24 px-6 md:px-16">
+    <section id="about-intro" className="bg-dark px-6 md:px-16 overflow-hidden">
       <div className="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 items-center">
         
-        <div className="fade-left opacity-0 translate-x-[-24px] transition-all duration-700 ease-out">
+        {/* Quote & Pills Column (Now on Right Desktop / Bottom Mobile) */}
+        <div className="order-2 md:order-2 fade-right opacity-0 transition-all duration-700 ease-out w-full">
           <div className="border-l-2 border-gold pl-8">
             <p className="font-cormorant text-[1.6rem] italic font-light text-text leading-[1.65]">
               "At <strong className="text-gold font-normal">FLYBIT DYNAMICS</strong>, we combine cutting-edge drone technology, creative storytelling, and perfect synchronization to turn your event into a spectacle."
@@ -48,7 +49,8 @@ export default function AboutIntro() {
           </div>
         </div>
 
-        <div className="fade-right opacity-0 translate-x-[24px] transition-all duration-700 ease-out">
+        {/* Who We Are Column (Now on Left Desktop / Top Mobile) */}
+        <div className="order-1 md:order-1 fade-left opacity-0 transition-all duration-700 ease-out w-full">
           <div className="text-[0.6rem] tracking-[0.4em] uppercase text-gold mb-4 font-sans">
             Who We Are
           </div>

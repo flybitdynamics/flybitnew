@@ -1,17 +1,76 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+
+const HERO_IMAGES = [
+  '/hero_section_images/magnific_hyperrealistic-drone-show_DBNJbakpcl.png',
+  '/hero_section_images/magnific_hyperrealistic-drone-show_hEYZ7NRvqL.png',
+  '/hero_section_images/magnific_realistic-drone-light-sho_hEYZ1mkvqL.png',
+  '/hero_section_images/magnific_ultrarealistic-drone-ligh_TePUHS0VNR.png',
+  '/hero_section_images/magnific_ultrarealistic-drone-ligh_jShBPZ1LD0.png',
+  '/hero_section_images/magnific_ultrarealistic-drone-ligh_nTwLFEbYQD.png',
+  '/hero_section_images/magnific_ultrarealistic-drone-ligh_vuW27nLa47.png',
+  '/hero_section_images/magnific_ultrarealistic-drone-show_8vA6HoAIrU.png'
+];
 
 interface HeroProps {
   onOpenModal: (title: string, description: string) => void;
 }
 
 export default function Hero({ onOpenModal }: HeroProps) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(true);
+
+  // Extend images array with a clone of the first image for seamless looping
+  const extendedImages = [...HERO_IMAGES, HERO_IMAGES[0]];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => prev + 1);
+    }, 4000); // Hold for 4 seconds
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    if (currentIndex === HERO_IMAGES.length) {
+      // We've reached the clone of the first image. Wait for the slide animation to finish.
+      const timeout = setTimeout(() => {
+        setIsTransitioning(false);
+        setCurrentIndex(0);
+      }, 1000); // matches the duration-1000 class
+      return () => clearTimeout(timeout);
+    } else if (!isTransitioning) {
+      // Re-enable the transition shortly after instantly jumping back to the first image
+      const timeout = setTimeout(() => setIsTransitioning(true), 50);
+      return () => clearTimeout(timeout);
+    }
+  }, [currentIndex, isTransitioning]);
+
   return (
     <section
       id="hero"
       className="relative min-h-screen flex items-center justify-center overflow-hidden bg-black"
     >
+      {/* Background Image Slider */}
+      <div className="absolute inset-0 pointer-events-none opacity-40 overflow-hidden">
+        <div 
+          className={`flex w-full h-full ${isTransitioning ? 'transition-transform duration-1000 ease-in-out' : ''}`}
+          style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+        >
+          {extendedImages.map((src, idx) => (
+            <div
+              key={idx}
+              className="flex-shrink-0 w-full h-full"
+              style={{
+                backgroundImage: `url('${src}')`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+              }}
+            />
+          ))}
+        </div>
+      </div>
+
       {/* Background gradients matching original design */}
       <div
         className="absolute inset-0 pointer-events-none"

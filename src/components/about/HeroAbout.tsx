@@ -75,7 +75,7 @@ export default function HeroAbout() {
           
           <div className="flex gap-4 flex-wrap mb-14">
             <Link
-              href="#work"
+              href="/stories"
               className="bg-gold hover:bg-gold-light text-black font-medium px-9 py-3.5 text-[0.73rem] tracking-[0.18em] uppercase rounded-[2px] transition-all duration-200 hover:-translate-y-0.5 inline-block font-sans"
             >
               See Our Work
