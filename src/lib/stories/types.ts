@@ -22,6 +22,9 @@ export interface ContentStory {
   coverImageUrl: string;
   videoUrl: string;
   instagramUrl: string;
+  xUrl?: string;
+  facebookUrl?: string;
+  linkedinUrl?: string;
   metaTitle: string;
   metaDescription: string;
   seoKeywords: string[];

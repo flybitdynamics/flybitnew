@@ -15,13 +15,16 @@ interface StoryFormProps {
 const emptyForm = (): ContentStoryInput => ({
   title: '',
   slug: '',
-  showType: 'Wedding',
+  showType: 'Social Events',
   shortDescription: '',
   content: '<p></p>',
   thumbnailUrl: '',
   coverImageUrl: '',
   videoUrl: '',
   instagramUrl: '',
+  xUrl: '',
+  facebookUrl: '',
+  linkedinUrl: '',
   metaTitle: '',
   metaDescription: '',
   seoKeywords: [],
@@ -108,6 +111,9 @@ export default function StoryForm({ initial, onSaved }: StoryFormProps) {
           coverImageUrl: initial.coverImageUrl,
           videoUrl: initial.videoUrl,
           instagramUrl: initial.instagramUrl,
+          xUrl: initial.xUrl || '',
+          facebookUrl: initial.facebookUrl || '',
+          linkedinUrl: initial.linkedinUrl || '',
           metaTitle: initial.metaTitle,
           metaDescription: initial.metaDescription,
           seoKeywords: initial.seoKeywords,
@@ -293,6 +299,21 @@ export default function StoryForm({ initial, onSaved }: StoryFormProps) {
       <div>
         <label className="block text-[0.65rem] uppercase tracking-wider text-text-dim mb-2">Instagram URL</label>
         <input className={inputClass} value={form.instagramUrl} onChange={(e) => set('instagramUrl', e.target.value)} placeholder="https://instagram.com/reel/..." />
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <label className="block text-[0.65rem] uppercase tracking-wider text-text-dim mb-2">X (Twitter) URL</label>
+          <input className={inputClass} value={form.xUrl || ''} onChange={(e) => set('xUrl', e.target.value)} placeholder="https://x.com/..." />
+        </div>
+        <div>
+          <label className="block text-[0.65rem] uppercase tracking-wider text-text-dim mb-2">Facebook URL</label>
+          <input className={inputClass} value={form.facebookUrl || ''} onChange={(e) => set('facebookUrl', e.target.value)} placeholder="https://facebook.com/..." />
+        </div>
+        <div>
+          <label className="block text-[0.65rem] uppercase tracking-wider text-text-dim mb-2">LinkedIn URL</label>
+          <input className={inputClass} value={form.linkedinUrl || ''} onChange={(e) => set('linkedinUrl', e.target.value)} placeholder="https://linkedin.com/in/..." />
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
