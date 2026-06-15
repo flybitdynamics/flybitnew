@@ -66,10 +66,31 @@ export default function ServicesDetailed({ onOpenModal }: ServicesDetailedProps)
     return () => observer.disconnect();
   }, []);
 
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const scrollLeft = () => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({ left: -300, behavior: 'smooth' });
+    }
+  };
+
+  const scrollRight = () => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({ left: 300, behavior: 'smooth' });
+    }
+  };
+
   const openModal = (title: string, desc: string) => {
      if (onOpenModal) onOpenModal(title, desc);
      else console.log("Open modal:", title, desc);
   };
+
+  const imagesToRender = 
+    activeTab === 'social' ? socialImages :
+    activeTab === 'corporate' ? corporateImages :
+    activeTab === 'government' ? governmentImages :
+    activeTab === 'spiritual' ? spiritualImages :
+    activeTab === 'sports' ? sportsImages : [];
 
   return (
     <section id="services">
@@ -86,65 +107,36 @@ export default function ServicesDetailed({ onOpenModal }: ServicesDetailedProps)
         <button className={`stab ${activeTab === 'sports' ? 'active' : ''}`} onClick={() => setActiveTab('sports')}>Sports & Entertainment</button>
       </div>
       
-      {activeTab === "social" && (
-        <div className="srv-panel active" id="srv-social">
-          <div className="srv-grid">
-            {socialImages.map((img, index) => (
-              <div key={index} className="srv-img" onClick={() => openModal(img.title, img.desc)}>
-                <img src={img.src} alt={img.label} />
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      <div className="relative fu mt-8">
+        <button
+          onClick={scrollLeft}
+          className="absolute left-8 md:left-16 top-1/2 -translate-y-1/2 z-10 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full border border-gold/20 bg-black/80 text-gold hover:bg-gold/20 transition-colors backdrop-blur-sm shadow-lg cursor-pointer"
+          aria-label="Scroll left"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5 md:w-6 md:h-6">
+            <polyline points="15 18 9 12 15 6" />
+          </svg>
+        </button>
+        <button
+          onClick={scrollRight}
+          className="absolute right-8 md:right-16 top-1/2 -translate-y-1/2 z-10 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full border border-gold/20 bg-black/80 text-gold hover:bg-gold/20 transition-colors backdrop-blur-sm shadow-lg cursor-pointer"
+          aria-label="Scroll right"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5 md:w-6 md:h-6">
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </button>
 
-      {activeTab === "corporate" && (
-        <div className="srv-panel active" id="srv-corporate">
-          <div className="srv-grid">
-            {corporateImages.map((img, index) => (
+        <div className="srv-panel active" id={`srv-${activeTab}`}>
+          <div className="srv-grid" ref={scrollRef}>
+            {imagesToRender.map((img, index) => (
               <div key={index} className="srv-img" onClick={() => openModal(img.title, img.desc)}>
                 <img src={img.src} alt={img.label} />
               </div>
             ))}
           </div>
         </div>
-      )}
-
-      {activeTab === "government" && (
-        <div className="srv-panel active" id="srv-government">
-          <div className="srv-grid">
-            {governmentImages.map((img, index) => (
-              <div key={index} className="srv-img" onClick={() => openModal(img.title, img.desc)}>
-                <img src={img.src} alt={img.label} />
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {activeTab === "spiritual" && (
-        <div className="srv-panel active" id="srv-spiritual">
-          <div className="srv-grid">
-            {spiritualImages.map((img, index) => (
-              <div key={index} className="srv-img" onClick={() => openModal(img.title, img.desc)}>
-                <img src={img.src} alt={img.label} />
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {activeTab === "sports" && (
-        <div className="srv-panel active" id="srv-sports">
-          <div className="srv-grid">
-            {sportsImages.map((img, index) => (
-              <div key={index} className="srv-img" onClick={() => openModal(img.title, img.desc)}>
-                <img src={img.src} alt={img.label} />
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      </div>
     </section>
   );
 }

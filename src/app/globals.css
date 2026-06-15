@@ -389,7 +389,7 @@ input, textarea {
 /* FLEET */
 #fleet {
   background: var(--color-dark);
-  padding: 7rem 5rem;
+  padding: 2rem 5rem 7rem;
 }
 .fleet-inner {
   display: grid;
@@ -1065,7 +1065,7 @@ input, textarea {
   #clients, #work, #fleet, #process, #faq, #addons, #mission, #contact, #services {
     padding: 5rem 1.5rem !important;
   }
-  #work {
+  #work, #fleet {
     padding-top: 1rem !important;
   }
 

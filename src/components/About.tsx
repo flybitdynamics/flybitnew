@@ -20,7 +20,7 @@ export default function About({ onOpenModal }: AboutProps) {
   return (
     <section
       id="about"
-      className="bg-dark px-6 md:px-20 grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-28 items-center select-none"
+      className="bg-dark mt-20 lg:mt-32 px-6 md:px-20 grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-28 items-center select-none"
     >
       <FadeUp className="about-visual relative h-[380px] md:h-[520px] w-full">
         <div className="about-frame absolute inset-0 border border-border rounded-[3px]">

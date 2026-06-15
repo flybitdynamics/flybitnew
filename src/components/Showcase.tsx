@@ -157,9 +157,9 @@ export default function Showcase({ onOpenModal }: ShowcaseProps) {
       id="showcase"
       className="bg-black select-none overflow-hidden"
     >
-      <div className="showcase-head flex flex-col md:flex-row justify-between items-start md:items-end px-6 md:px-20 mb-16 font-sans">
+      <div className="showcase-head flex flex-col md:flex-row justify-between items-start md:items-end px-6 md:px-20 mb-2 font-sans">
         <div>
-          <div className="eyebrow text-[0.62rem] tracking-[0.4em] uppercase text-gold mb-5">
+          <div className="eyebrow text-[0.62rem] tracking-[0.4em] uppercase text-gold mb-4">
             Past Shows
           </div>
           <h2 className="font-cormorant text-4xl md:text-5xl font-light text-text leading-tight mb-4 md:mb-0">

@@ -85,7 +85,7 @@ export default function AboutPage() {
         <Addons />
         <WhyChooseUs onOpenModal={openModal} />
         <Mission />
-        <Contact />
+        {/* <Contact /> */}
       </main>
 
       {/* Global Page Footer */}

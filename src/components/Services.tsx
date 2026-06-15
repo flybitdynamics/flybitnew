@@ -107,13 +107,13 @@ export default function Services({ onOpenModal }: ServicesProps) {
         </p>
       </div>
 
-      <div className="srv-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[1.5px] bg-border font-sans">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 font-sans max-w-[1440px] mx-auto">
         {services.map((srv, idx) => (
           <FadeUp
             key={idx}
             delay={(idx % 3) * 80}
             onClick={() => onOpenModal(srv.modalTitle, srv.modalDesc)}
-            className="srv-card bg-dark p-6 sm:p-8 md:p-12 relative overflow-hidden transition-colors duration-300 cursor-pointer md:cursor-none hover:bg-dark-3 group border-none"
+            className="srv-card bg-dark p-6 sm:p-8 md:p-10 relative overflow-hidden transition-all duration-300 cursor-pointer md:cursor-none hover:bg-dark-3 group border border-border/50 rounded-2xl hover:border-gold/30 hover:-translate-y-1 shadow-2xl"
           >
             {/* Massive backdrop number */}
             <div className="srv-num absolute top-6 right-8 font-bebas text-8xl text-gold/[0.05] leading-none pointer-events-none select-none">

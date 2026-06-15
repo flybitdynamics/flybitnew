@@ -3,12 +3,12 @@
 import React, { useState, useEffect } from 'react';
 
 const HERO_IMAGES = [
+  '/hero_section_images/ChatGPT Image Jun 10, 2026, 04_40_14 PM (2).png',
+  '/hero_section_images/ChatGPT Image Jun 10, 2026, 04_44_35 PM.png',
   '/hero_section_images/magnific_hyperrealistic-drone-show_DBNJbakpcl.png',
   '/hero_section_images/magnific_hyperrealistic-drone-show_hEYZ7NRvqL.png',
   '/hero_section_images/magnific_realistic-drone-light-sho_hEYZ1mkvqL.png',
   '/hero_section_images/magnific_ultrarealistic-drone-ligh_TePUHS0VNR.png',
-  '/hero_section_images/magnific_ultrarealistic-drone-ligh_jShBPZ1LD0.png',
-  '/hero_section_images/magnific_ultrarealistic-drone-ligh_nTwLFEbYQD.png',
   '/hero_section_images/magnific_ultrarealistic-drone-ligh_vuW27nLa47.png',
   '/hero_section_images/magnific_ultrarealistic-drone-show_8vA6HoAIrU.png'
 ];
