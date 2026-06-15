@@ -47,7 +47,7 @@ export default function StoryPageView({ story, relatedStories }: StoryPageViewPr
 
         <div className="flex flex-col lg:flex-row gap-10 lg:gap-14">
           <div className="w-full lg:w-[45%] shrink-0">
-            <StoryVideoPlayer story={story} autoPlay className="w-full aspect-video lg:aspect-[4/5] lg:min-h-[480px] sticky top-28" />
+            <StoryVideoPlayer story={story} autoPlay className="w-full h-auto lg:max-h-[78vh] sticky top-28" />
           </div>
           <div className="w-full lg:w-[55%]">
             <StoryContent story={story} showCta={false} />

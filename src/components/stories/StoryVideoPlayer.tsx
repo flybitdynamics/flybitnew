@@ -36,7 +36,7 @@ export default function StoryVideoPlayer({
 
   if (story.videoUrl) {
     return (
-      <div className={`relative bg-black rounded-[3px] overflow-hidden ${className}`}>
+      <div className={`relative bg-black rounded-[3px] overflow-hidden flex items-center justify-center ${className}`}>
         <video
           ref={videoRef}
           key={story.id}
@@ -48,7 +48,7 @@ export default function StoryVideoPlayer({
           playsInline
           preload="auto"
           poster={story.thumbnailUrl || story.coverImageUrl || undefined}
-          className="w-full h-full object-cover"
+          className="w-full h-auto max-h-full object-contain mx-auto"
         >
           <track kind="captions" />
         </video>

@@ -219,7 +219,7 @@ export default function Hero({ onOpenModal }: HeroProps) {
           <span className="text-gold block">FLYBIT</span>
           <span className="text-text block">DYNAMICS</span>
         </h1>
-        <p className="text-[0.95rem] text-text-muted max-w-[430px] mx-auto mb-14 leading-[1.9] tracking-[0.02em] font-sans">
+        <p className="text-[0.95rem] text-white max-w-[430px] mx-auto mb-14 leading-[1.9] tracking-[0.02em] font-sans">
           India’s trusted drone show company — delivering unforgettable aerial experiences with 250+ synchronized drones for weddings, corporate events, festivals, and grand celebrations.
         </p>
         <div className="flex gap-5 justify-center flex-wrap">

@@ -8,22 +8,71 @@ interface ShowcaseProps {
 }
 
 const SHOWS = [
-  { tag: 'Wedding', cat: 'wedding', name: 'Grand Sky Finale, Mumbai', svg: 'heart' },
-  { tag: 'National Event', cat: 'government', name: 'Republic Day, New Delhi', svg: 'india' },
-  { tag: 'Festival', cat: 'festival', name: 'Diwali Spectacular, Ahmedabad', svg: 'burst' },
-  { tag: 'Corporate', cat: 'corporate', name: 'Product Launch, Bangalore', svg: 'logo' },
-  { tag: 'Wedding', cat: 'wedding', name: 'Lakeside Celebration, Udaipur', svg: 'ring' },
-  { tag: 'Festival', cat: 'festival', name: 'New Year, Goa', svg: 'firework' },
-  { tag: 'Corporate', cat: 'corporate', name: 'Brand Event, Hyderabad', svg: 'star' },
-  { tag: 'Government', cat: 'government', name: 'State Inauguration, Gujarat', svg: 'india' },
+  // Mixed selection at the top to make "All Shows" look diverse immediately
+  { tag: 'Wedding', cat: 'wedding', name: 'Grand Sky Finale', src: '/past_shows/wedding images/ChatGPT Image May 29, 2026, 10_21_15 AM.png' },
+  { tag: 'National Event', cat: 'government', name: 'Republic Day', src: '/past_shows/Gov. & national/wildmind_zeel_2026_03_14_12_16_20.jpg' },
+  { tag: 'Festival', cat: 'spiritual', name: 'Diwali Spectacular', src: '/past_shows/Spiritual images/magnific_poio6y1ehw.png' },
+  { tag: 'Corporate', cat: 'corporate', name: 'Product Launch', src: '/past_shows/corporate/wildmind_zeel_2026_03_14_12_16_13.jpg' },
+  { tag: 'Sports & Ent', cat: 'sports', name: 'Stadium Spectacle', src: '/past_shows/sports & Ent/bb107a21-d8cb-4415-9ceb-49893721099f.png' },
+  
+  // Gov. & National (remaining 10)
+  { tag: 'Gov. & National', cat: 'government', name: 'National Formation', src: '/past_shows/Gov. & national/0c0a6064-ad21-449d-92c7-9f9370e3ab53.jpg' },
+  { tag: 'Gov. & National', cat: 'government', name: 'Patriotic Display', src: '/past_shows/Gov. & national/18e98e5d-fd45-4e5f-b043-33ea18497cba.jpg' },
+  { tag: 'Gov. & National', cat: 'government', name: 'National Celebration', src: '/past_shows/Gov. & national/Gemini_Generated_Image_7iq3rk7iq3rk7iq3.png' },
+  { tag: 'Gov. & National', cat: 'government', name: 'National Emblem', src: '/past_shows/Gov. & national/Gemini_Generated_Image_o2mu96o2mu96o2mu.png' },
+  { tag: 'Gov. & National', cat: 'government', name: 'Patriotic Display', src: '/past_shows/Gov. & national/Gemini_Generated_Image_ouditaouditaoudi.png' },
+  { tag: 'Gov. & National', cat: 'government', name: 'Government Event', src: '/past_shows/Gov. & national/magnific_enhance-this-real-drone-l_2986599818.png' },
+  { tag: 'Gov. & National', cat: 'government', name: 'Independence Day', src: '/past_shows/Gov. & national/wildmind_zeel_2026_03_14_12_20_34.jpg' },
+  { tag: 'Gov. & National', cat: 'government', name: 'State Celebration', src: '/past_shows/Gov. & national/wildmind_zeel_2026_03_16_17_10_52.jpg' },
+  { tag: 'Gov. & National', cat: 'government', name: 'State Inauguration', src: '/past_shows/Gov. & national/wildmind_zeel_2026_03_18_16_32_12.jpg' },
+  { tag: 'Gov. & National', cat: 'government', name: 'Public Event', src: '/past_shows/Gov. & national/wildmind_zeel_2026_03_18_16_32_22.jpg' },
+
+  // Spiritual images (remaining 14)
+  { tag: 'Spiritual', cat: 'spiritual', name: 'Divine Ceremony', src: '/past_shows/Spiritual images/0e722076-3068-402d-89e0-bcfeceacd621.png' },
+  { tag: 'Spiritual', cat: 'spiritual', name: 'Holy Gathering', src: '/past_shows/Spiritual images/542d63d5-eaa3-46ec-9964-c0e794583f50.png' },
+  { tag: 'Spiritual', cat: 'spiritual', name: 'Divine Formation', src: '/past_shows/Spiritual images/5f9410ec-1e52-48a5-a877-aeafee2e22c4.png' },
+  { tag: 'Spiritual', cat: 'spiritual', name: 'Sacred Ritual', src: '/past_shows/Spiritual images/d905ecea-460f-4a78-add4-ac9cb16fc144.png' },
+  { tag: 'Spiritual', cat: 'spiritual', name: 'Temple Formation', src: '/past_shows/Spiritual images/fb0adb1a-bb10-4bf0-9d6e-63a43fb4f91b.png' },
+  { tag: 'Spiritual', cat: 'spiritual', name: 'Divine Display', src: '/past_shows/Spiritual images/magnific_5xoxeVrKxe.png' },
+  { tag: 'Spiritual', cat: 'spiritual', name: 'Temple Inauguration', src: '/past_shows/Spiritual images/magnific_8vGvG7EIrU.png' },
+  { tag: 'Spiritual', cat: 'spiritual', name: 'Festival Gathering', src: '/past_shows/Spiritual images/magnific_8vGvzpPIrU.png' },
+  { tag: 'Spiritual', cat: 'spiritual', name: 'Sacred Geometry', src: '/past_shows/Spiritual images/magnific_Bm2m3SPoQR.png' },
+  { tag: 'Spiritual', cat: 'spiritual', name: 'Spiritual Symbol', src: '/past_shows/Spiritual images/magnific_Te4e7sXVNR.png' },
+  { tag: 'Spiritual', cat: 'spiritual', name: 'Devotional Display', src: '/past_shows/Spiritual images/magnific_UyQyEXMwny.png' },
+  { tag: 'Spiritual', cat: 'spiritual', name: 'Religious Festival', src: '/past_shows/Spiritual images/magnific_WMOM7zncXe.png' },
+  { tag: 'Spiritual', cat: 'spiritual', name: 'Holy Celebration', src: '/past_shows/Spiritual images/magnific_kLILBKZ16B.png' },
+  { tag: 'Spiritual', cat: 'spiritual', name: 'Sacred Icon', src: '/past_shows/Spiritual images/magnific_kLILtj216B.png' },
+
+  // corporate (remaining 6)
+  { tag: 'Corporate', cat: 'corporate', name: 'Corporate Summit', src: '/past_shows/corporate/wildmind_zeel_2026_03_14_12_16_26.jpg' },
+  { tag: 'Corporate', cat: 'corporate', name: 'Tech Expo', src: '/past_shows/corporate/wildmind_zeel_2026_03_14_12_16_31.jpg' },
+  { tag: 'Corporate', cat: 'corporate', name: 'Brand Event', src: '/past_shows/corporate/wildmind_zeel_2026_03_14_12_18_30_brighter.jpg' },
+  { tag: 'Corporate', cat: 'corporate', name: 'Company Anniversary', src: '/past_shows/corporate/wildmind_zeel_2026_03_14_12_22_54.jpg' },
+  { tag: 'Corporate', cat: 'corporate', name: 'Global Launch', src: '/past_shows/corporate/wildmind_zeel_2026_03_14_12_24_46.jpg' },
+  { tag: 'Corporate', cat: 'corporate', name: 'Annual Gala', src: '/past_shows/corporate/wildmind_zeel_2026_03_18_16_37_34.jpg' },
+
+  // wedding images (remaining 12)
+  { tag: 'Wedding', cat: 'wedding', name: 'Wedding Show', src: '/past_shows/wedding images/0e62e4bf-0d56-4beb-b5ed-49a022cbfdde.png' },
+  { tag: 'Wedding', cat: 'wedding', name: 'Wedding Show', src: '/past_shows/wedding images/149d7cb6-a71b-4ed5-b170-da4ee7258818.png' },
+  { tag: 'Wedding', cat: 'wedding', name: 'Wedding Show', src: '/past_shows/wedding images/48783afc-6294-4c79-80a8-288ddf554490.png' },
+  { tag: 'Wedding', cat: 'wedding', name: 'Wedding Show', src: '/past_shows/wedding images/8006958b-f4b4-43b3-a37b-0ff56833d112.png' },
+  { tag: 'Wedding', cat: 'wedding', name: 'Couple Portrait', src: '/past_shows/wedding images/Gemini_Generated_Image_rby995rby995rby9.png' },
+  { tag: 'Wedding', cat: 'wedding', name: 'Wedding Show', src: '/past_shows/wedding images/b211a032-e822-472c-8277-16762dc88cf2.png' },
+  { tag: 'Wedding', cat: 'wedding', name: 'Wedding Show', src: '/past_shows/wedding images/ede65e48-7a7c-45ff-80a3-c0db96b11456.png' },
+  { tag: 'Wedding', cat: 'wedding', name: 'Wedding Show', src: '/past_shows/wedding images/fdaeab6f-caad-46b6-b725-b35ef37e05ff.png' },
+  { tag: 'Wedding', cat: 'wedding', name: 'Wedding Show', src: '/past_shows/wedding images/magnific_43kRLWP9Aa.png' },
+  { tag: 'Wedding', cat: 'wedding', name: 'Lakeside Celebration', src: '/past_shows/wedding images/magnific_74H4g1zJAL.png' },
+  { tag: 'Wedding', cat: 'wedding', name: 'Royal Palace Wedding', src: '/past_shows/wedding images/magnific_cDyDnho0eP.png' },
+  { tag: 'Wedding', cat: 'wedding', name: 'Wedding Show', src: '/past_shows/wedding images/magnific_swf7k5sl8e.png' },
 ];
 
 const TABS = [
   { label: 'All Shows', cat: 'all' },
   { label: 'Weddings', cat: 'wedding' },
   { label: 'Corporate', cat: 'corporate' },
-  { label: 'Festivals', cat: 'festival' },
-  { label: 'National', cat: 'government' },
+  { label: 'Spiritual', cat: 'spiritual' },
+  { label: 'Gov. & National', cat: 'government' },
+  { label: 'Sports & Ent', cat: 'sports' },
 ];
 
 export default function Showcase({ onOpenModal }: ShowcaseProps) {
@@ -44,113 +93,7 @@ export default function Showcase({ onOpenModal }: ShowcaseProps) {
     }
   };
 
-  const renderSVGContent = (type: string) => {
-    switch (type) {
-      case 'heart':
-        return (
-          <g fill="#C9A84C">
-            <circle cx="140" cy="155" r="2.5" />
-            <circle cx="125" cy="165" r="2" />
-            <circle cx="118" cy="182" r="2.5" />
-            <circle cx="122" cy="200" r="2" />
-            <circle cx="133" cy="215" r="2.5" />
-            <circle cx="148" cy="227" r="2" />
-            <circle cx="160" cy="235" r="2.5" />
-            <circle cx="172" cy="227" r="2" />
-            <circle cx="187" cy="215" r="2.5" />
-            <circle cx="198" cy="200" r="2" />
-            <circle cx="202" cy="182" r="2.5" />
-            <circle cx="195" cy="165" r="2" />
-            <circle cx="180" cy="155" r="2.5" />
-            <circle cx="160" cy="148" r="2" />
-          </g>
-        );
-      case 'india':
-        return (
-          <g fill="#C9A84C">
-            <circle cx="158" cy="145" r="2" />
-            <circle cx="165" cy="140" r="1.5" />
-            <circle cx="172" cy="145" r="2" />
-            <circle cx="175" cy="155" r="1.5" />
-            <circle cx="178" cy="165" r="2" />
-            <circle cx="172" cy="175" r="1.5" />
-            <circle cx="165" cy="178" r="2" />
-            <circle cx="158" cy="175" r="1.5" />
-            <circle cx="152" cy="165" r="2" />
-            <circle cx="155" cy="155" r="1.5" />
-          </g>
-        );
-      case 'burst':
-        return (
-          <g fill="#F0D080">
-            <circle cx="165" cy="140" r="2.5" />
-            <circle cx="185" cy="145" r="2" />
-            <circle cx="200" cy="160" r="2.5" />
-            <circle cx="200" cy="180" r="2" />
-            <circle cx="188" cy="196" r="2.5" />
-            <circle cx="170" cy="202" r="2" />
-            <circle cx="150" cy="196" r="2.5" />
-            <circle cx="137" cy="180" r="2" />
-            <circle cx="137" cy="160" r="2.5" />
-            <circle cx="148" cy="145" r="2" />
-            <circle cx="168" cy="160" r="1.5" />
-          </g>
-        );
-      case 'logo':
-        return (
-          <g fill="#C9A84C">
-            <circle cx="165" cy="165" r="2" />
-            <circle cx="175" cy="155" r="2.5" />
-            <circle cx="185" cy="165" r="2" />
-            <circle cx="185" cy="178" r="2.5" />
-            <circle cx="178" cy="188" r="2" />
-            <circle cx="168" cy="188" r="2.5" />
-            <circle cx="158" cy="178" r="2" />
-            <circle cx="158" cy="165" r="2.5" />
-          </g>
-        );
-      case 'ring':
-        return (
-          <g fill="none" stroke="#C9A84C" strokeWidth="1.5">
-            <circle cx="170" cy="175" r="30" fill="none" strokeDasharray="4 5" />
-            <circle cx="170" cy="175" r="3" fill="#C9A84C" />
-          </g>
-        );
-      case 'firework':
-        return (
-          <g fill="#F0D080">
-            <circle cx="168" cy="130" r="2" />
-            <circle cx="195" cy="145" r="2" />
-            <circle cx="205" cy="173" r="2" />
-            <circle cx="192" cy="200" r="2" />
-            <circle cx="165" cy="210" r="2" />
-            <circle cx="138" cy="200" r="2" />
-            <circle cx="125" cy="173" r="2" />
-            <circle cx="135" cy="145" r="2" />
-            <circle cx="165" cy="170" r="3" />
-          </g>
-        );
-      case 'star':
-        return (
-          <g fill="#C9A84C">
-            <circle cx="168" cy="140" r="2.5" />
-            <circle cx="188" cy="157" r="2" />
-            <circle cx="190" cy="180" r="2.5" />
-            <circle cx="175" cy="195" r="2" />
-            <circle cx="155" cy="195" r="2.5" />
-            <circle cx="140" cy="180" r="2" />
-            <circle cx="142" cy="157" r="2.5" />
-            <circle cx="162" cy="140" r="2" />
-          </g>
-        );
-      default:
-        return (
-          <g fill="#F0D080">
-            <circle cx="165" cy="140" r="2.5" />
-          </g>
-        );
-    }
-  };
+
 
   return (
     <section
@@ -224,29 +167,11 @@ export default function Showcase({ onOpenModal }: ShowcaseProps) {
               className="show-card shrink-0 w-[280px] md:w-[340px] h-[380px] md:h-[440px] bg-dark-3 relative overflow-hidden border border-gold/[0.06] hover:border-gold/25 cursor-pointer md:cursor-none transition-colors duration-300 group"
             >
               <div className="show-card-bg absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-105">
-                <svg width="100%" height="100%" viewBox="0 0 340 440" preserveAspectRatio="xMidYMid slice">
-                  <rect width="340" height="440" fill="#111" />
-                  <circle
-                    cx="170"
-                    cy="220"
-                    r="100"
-                    fill="none"
-                    stroke="rgba(201,168,76,0.04)"
-                    strokeWidth="60"
-                  />
-                  {renderSVGContent(show.svg)}
-                  <text
-                    x="170"
-                    y="380"
-                    textAnchor="middle"
-                    fill="rgba(201,168,76,0.2)"
-                    fontFamily="var(--font-bebas)"
-                    fontSize="9"
-                    letterSpacing="4"
-                  >
-                    {show.name.toUpperCase()}
-                  </text>
-                </svg>
+                <div
+                  className="w-full h-full bg-contain bg-no-repeat bg-center"
+                  style={{ backgroundImage: `url('${show.src}')` }}
+                />
+                <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500" />
               </div>
 
               <div className="show-card-content absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-black/97 via-black/60 to-transparent">
