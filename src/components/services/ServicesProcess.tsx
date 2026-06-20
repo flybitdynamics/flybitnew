@@ -45,7 +45,7 @@ const PROCESS_STEPS_BOTTOM = [
 
 export default function ServicesProcess() {
   return (
-    <section id="process" className="bg-dark py-24 px-6 md:px-20 border-t border-border/40">
+    <section id="process" className="bg-dark px-6 md:px-20 border-t border-border/40">
       <div className="max-w-[1440px] mx-auto">
         
         {/* Header */}

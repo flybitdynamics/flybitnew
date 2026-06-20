@@ -10,7 +10,7 @@ export default function StoryHero({
   subtitle = 'Reels, case studies, and long-form stories from the sky — our work, our process, and the industry we love.',
 }: StoryHeroProps) {
   return (
-    <section className="relative pt-36 pb-16 px-6 md:px-20 bg-black overflow-hidden">
+    <section className="relative pt-28 pb-12 px-6 md:px-20 bg-black overflow-hidden">
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
@@ -18,9 +18,9 @@ export default function StoryHero({
         }}
       />
       <div className="relative z-10 max-w-[1440px] mx-auto text-center">
-        <div className="text-[0.62rem] tracking-[0.4em] uppercase text-gold mb-5 font-sans">
+        {/* <div className="text-[0.62rem] tracking-[0.4em] uppercase text-gold mb-5 font-sans">
           Content
-        </div>
+        </div> */}
         <h1 className="font-cormorant text-4xl md:text-6xl font-light text-text leading-tight mb-5">
           Stories & <em className="text-gold italic">Insights</em>
         </h1>

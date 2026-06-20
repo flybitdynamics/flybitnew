@@ -5,7 +5,7 @@ export default function CTAContact() {
   return (
     <section 
       id="cta" 
-      className="bg-[#1a1917]/70 text-center relative overflow-hidden py-24 px-6 md:px-20 border-t border-border/40"
+      className="bg-[#1a1917]/70 text-center relative overflow-hidden py-16 px-6 md:px-20 border-t border-border/40"
     >
       {/* Radiant background glow */}
       <div 

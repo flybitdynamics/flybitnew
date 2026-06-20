@@ -20,7 +20,7 @@ export default function BlogHero({
   const [focused, setFocused] = useState(false);
 
   return (
-    <section className="relative pt-28 pb-14 overflow-hidden border-b border-border/40 bg-radial-gradient">
+    <section className="relative pt-24 pb-10 overflow-hidden border-b border-border/40 bg-radial-gradient">
       {/* Background visual accents */}
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gold/5 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-dark-2/40 rounded-full blur-[80px] pointer-events-none" />

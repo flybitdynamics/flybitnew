@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 export default function HeroServices() {
   return (
-    <section id="hero" className="relative pt-40 pb-24 px-6 md:px-20 overflow-hidden bg-black">
+    <section id="hero" className="relative pt-28 pb-16 px-6 md:px-20 overflow-hidden bg-black">
       {/* Background Radiance */}
       <div 
         className="absolute inset-0 pointer-events-none" 

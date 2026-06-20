@@ -11,7 +11,7 @@ export default function CTA({ onOpenModal }: CTAProps) {
   return (
     <section
       id="cta"
-      className="bg-dark-3 text-center py-28 px-6 md:px-20 relative overflow-hidden select-none"
+      className="bg-dark-3 text-center py-16 px-6 md:px-20 relative overflow-hidden select-none"
     >
       {/* Background radial glow overlay */}
       <div
@@ -51,7 +51,7 @@ export default function CTA({ onOpenModal }: CTAProps) {
             Book a Show
           </button>
           <a
-            href="tel:+919999999999"
+            href="tel:+919979850863"
             className="border border-text/18 hover:border-gold text-text hover:text-gold font-light px-11 py-4 text-[0.75rem] tracking-[0.18em] uppercase rounded-[2px] transition-all duration-200 md:cursor-none hover:-translate-y-1 inline-block"
           >
             Call Us Now
@@ -59,7 +59,7 @@ export default function CTA({ onOpenModal }: CTAProps) {
         </div>
 
         <p className="text-[0.68rem] text-text-dim tracking-[0.12em] mt-10">
-          Available Pan-India · info@flybitdynamics.com · +91 99999 99999
+          Available Pan-India · info@flybitdynamics.com · +91 99798 50863
         </p>
       </div>
     </section>

@@ -38,7 +38,7 @@ export default function BlogPageView({ blog, relatedBlogs }: BlogPageViewProps) 
 
       <Navbar onOpenModal={openModal} />
 
-      <div className="pt-28 px-6 md:px-20 pb-16 max-w-[1400px] mx-auto">
+      <div className="pt-24 px-6 md:px-20 pb-12 max-w-[1400px] mx-auto">
         {/* Breadcrumb path */}
         <nav className="text-[0.68rem] text-text-dim mb-8 font-sans tracking-wide">
           <Link href="/" className="hover:text-gold transition-colors">
@@ -128,7 +128,7 @@ export default function BlogPageView({ blog, relatedBlogs }: BlogPageViewProps) 
 
         {/* Related Blogs section */}
         {relatedBlogs.length > 0 && (
-          <section className="mt-24 pt-12 border-t border-border/40">
+          <section className="mt-16 pt-10 border-t border-border/40">
             <h2 className="font-cormorant text-2xl md:text-3xl text-text mb-8">Related Articles</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {relatedBlogs.map((b) => (
@@ -141,7 +141,7 @@ export default function BlogPageView({ blog, relatedBlogs }: BlogPageViewProps) 
         )}
 
         {/* CTA section */}
-        <div className="mt-20 p-8 border border-border bg-dark-2 rounded-[3px] text-center">
+        <div className="mt-12 p-8 border border-border bg-dark-2 rounded-[3px] text-center">
           <h3 className="font-cormorant text-2xl text-text mb-3">Ready to light up your sky?</h3>
           <p className="text-text-muted text-sm mb-6 max-w-md mx-auto">
             Tell us about your event and we&apos;ll craft a drone show your guests will never forget.

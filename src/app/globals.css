@@ -21,6 +21,11 @@
   --font-sans: var(--font-dm-sans), sans-serif;
   --font-bebas: var(--font-bebas-neue), sans-serif;
   --font-cormorant: var(--font-cormorant-garamond), serif;
+
+  --section-y: 4rem;
+  --section-x: 5rem;
+  --section-gap: 4rem;
+  --section-y-mobile: 3rem;
 }
 
 /* Base resets & utilities matching original */
@@ -116,6 +121,16 @@ input, textarea {
 /* ABOUT INTRO */
 #about-intro {
   background: var(--color-dark);
+  padding: var(--section-y) var(--section-x);
+}
+
+/* Home page sections */
+#about,
+#showcase,
+#testimonials,
+#pricing,
+#stories {
+  padding-block: var(--section-y);
 }
 .about-quote {
   border-left: 2px solid var(--color-gold);
@@ -162,12 +177,12 @@ input, textarea {
 /* SERVICES */
 #services {
   background: var(--color-black);
-  padding: 7rem 5rem;
+  padding: var(--section-y) var(--section-x);
 }
 .srv-head {
   text-align: center;
   max-width: 700px;
-  margin: 0 auto 5rem;
+  margin: 0 auto 3rem;
 }
 .srv-tabs {
   display: flex;
@@ -272,14 +287,14 @@ input, textarea {
 /* CLIENTS */
 #clients {
   background: var(--color-dark-2);
-  padding: 7rem 5rem;
+  padding: var(--section-y) var(--section-x);
 }
 .clients-head {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 5rem;
+  gap: 3.5rem;
   align-items: flex-end;
-  margin-bottom: 4rem;
+  margin-bottom: 2.5rem;
 }
 .clients-grid {
   display: grid;
@@ -335,13 +350,13 @@ input, textarea {
 /* OUR WORK / PORTFOLIO */
 #work {
   background: var(--color-black);
-  padding: 1rem 5rem 7rem;
+  padding: 1.5rem var(--section-x) var(--section-y);
 }
 .work-head {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  margin-bottom: 4rem;
+  margin-bottom: 2.5rem;
 }
 .work-masonry {
   display: grid;
@@ -389,20 +404,20 @@ input, textarea {
 /* FLEET */
 #fleet {
   background: var(--color-dark);
-  padding: 2rem 5rem 7rem;
+  padding: 2rem var(--section-x) var(--section-y);
 }
 .fleet-inner {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 6rem;
-  align-items: center;
+  gap: var(--section-gap);
+  align-items: start;
 }
 .fleet-steps {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1.5px;
   background: var(--color-border);
-  margin-top: 2rem;
+  margin-top: 1rem;
 }
 .fleet-step {
   background: var(--color-dark-2);
@@ -451,11 +466,11 @@ input, textarea {
 /* PROCESS */
 #process {
   background: var(--color-dark-2);
-  padding: 7rem 5rem;
+  padding: var(--section-y) var(--section-x);
 }
 .process-head {
   text-align: center;
-  margin-bottom: 5rem;
+  margin-bottom: 3rem;
 }
 .proc-grid {
   display: grid;
@@ -520,10 +535,10 @@ input, textarea {
 /* FAQ */
 #faq {
   background: var(--color-black);
-  padding: 7rem 5rem;
+  padding: var(--section-y) var(--section-x);
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 6rem;
+  gap: var(--section-gap);
   align-items: start;
 }
 .faq-list {
@@ -572,18 +587,17 @@ input, textarea {
 /* ADDONS */
 #addons {
   background: var(--color-dark);
-  padding: 7rem 5rem;
+  padding: var(--section-y) var(--section-x);
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 6rem;
-  align-items: center;
+  gap: var(--section-gap);
+  align-items: start;
 }
 .addon-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1.5px;
   background: var(--color-border);
-  margin-top: 2rem;
 }
 .addon-card {
   background: var(--color-dark-2);
@@ -653,16 +667,16 @@ input, textarea {
 /* WHY CHOOSE US */
 #why {
   background: var(--color-dark-2);
-  padding: 7rem 5rem;
+  padding: var(--section-y) var(--section-x);
 }
 @media (max-width: 767px) {
   #why {
-    padding: 5rem 0.75rem;
+    padding: var(--section-y-mobile) 0.75rem;
   }
 }
 .why-head {
   text-align: center;
-  margin-bottom: 4rem;
+  margin-bottom: 2.5rem;
 }
 .why-grid {
   display: grid;
@@ -741,7 +755,7 @@ input, textarea {
 /* MISSION BAND */
 #mission {
   background: var(--color-black);
-  padding: 7rem 5rem;
+  padding: var(--section-y) var(--section-x);
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -807,17 +821,17 @@ input, textarea {
 /* CONTACT */
 #contact {
   background: var(--color-dark-3);
-  padding: 7rem 5rem;
+  padding: var(--section-y) var(--section-x);
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 5rem;
+  gap: 3.5rem;
   align-items: start;
 }
 .contact-offices {
   display: flex;
   flex-direction: column;
   gap: 2rem;
-  margin-top: 2rem;
+  margin-top: 1rem;
 }
 .office-card {
   border: 1px solid var(--color-border);
@@ -1062,8 +1076,8 @@ input, textarea {
 
 @media (max-width: 767px) {
   /* Global Section Padding Overrides */
-  #clients, #work, #fleet, #process, #faq, #addons, #mission, #contact, #services {
-    padding: 5rem 1.5rem !important;
+  #clients, #work, #fleet, #process, #faq, #addons, #mission, #contact, #services, #about-intro, #about, #showcase, #testimonials, #pricing, #stories {
+    padding: var(--section-y-mobile) 1.5rem !important;
   }
   #work, #fleet {
     padding-top: 1rem !important;
@@ -1117,7 +1131,7 @@ input, textarea {
 
   /* Process */
   .process-head {
-    margin-bottom: 3rem;
+    margin-bottom: 2rem;
   }
   .proc-grid {
     grid-template-columns: 1fr;
@@ -1130,13 +1144,13 @@ input, textarea {
   /* FAQ */
   #faq {
     grid-template-columns: 1fr;
-    gap: 3rem;
+    gap: 2rem;
   }
 
   /* Addons */
   #addons {
     grid-template-columns: 1fr;
-    gap: 3rem;
+    gap: 2rem;
   }
   .addon-grid {
     grid-template-columns: 1fr;

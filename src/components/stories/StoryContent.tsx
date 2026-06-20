@@ -2,7 +2,6 @@
 
 import type { ContentStory } from '@/lib/stories/types';
 import { formatStoryDate } from '@/lib/stories/utils';
-import StoryShareButtons from './StoryShareButtons';
 import Link from 'next/link';
 
 interface StoryContentProps {
@@ -70,8 +69,6 @@ export default function StoryContent({ story, showCta = true, compact = false }:
       )}
 
       <div className="mt-8 pt-6 border-t border-border space-y-5 shrink-0">
-        <StoryShareButtons story={story} />
-
         {(story.instagramUrl || story.xUrl || story.facebookUrl || story.linkedinUrl) && (
           <div className="flex flex-wrap gap-3">
             {story.instagramUrl && (

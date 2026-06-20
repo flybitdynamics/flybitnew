@@ -40,7 +40,7 @@ export default function Testimonials({ onOpenModal }: TestimonialsProps) {
       id="testimonials"
       className="bg-dark px-6 md:px-20 select-none"
     >
-      <div className="font-sans text-center mb-16">
+      <div className="font-sans text-center mb-10">
         <div className="eyebrow text-[0.62rem] tracking-[0.4em] uppercase text-gold mb-5">
           Client Stories
         </div>
@@ -49,7 +49,7 @@ export default function Testimonials({ onOpenModal }: TestimonialsProps) {
         </h2>
       </div>
 
-      <div className="testi-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[1.5px] bg-border mt-16 font-sans">
+      <div className="testi-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[1.5px] bg-border mt-10 font-sans">
         {testimonials.map((testi, idx) => (
           <FadeUp
             key={idx}

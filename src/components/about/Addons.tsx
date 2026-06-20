@@ -39,8 +39,7 @@ export default function Addons() {
     <div className="eyebrow">Beyond the Sky</div>
     <h2 className="sec-title">Show Experience <em>Add-Ons</em></h2>
     <p className="sec-body">At Flybit Dynamics, we don't just light up the night — we craft immersive stories that linger in the hearts of your audience.</p>
-    <p className="sec-body" style={{marginTop: '1.2rem', marginBottom: '2rem'}}>Our Show Experience Add-Ons are designed to elevate every second of your drone performance — before, during, and after the sky lights up.</p>
-    <a href="#contact" className="btn-g">Add to Your Show →</a>
+    <p className="sec-body" style={{marginTop: '1.2rem'}}>Our Show Experience Add-Ons are designed to elevate every second of your drone performance — before, during, and after the sky lights up.</p>
   </div>
   <div className="fr">
     <div className="addon-grid">

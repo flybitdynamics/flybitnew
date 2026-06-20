@@ -7,7 +7,7 @@ interface ServicesCtaProps {
 
 export default function ServicesCta({ onOpenModal }: ServicesCtaProps) {
   return (
-    <section id="cta" className="relative bg-dark py-28 px-6 md:px-20 text-center overflow-hidden border-t border-border/40">
+    <section id="cta" className="relative bg-dark py-16 px-6 md:px-20 text-center overflow-hidden border-t border-border/40">
       
       {/* Dynamic Background Radiance */}
       <div 
@@ -42,7 +42,7 @@ export default function ServicesCta({ onOpenModal }: ServicesCtaProps) {
           </button>
           
           <a
-            href="tel:+919999999999"
+            href="tel:+919979850863"
             className="bg-transparent border border-border hover:border-gold hover:text-gold text-text font-light px-10 py-4 text-[0.75rem] tracking-[0.18em] uppercase rounded-[2px] transition-all duration-300 hover:-translate-y-1 inline-block cursor-none"
           >
             Call Us Now
@@ -50,7 +50,7 @@ export default function ServicesCta({ onOpenModal }: ServicesCtaProps) {
         </div>
         
         <p className="cta-note mt-10 text-[0.68rem] text-text-dim tracking-[0.12em] font-sans">
-          Available Pan-India · info@flybitdynamics.com · +91 99999 99999
+          Available Pan-India · info@flybitdynamics.com · +91 99798 50863
         </p>
       </div>
 

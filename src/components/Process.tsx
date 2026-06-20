@@ -60,7 +60,7 @@ export default function Process({ onOpenModal }: ProcessProps) {
         </h2>
       </div>
 
-      <div className="proc-steps relative flex flex-col md:flex-row items-center md:items-start gap-12 md:gap-0 mt-20 font-sans">
+      <div className="proc-steps relative flex flex-col md:flex-row items-center md:items-start gap-10 md:gap-0 mt-12 font-sans">
         {/* Connector line visible on md/lg screens */}
         <div
           className="absolute hidden md:block top-[27px] left-[10%] right-[10%] h-[1px] pointer-events-none select-none"

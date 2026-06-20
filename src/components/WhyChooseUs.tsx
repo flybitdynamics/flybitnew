@@ -89,9 +89,9 @@ export default function WhyChooseUs({ onOpenModal }: WhyChooseUsProps) {
   return (
     <section
       id="why"
-      className="bg-black px-6 md:px-20 py-28 select-none"
+      className="bg-black px-6 md:px-20 select-none"
     >
-      <div className="font-sans text-center mb-16">
+      <div className="font-sans text-center mb-10">
         <div className="eyebrow">
           Why Choose Us
         </div>

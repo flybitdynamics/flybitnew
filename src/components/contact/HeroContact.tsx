@@ -5,7 +5,7 @@ export default function HeroContact() {
   return (
     <section 
       id="hero" 
-      className="relative pt-40 pb-28 px-6 md:px-20 overflow-hidden bg-black min-h-[500px] flex items-center"
+      className="relative pt-28 pb-16 px-6 md:px-20 overflow-hidden bg-black min-h-[420px] flex items-center"
     >
       {/* Background glow and coordinate grids */}
       <div 

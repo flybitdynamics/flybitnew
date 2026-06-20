@@ -9,7 +9,6 @@ import HeroAbout from "@/components/about/HeroAbout";
 import AboutIntro from "@/components/about/AboutIntro";
 import ServicesDetailed from "@/components/about/ServicesDetailed";
 import Clients from "@/components/about/Clients";
-import Portfolio from "@/components/about/Portfolio";
 import Fleet from "@/components/about/Fleet";
 import Process from "@/components/about/Process";
 import Faq from "@/components/about/Faq";
@@ -78,7 +77,6 @@ export default function AboutPage() {
         <AboutIntro />
         <ServicesDetailed onOpenModal={openModal} />
         <Clients onOpenModal={openModal} />
-        <Portfolio onOpenModal={openModal} />
         <Fleet />
         <Process />
         <Faq />

@@ -57,7 +57,7 @@ export default function BlogListContainer({ initialBlogs }: BlogListContainerPro
   };
 
   return (
-    <div className="min-h-screen bg-dark pb-20">
+    <div className="min-h-screen bg-dark pb-12">
       {/* Search and Category Filter Section */}
       <BlogHero
         searchQuery={searchQuery}
@@ -70,7 +70,7 @@ export default function BlogListContainer({ initialBlogs }: BlogListContainerPro
       {/* Featured Blog Grid */}
       <div className="max-w-7xl mx-auto px-6 mt-14">
         {filteredBlogs.length === 0 ? (
-          <div className="text-center py-20 border border-dashed border-border/60 rounded-[3px] bg-dark-3">
+          <div className="text-center py-14 border border-dashed border-border/60 rounded-[3px] bg-dark-3">
             <svg
               className="w-12 h-12 text-text-dim mx-auto mb-4"
               fill="none"
@@ -101,7 +101,7 @@ export default function BlogListContainer({ initialBlogs }: BlogListContainerPro
 
             {/* Pagination Controls */}
             {totalPages > 1 && (
-              <div className="flex justify-center items-center gap-3 mt-16 pt-8 border-t border-border/40 select-none">
+              <div className="flex justify-center items-center gap-3 mt-10 pt-6 border-t border-border/40 select-none">
                 <button
                   type="button"
                   disabled={currentPage === 1}

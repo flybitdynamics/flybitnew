@@ -74,7 +74,7 @@ export default function TechnicalCapabilities() {
     <section 
       id="capabilities" 
       ref={sectionRef}
-      className="bg-[#0d0d0d] py-24 px-6 md:px-20 border-t border-border/40"
+      className="bg-[#0d0d0d] py-16 px-6 md:px-20 border-t border-border/40"
     >
       <div className="max-w-[1440px] mx-auto">
         

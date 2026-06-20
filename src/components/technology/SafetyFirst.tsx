@@ -16,8 +16,8 @@ const SAFETY_ITEMS = [
 
 export default function SafetyFirst({ onOpenModal }: SafetyFirstProps) {
   return (
-    <section id="safety" className="bg-black py-24 px-6 md:px-20 border-t border-border/40">
-      <div className="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+    <section id="safety" className="bg-black py-16 px-6 md:px-20 border-t border-border/40">
+      <div className="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
         
         {/* Left Column Information & List */}
         <div className="fade-up">

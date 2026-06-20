@@ -55,7 +55,7 @@ export default function StoryPageView({ story, relatedStories }: StoryPageViewPr
         </div>
 
         {/* {relatedStories.length > 0 && (
-          <div className="mt-20 pt-12 border-t border-border">
+          <div className="mt-12 pt-10 border-t border-border">
             <h2 className="font-cormorant text-2xl md:text-3xl text-text mb-8">Related Stories</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center">
               {relatedStories.map((s) => (

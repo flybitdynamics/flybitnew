@@ -3,14 +3,13 @@
 import React, { useState, useEffect } from 'react';
 
 const HERO_IMAGES = [
-  '/hero_section_images/ChatGPT Image Jun 10, 2026, 04_40_14 PM (2).png',
-  '/hero_section_images/ChatGPT Image Jun 10, 2026, 04_44_35 PM.png',
   '/hero_section_images/magnific_hyperrealistic-drone-show_DBNJbakpcl.png',
   '/hero_section_images/magnific_hyperrealistic-drone-show_hEYZ7NRvqL.png',
   '/hero_section_images/magnific_realistic-drone-light-sho_hEYZ1mkvqL.png',
-  '/hero_section_images/magnific_ultrarealistic-drone-ligh_TePUHS0VNR.png',
   '/hero_section_images/magnific_ultrarealistic-drone-ligh_vuW27nLa47.png',
-  '/hero_section_images/magnific_ultrarealistic-drone-show_8vA6HoAIrU.png'
+  '/hero_section_images/magnific_ultrarealistic-drone-show_8vA6HoAIrU.png',
+  '/hero_section_images/ChatGPT Image Jun 10, 2026, 04_40_14 PM (2).png',
+  '/hero_section_images/ChatGPT Image Jun 10, 2026, 04_44_35 PM.png',
 ];
 
 interface HeroProps {
@@ -51,8 +50,8 @@ export default function Hero({ onOpenModal }: HeroProps) {
       id="hero"
       className="relative min-h-screen flex items-center justify-center overflow-hidden bg-black"
     >
-      {/* Background Image Slider */}
-      <div className="absolute inset-0 pointer-events-none opacity-40 overflow-hidden">
+      {/* Background Image Slider — smaller frame on mobile only */}
+      <div className="absolute left-1/2 -translate-x-1/2 top-20 w-[88%] max-w-[400px] h-[36vh] md:inset-0 md:left-0 md:top-0 md:translate-x-0 md:w-full md:max-w-none md:h-full pointer-events-none opacity-40 overflow-hidden">
         <div 
           className={`flex w-full h-full ${isTransitioning ? 'transition-transform duration-1000 ease-in-out' : ''}`}
           style={{ transform: `translateX(-${currentIndex * 100}%)` }}
@@ -64,7 +63,7 @@ export default function Hero({ onOpenModal }: HeroProps) {
               style={{
                 backgroundImage: `url('${src}')`,
                 backgroundSize: 'cover',
-                backgroundPosition: 'center',
+                backgroundPosition: 'center 35%',
               }}
             />
           ))}

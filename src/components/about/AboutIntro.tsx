@@ -25,7 +25,7 @@ export default function AboutIntro() {
   }, []);
 
   return (
-    <section id="about-intro" className="bg-dark px-6 md:px-16 overflow-hidden">
+    <section id="about-intro" className="overflow-hidden">
       <div className="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 items-center">
         
         {/* Quote & Pills Column (Now on Right Desktop / Bottom Mobile) */}

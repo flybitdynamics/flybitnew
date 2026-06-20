@@ -60,7 +60,7 @@ const ADVANTAGES = [
 
 export default function ServicesWhyChooseUs() {
   return (
-    <section id="why" className="bg-black py-24 px-6 md:px-20 border-t border-border/40">
+    <section id="why" className="bg-black px-6 md:px-20 border-t border-border/40">
       <div className="max-w-[1440px] mx-auto">
         
         {/* Header */}

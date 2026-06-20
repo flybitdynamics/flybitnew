@@ -22,7 +22,7 @@ const OFFICES = [
 
 export default function MapSection() {
   return (
-    <section id="map-section" className="bg-black py-24 px-6 md:px-20 border-t border-border/40">
+    <section id="map-section" className="bg-black py-16 px-6 md:px-20 border-t border-border/40">
       <div className="max-w-[1440px] mx-auto">
         
         {/* Header grid */}

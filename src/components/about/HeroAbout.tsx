@@ -52,7 +52,7 @@ export default function HeroAbout() {
         }}
       />
 
-      <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-16 items-center px-6 md:px-20 pt-32 pb-20 max-w-[1440px] w-full mx-auto">
+      <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-12 items-center px-6 md:px-20 pt-28 pb-14 max-w-[1440px] w-full mx-auto">
         <div className="fade-left transition-all duration-700 ease-out">
           {/* <div className="text-[0.6rem] tracking-[0.45em] uppercase text-gold mb-8 flex items-center gap-4 font-sans">
             <span className="w-[36px] h-[1px] bg-gold-dim" />
@@ -112,12 +112,12 @@ export default function HeroAbout() {
             <div className="absolute bottom-[-1px] right-[-1px] w-4 h-4 border-b-2 border-r-2 border-gold z-10" />
             
             <img 
-              src="/about_hero.png" 
-              alt="India drone formation — FLYBIT Dynamics" 
-              className="w-full h-[300px] md:h-[520px] object-cover block saturate-[0.9]"
+              src="/past_shows/corporate/wildmind_zeel_2026_03_14_12_16_13.jpg" 
+              alt="Indian flag drone formation at Science City — FLYBIT Dynamics" 
+              className="w-full aspect-[4/3] md:aspect-[5/4] object-cover object-[center_28%] block"
             />
             
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/60 via-transparent via-[60%]" />
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/45 pointer-events-none" />
           </div>
           
           <div className="absolute bottom-[-1px] left-[-1px] bg-gold text-black px-6 py-4 z-20 rounded-tr-[3px]">

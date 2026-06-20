@@ -41,7 +41,7 @@ export default function Insights({ onOpenModal }: InsightsProps) {
   return (
     <section
       id="blog"
-      className="bg-dark-2 px-6 md:px-20 py-28 select-none"
+      className="bg-dark-2 px-6 md:px-20 select-none"
     >
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 font-sans">
         <div>

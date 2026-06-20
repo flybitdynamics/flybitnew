@@ -111,7 +111,7 @@ export default function Showcase({ onOpenModal }: ShowcaseProps) {
         </div>
       </div>
 
-      <div className="showcase-tabs flex gap-2 overflow-x-auto px-6 md:px-20 mb-10 scrollbar-none font-sans">
+      <div className="showcase-tabs flex gap-2 overflow-x-auto px-6 md:px-20 mb-6 scrollbar-none font-sans">
         {TABS.map((tab, idx) => (
           <button
             key={idx}
@@ -174,17 +174,7 @@ export default function Showcase({ onOpenModal }: ShowcaseProps) {
                 <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500" />
               </div>
 
-              <div className="show-card-content absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-black/97 via-black/60 to-transparent">
-                <div className="show-tag text-[0.58rem] tracking-[0.3em] uppercase text-gold mb-2">
-                  {show.tag}
-                </div>
-                <div className="show-name font-cormorant text-2xl text-text leading-snug">
-                  {show.name}
-                </div>
-                <div className="show-view flex items-center gap-2 mt-4 text-[0.7rem] tracking-[0.15em] uppercase text-gold-dim transition-all duration-300 group-hover:gap-[0.9rem] group-hover:text-gold">
-                  View Details →
-                </div>
-              </div>
+
             </FadeUp>
           ))}
         </div>

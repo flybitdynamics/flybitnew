@@ -3,11 +3,11 @@ import React from 'react';
 
 export default function HardwareSpecs() {
   return (
-    <section id="hardware" className="bg-black py-24 px-6 md:px-20 border-t border-border/40">
+    <section id="hardware" className="bg-black py-16 px-6 md:px-20 border-t border-border/40">
       <div className="max-w-[1440px] mx-auto">
         
         {/* Header Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-24 items-end mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-end mb-10">
           <div className="fade-up">
             <div className="eyebrow text-[0.62rem] tracking-[0.4em] uppercase text-gold mb-4">
               Hardware Specifications

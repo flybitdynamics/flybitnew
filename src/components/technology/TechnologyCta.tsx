@@ -9,7 +9,7 @@ export default function TechnologyCta({ onOpenModal }: TechnologyCtaProps) {
   return (
     <section 
       id="cta" 
-      className="bg-[#1a1917]/70 text-center relative overflow-hidden py-24 px-6 md:px-20 border-t border-border/40"
+      className="bg-[#1a1917]/70 text-center relative overflow-hidden py-16 px-6 md:px-20 border-t border-border/40"
     >
       {/* Radiant glow */}
       <div 
@@ -51,7 +51,7 @@ export default function TechnologyCta({ onOpenModal }: TechnologyCtaProps) {
         </div>
 
         <p className="mt-10 text-[0.68rem] text-text-dim tracking-[0.12em] font-sans">
-          Available Pan-India · info@flybitdynamics.com · +91 99999 99999
+          Available Pan-India · info@flybitdynamics.com · +91 99798 50863
         </p>
       </div>
     </section>

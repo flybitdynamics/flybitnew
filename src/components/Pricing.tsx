@@ -40,6 +40,30 @@ const NOTES: Record<PicType, string[]> = {
   ],
 };
 
+const LOGO_IMAGES: Record<number, string> = {
+  100: '/Transperent_pricing/logo/100.png',
+  200: '/Transperent_pricing/logo/200.png',
+  300: '/Transperent_pricing/logo/300.png',
+};
+
+const DESIGN_IMAGES: Record<number, string> = {
+  100: '/Transperent_pricing/Design/flybit_100.png',
+  200: '/Transperent_pricing/Design/flybit_200.png',
+  300: '/Transperent_pricing/Design/flybit_300.png',
+};
+
+const NUMBERS_IMAGES: Record<number, string> = {
+  100: '/Transperent_pricing/number/100.png',
+  200: '/Transperent_pricing/number/200.png',
+  300: '/Transperent_pricing/number/300.png',
+};
+
+const PRICING_IMAGES: Partial<Record<PicType, Record<number, string>>> = {
+  logo: LOGO_IMAGES,
+  numbers: NUMBERS_IMAGES,
+  design: DESIGN_IMAGES,
+};
+
 
 
 // Pure functions for generating coordinate dots
@@ -212,8 +236,10 @@ export default function Pricing({ onOpenModal }: PricingProps) {
     };
   }, [isDragging]);
 
-  // Canvas drawing loop
+  // Canvas drawing loop (unused — all picture types use static images)
   useEffect(() => {
+    if (PRICING_IMAGES[picType]) return;
+
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -264,7 +290,7 @@ export default function Pricing({ onOpenModal }: PricingProps) {
       id="pricing"
       className="bg-black px-6 md:px-20  overflow-hidden select-none"
     >
-      <div className="pricing-wrap grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center min-h-[560px]">
+      <div className="pricing-wrap grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center min-h-[480px]">
         {/* Left Side Controls */}
         <FadeUp className="pricing-left font-sans">
           <div className="eyebrow text-[0.62rem] tracking-[0.4em] uppercase text-gold mb-5">
@@ -375,21 +401,6 @@ export default function Pricing({ onOpenModal }: PricingProps) {
             >
               Get Custom Quote
             </button>
-            <span className="price-custom text-[0.72rem] text-text-dim tracking-[0.06em]">
-              Need more than 1000?
-              <br />
-              <button
-                onClick={() =>
-                  onOpenModal(
-                    'Enterprise Pricing',
-                    'For shows with 1000–3000+ drones, national events, or multi-night bookings, we offer dedicated enterprise pricing. Contact our team directly.'
-                  )
-                }
-                className="text-gold bg-transparent py-0 border-none cursor-pointer md:cursor-none hover:underline"
-              >
-                Talk to our team →
-              </button>
-            </span>
           </div>
         </FadeUp>
 
@@ -399,10 +410,18 @@ export default function Pricing({ onOpenModal }: PricingProps) {
             {/* Soft inner glow behind canvas */}
             <div className="absolute inset-0 bg-radial-glow pointer-events-none" />
 
-            <canvas
-              ref={canvasRef}
-              className="w-full h-full block z-10 pointer-events-none"
-            />
+            {PRICING_IMAGES[picType] ? (
+              <img
+                src={PRICING_IMAGES[picType]![currentDrones]}
+                alt={`${picType} formation with ${currentDrones} drones`}
+                className="w-full h-full object-cover block z-10 pointer-events-none"
+              />
+            ) : (
+              <canvas
+                ref={canvasRef}
+                className="w-full h-full block z-10 pointer-events-none"
+              />
+            )}
 
             <div className="formation-label absolute bottom-5 left-1/2 -translate-x-1/2 font-bebas text-[0.7rem] tracking-[0.3em] text-gold/25 pointer-events-none select-none uppercase">
               {picType} · {currentDrones} Drones · Flybit Dynamics

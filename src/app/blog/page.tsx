@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import { getPublishedBlogsServer } from '@/lib/blogs/queries-server';
 import BlogListingPageView from '@/components/blog/BlogListingPageView';
 
+export const revalidate = 60;
+
 const BASE = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.flybitdynamics.com';
 
 export const metadata: Metadata = {

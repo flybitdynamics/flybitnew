@@ -93,9 +93,9 @@ export default function Services({ onOpenModal }: ServicesProps) {
   return (
     <section
       id="services"
-      className="bg-black px-3 sm:px-6 md:px-20 py-28 select-none"
+      className="bg-black px-3 sm:px-6 md:px-20 select-none"
     >
-      <div className="srv-header text-center mb-20 font-sans">
+      <div className="srv-header text-center mb-12 font-sans">
         <div className="eyebrow text-[0.62rem] tracking-[0.4em] uppercase text-gold mb-5">
           What We Do
         </div>

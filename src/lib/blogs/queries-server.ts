@@ -18,8 +18,16 @@ export async function getPublishedBlogsServer(limitCount?: number): Promise<Blog
   for (const sb of staticBlogs) {
     blogMap.set(sb.slug, sb);
   }
+
+  const activeSlugs = new Set<string>();
   for (const db of dbBlogs) {
-    blogMap.set(db.slug, db);
+    let finalSlug = db.slug;
+    if (activeSlugs.has(finalSlug)) {
+      finalSlug = `${db.slug}-${db.id}`;
+      db.slug = finalSlug;
+    }
+    activeSlugs.add(finalSlug);
+    blogMap.set(finalSlug, db);
   }
 
   const merged = Array.from(blogMap.values()).sort(
@@ -30,6 +38,18 @@ export async function getPublishedBlogsServer(limitCount?: number): Promise<Blog
 }
 
 export async function getBlogBySlugServer(slug: string): Promise<BlogPost | null> {
+  // Check if slug ends with a 20-character Firestore ID (alphanumeric)
+  const idMatch = slug.match(/-([a-zA-Z0-9]{20})$/);
+  if (idMatch) {
+    const id = idMatch[1];
+    const { getBlogByIdAdminDb } = await import('./admin-db');
+    const dbBlog = await getBlogByIdAdminDb(id);
+    if (dbBlog) {
+      dbBlog.slug = slug;
+      return dbBlog;
+    }
+  }
+
   // Try Firestore first
   const dbBlog = await getBlogBySlugDb(slug);
   if (dbBlog) return dbBlog;
