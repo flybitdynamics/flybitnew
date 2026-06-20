@@ -19,7 +19,9 @@ export function isAdminSdkConfigured(): boolean {
   if (!credPath) return false;
 
   try {
-    const resolved = path.isAbsolute(credPath) ? credPath : path.join(process.cwd(), credPath);
+    const resolved = path.isAbsolute(credPath)
+      ? credPath
+      : path.join(/*turbopackIgnore: true*/ process.cwd(), credPath);
     return existsSync(resolved);
   } catch {
     return false;
@@ -39,7 +41,9 @@ function loadServiceAccount(): Record<string, unknown> | null {
     process.env.FIREBASE_SERVICE_ACCOUNT_PATH || process.env.GOOGLE_APPLICATION_CREDENTIALS;
   if (!credPath) return null;
 
-  const resolved = path.isAbsolute(credPath) ? credPath : path.join(process.cwd(), credPath);
+  const resolved = path.isAbsolute(credPath)
+    ? credPath
+    : path.join(/*turbopackIgnore: true*/ process.cwd(), credPath);
   if (!existsSync(resolved)) return null;
 
   try {
