@@ -5,11 +5,27 @@ import { getFirestore, type Firestore } from 'firebase-admin/firestore';
 import { getStorage, type Storage } from 'firebase-admin/storage';
 
 export function isAdminSdkConfigured(): boolean {
-  return !!(
-    process.env.FIREBASE_SERVICE_ACCOUNT_PATH ||
-    process.env.FIREBASE_SERVICE_ACCOUNT_JSON ||
-    process.env.GOOGLE_APPLICATION_CREDENTIALS
-  );
+  if (process.env.FIREBASE_SERVICE_ACCOUNT_JSON) {
+    try {
+      JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_JSON);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  const credPath =
+    process.env.FIREBASE_SERVICE_ACCOUNT_PATH || process.env.GOOGLE_APPLICATION_CREDENTIALS;
+  if (!credPath) return false;
+
+  try {
+    const resolved = path.isAbsolute(credPath)
+      ? credPath
+      : path.join(/*turbopackIgnore: true*/ process.cwd(), credPath);
+    return existsSync(resolved);
+  } catch {
+    return false;
+  }
 }
 
 function loadServiceAccount(): Record<string, unknown> | null {
@@ -25,7 +41,9 @@ function loadServiceAccount(): Record<string, unknown> | null {
     process.env.FIREBASE_SERVICE_ACCOUNT_PATH || process.env.GOOGLE_APPLICATION_CREDENTIALS;
   if (!credPath) return null;
 
-  const resolved = path.isAbsolute(credPath) ? credPath : path.join(process.cwd(), credPath);
+  const resolved = path.isAbsolute(credPath)
+    ? credPath
+    : path.join(/*turbopackIgnore: true*/ process.cwd(), credPath);
   if (!existsSync(resolved)) return null;
 
   try {
