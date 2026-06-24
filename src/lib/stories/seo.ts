@@ -1,5 +1,6 @@
 import type { ContentStory } from './types';
 import { getCanonicalUrl, getStoryMetaDescription, getStoryMetaTitle } from './utils';
+import { DEFAULT_LOGO } from '@/lib/public-assets';
 
 export function buildArticleJsonLd(story: ContentStory) {
   const url = getCanonicalUrl(story.slug);
@@ -22,7 +23,7 @@ export function buildArticleJsonLd(story: ContentStory) {
       name: 'FLYBIT Dynamics',
       logo: {
         '@type': 'ImageObject',
-        url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://www.flybitdynamics.com'}/logo.png`,
+        url: DEFAULT_LOGO,
       },
     },
     mainEntityOfPage: { '@type': 'WebPage', '@id': url },

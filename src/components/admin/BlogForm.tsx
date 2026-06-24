@@ -6,6 +6,7 @@ import type { BlogPost, BlogPostInput, BlogPostFaq } from '@/lib/blogs/types';
 import { slugify, calculateReadingTime } from '@/lib/stories/utils';
 import { createBlog, updateBlog, uploadBlogFile } from '@/lib/firebase/blogs-admin';
 import UploadField from './UploadField';
+import { DEFAULT_LOGO } from '@/lib/public-assets';
 
 interface BlogFormProps {
   initial?: BlogPost;
@@ -19,7 +20,7 @@ const emptyForm = (): BlogPostInput => ({
   content: '<p></p>',
   date: new Date().toISOString().split('T')[0],
   author: 'FLYBIT Team',
-  authorImage: '/logo.png',
+  authorImage: DEFAULT_LOGO,
   authorBio: 'FLYBIT Dynamics team of drone show pilots, engineers, and creators.',
   category: 'Drone Shows',
   tags: [],
@@ -41,7 +42,7 @@ export default function BlogForm({ initial, onSaved }: BlogFormProps) {
           content: initial.content,
           date: initial.date,
           author: initial.author,
-          authorImage: initial.authorImage || '/logo.png',
+          authorImage: initial.authorImage || DEFAULT_LOGO,
           authorBio: initial.authorBio || '',
           category: initial.category,
           tags: initial.tags,

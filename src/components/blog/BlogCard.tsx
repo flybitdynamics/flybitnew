@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import type { BlogPost } from '@/lib/blogs/types';
 import { formatStoryDate } from '@/lib/stories/utils';
+import { DEFAULT_BLOG_IMAGE } from '@/lib/public-assets';
 
 interface BlogCardProps {
   blog: BlogPost;
@@ -21,7 +22,7 @@ export default function BlogCard({ blog }: BlogCardProps) {
       {/* Card Image Container */}
       <div className="relative aspect-[16/9] w-full overflow-hidden bg-dark-2">
         <Image
-          src={blog.image || '/about_hero.png'}
+          src={blog.image || DEFAULT_BLOG_IMAGE}
           alt={blog.title}
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"

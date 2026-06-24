@@ -2,6 +2,7 @@
 
 import React from 'react';
 import FadeUp from './FadeUp';
+import { publicAsset } from '@/lib/public-assets';
 
 interface AboutProps {
   onOpenModal: (title: string, description: string) => void;
@@ -32,7 +33,7 @@ export default function About({ onOpenModal }: AboutProps) {
 
           <div className="about-inner absolute inset-[18px] border border-gold/[0.06] rounded-[2px] bg-dark-3 overflow-hidden">
             <img
-              src="/past_shows/corporate/wildmind_zeel_2026_03_14_12_16_31.jpg"
+              src={publicAsset('/past_shows/corporate/wildmind_zeel_2026_03_14_12_16_31.jpg')}
               alt="Globe drone formation at Science City — FLYBIT Dynamics"
               className="w-full h-full object-cover object-[center_28%] block"
             />

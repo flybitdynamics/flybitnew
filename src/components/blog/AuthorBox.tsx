@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { DEFAULT_LOGO } from '@/lib/public-assets';
 
 interface AuthorBoxProps {
   author: string;
@@ -13,7 +14,7 @@ export default function AuthorBox({ author, authorImage, authorBio }: AuthorBoxP
     <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5 p-6 bg-dark-3 border border-border/80 rounded-[3px] mt-12">
       <div className="relative w-16 h-16 rounded-full overflow-hidden shrink-0 border border-gold/30 bg-dark-2">
         <Image
-          src={authorImage || '/logo.png'}
+          src={authorImage || DEFAULT_LOGO}
           alt={author}
           fill
           sizes="64px"

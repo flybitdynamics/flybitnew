@@ -1,3 +1,5 @@
+import { mapPublicAssets } from '@/lib/public-assets';
+
 const social = [
   '/services/Social events/Image 01.png',
   '/services/Social events/wildmind_jagrutipanchal9624_2026_04_16_14_57_58.png',
@@ -109,19 +111,20 @@ const custom = [
 ];
 
 export const SERVICE_IMAGES = {
-  social,
-  weddings,
-  corporate,
-  government,
-  launch,
-  spiritual,
-  sports,
-  custom,
+  social: mapPublicAssets(social),
+  weddings: mapPublicAssets(weddings),
+  corporate: mapPublicAssets(corporate),
+  government: mapPublicAssets(government),
+  launch: mapPublicAssets(launch),
+  spiritual: mapPublicAssets(spiritual),
+  sports: mapPublicAssets(sports),
+  custom: mapPublicAssets(custom),
 } as const;
 
 export type ServiceImageCategory = keyof typeof SERVICE_IMAGES;
 
 export function encodeServiceImagePath(path: string): string {
+  if (/^https?:\/\//i.test(path)) return path;
   return path
     .split('/')
     .map((segment, index) => (index === 0 ? segment : encodeURIComponent(segment)))

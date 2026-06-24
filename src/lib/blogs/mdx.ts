@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import type { BlogPost } from './types';
 import { calculateReadingTime } from '../stories/utils';
+import { DEFAULT_BLOG_IMAGE, DEFAULT_LOGO } from '@/lib/public-assets';
 
 // Helper to parse YAML-like frontmatter
 export function parseFrontmatter(fileContent: string) {
@@ -232,11 +233,11 @@ export function getStaticBlogs(): BlogPost[] {
         content: contentHtml,
         date: dateStr,
         author: frontmatter.author || 'FLYBIT Dynamics',
-        authorImage: frontmatter.authorImage || '/logo.png',
+        authorImage: frontmatter.authorImage || DEFAULT_LOGO,
         authorBio: frontmatter.authorBio || 'FLYBIT Dynamics team.',
         category: frontmatter.category || 'Technology',
         tags: frontmatter.tags || [],
-        image: frontmatter.image || '/about_hero.png',
+        image: frontmatter.image || DEFAULT_BLOG_IMAGE,
         featured: !!frontmatter.featured,
         published: true,
         status: 'published',

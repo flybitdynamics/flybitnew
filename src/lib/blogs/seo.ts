@@ -1,4 +1,5 @@
 import type { BlogPost } from './types';
+import { DEFAULT_BLOG_IMAGE, DEFAULT_LOGO } from '@/lib/public-assets';
 
 const BASE = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.flybitdynamics.com';
 
@@ -8,7 +9,7 @@ export function getBlogCanonicalUrl(slug: string): string {
 
 export function buildBlogPostingJsonLd(blog: BlogPost) {
   const url = getBlogCanonicalUrl(blog.slug);
-  const image = blog.image || `${BASE}/about_hero.png`;
+  const image = blog.image || DEFAULT_BLOG_IMAGE;
 
   return {
     '@context': 'https://schema.org',
@@ -27,7 +28,7 @@ export function buildBlogPostingJsonLd(blog: BlogPost) {
       name: 'FLYBIT Dynamics',
       logo: {
         '@type': 'ImageObject',
-        url: `${BASE}/logo.png`,
+        url: DEFAULT_LOGO,
       },
     },
     mainEntityOfPage: { '@type': 'WebPage', '@id': url },
@@ -75,7 +76,7 @@ export function buildOrganizationJsonLd() {
     '@type': 'Organization',
     name: 'FLYBIT Dynamics',
     url: BASE,
-    logo: `${BASE}/logo.png`,
+    logo: DEFAULT_LOGO,
     sameAs: [
       'https://twitter.com/flybitdynamics',
       'https://www.linkedin.com/company/flybitdynamics',

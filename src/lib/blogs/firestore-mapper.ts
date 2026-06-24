@@ -1,5 +1,6 @@
 import type { Timestamp } from 'firebase/firestore';
 import type { BlogPost, BlogPostFaq, BlogStatus } from './types';
+import { DEFAULT_BLOG_IMAGE, DEFAULT_LOGO } from '@/lib/public-assets';
 
 function toIso(value: unknown): string {
   if (!value) return new Date().toISOString();
@@ -26,11 +27,11 @@ export function mapFirestoreDoc(id: string, data: Record<string, unknown>): Blog
             : new Date().toISOString().split('T')[0])
     ),
     author: String(data.author || 'Admin'),
-    authorImage: String(data.authorImage || '/logo.png'),
+    authorImage: String(data.authorImage || DEFAULT_LOGO),
     authorBio: String(data.authorBio || ''),
     category: String(data.category || 'Technology'),
     tags: Array.isArray(data.tags) ? (data.tags as string[]) : [],
-    image: String(data.image || '/about_hero.png'),
+    image: String(data.image || DEFAULT_BLOG_IMAGE),
     featured: Boolean(data.featured),
     published: Boolean(data.published),
     status: (data.status === 'draft' ? 'draft' : 'published') as BlogStatus,
@@ -50,11 +51,11 @@ export function blogToFirestore(blog: Partial<BlogPost>): Record<string, unknown
     content: blog.content ?? '',
     date: blog.date ?? new Date().toISOString().split('T')[0],
     author: blog.author ?? 'Admin',
-    authorImage: blog.authorImage ?? '/logo.png',
+    authorImage: blog.authorImage ?? DEFAULT_LOGO,
     authorBio: blog.authorBio ?? '',
     category: blog.category ?? 'Technology',
     tags: blog.tags ?? [],
-    image: blog.image ?? '/about_hero.png',
+    image: blog.image ?? DEFAULT_BLOG_IMAGE,
     featured: blog.featured ?? false,
     published: blog.published ?? false,
     status: blog.status ?? 'draft',

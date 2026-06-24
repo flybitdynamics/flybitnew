@@ -2,12 +2,13 @@
 
 import React, { useState, useRef } from 'react';
 import FadeUp from './FadeUp';
+import { publicAsset } from '@/lib/public-assets';
 
 interface ShowcaseProps {
   onOpenModal: (title: string, description: string) => void;
 }
 
-const SHOWS = [
+const SHOWS_RAW = [
   // Mixed selection at the top to make "All Shows" look diverse immediately
   { tag: 'Wedding', cat: 'wedding', name: 'Grand Sky Finale', src: '/past_shows/wedding images/ChatGPT Image May 29, 2026, 10_21_15 AM.png' },
   { tag: 'National Event', cat: 'government', name: 'Republic Day', src: '/past_shows/Gov. & national/wildmind_zeel_2026_03_14_12_16_20.jpg' },
@@ -65,6 +66,8 @@ const SHOWS = [
   { tag: 'Wedding', cat: 'wedding', name: 'Royal Palace Wedding', src: '/past_shows/wedding images/magnific_cDyDnho0eP.png' },
   { tag: 'Wedding', cat: 'wedding', name: 'Wedding Show', src: '/past_shows/wedding images/magnific_swf7k5sl8e.png' },
 ];
+
+const SHOWS = SHOWS_RAW.map((show) => ({ ...show, src: publicAsset(show.src) }));
 
 const TABS = [
   { label: 'All Shows', cat: 'all' },

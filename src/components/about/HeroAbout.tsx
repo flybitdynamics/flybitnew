@@ -2,6 +2,7 @@
 
 import React, { useEffect } from 'react';
 import Link from 'next/link';
+import { publicAsset } from '@/lib/public-assets';
 
 export default function HeroAbout() {
   useEffect(() => {
@@ -112,7 +113,7 @@ export default function HeroAbout() {
             <div className="absolute bottom-[-1px] right-[-1px] w-4 h-4 border-b-2 border-r-2 border-gold z-10" />
             
             <img 
-              src="/past_shows/corporate/wildmind_zeel_2026_03_14_12_16_13.jpg" 
+              src={publicAsset('/past_shows/corporate/wildmind_zeel_2026_03_14_12_16_13.jpg')} 
               alt="Indian flag drone formation at Science City — FLYBIT Dynamics" 
               className="w-full aspect-[4/3] md:aspect-[5/4] object-cover object-[center_28%] block"
             />

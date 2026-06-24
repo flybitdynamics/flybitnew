@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import FadeUp from './FadeUp';
+import { publicAsset } from '@/lib/public-assets';
 
 interface PricingProps {
   onOpenModal: (title: string, description: string) => void;
@@ -35,15 +36,15 @@ const NOTES: Record<PicType, string[]> = {
 };
 
 const LOGO_IMAGES: Record<number, string> = {
-  100: '/Transperent_pricing/logo/100.png',
-  200: '/Transperent_pricing/logo/200.png',
-  300: '/Transperent_pricing/logo/300.png',
+  100: publicAsset('/Transperent_pricing/logo/100.png'),
+  200: publicAsset('/Transperent_pricing/logo/200.png'),
+  300: publicAsset('/Transperent_pricing/logo/300.png'),
 };
 
 const DESIGN_IMAGES: Record<number, string> = {
-  100: '/Transperent_pricing/Design/flybit_100.png',
-  200: '/Transperent_pricing/Design/flybit_200.png',
-  300: '/Transperent_pricing/Design/flybit_300.png',
+  100: publicAsset('/Transperent_pricing/Design/flybit_100.png'),
+  200: publicAsset('/Transperent_pricing/Design/flybit_200.png'),
+  300: publicAsset('/Transperent_pricing/Design/flybit_300.png'),
 };
 
 const PRICING_IMAGES: Partial<Record<PicType, Record<number, string>>> = {

@@ -14,6 +14,7 @@ import FaqSection from './FaqSection';
 import BlogCard from './BlogCard';
 import type { BlogPost } from '@/lib/blogs/types';
 import { formatStoryDate } from '@/lib/stories/utils';
+import { DEFAULT_BLOG_IMAGE } from '@/lib/public-assets';
 
 interface BlogPageViewProps {
   blog: BlogPost;
@@ -73,7 +74,7 @@ export default function BlogPageView({ blog, relatedBlogs }: BlogPageViewProps) 
         {/* Featured Image */}
         <div className="relative aspect-[21/9] w-full bg-dark-2 border border-border/60 rounded-[3px] overflow-hidden mb-12">
           <Image
-            src={blog.image || '/about_hero.png'}
+            src={blog.image || DEFAULT_BLOG_IMAGE}
             alt={blog.title}
             fill
             sizes="100vw"

@@ -1,8 +1,9 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { mapPublicAssets } from '@/lib/public-assets';
 
-const HERO_IMAGES = [
+const HERO_IMAGES = mapPublicAssets([
   '/hero_section_images/magnific_hyperrealistic-drone-show_DBNJbakpcl.png',
   '/hero_section_images/magnific_hyperrealistic-drone-show_hEYZ7NRvqL.png',
   '/hero_section_images/magnific_realistic-drone-light-sho_hEYZ1mkvqL.png',
@@ -10,7 +11,7 @@ const HERO_IMAGES = [
   '/hero_section_images/magnific_ultrarealistic-drone-show_8vA6HoAIrU.png',
   '/hero_section_images/ChatGPT Image Jun 10, 2026, 04_40_14 PM (2).png',
   '/hero_section_images/ChatGPT Image Jun 10, 2026, 04_44_35 PM.png',
-];
+]);
 
 interface HeroProps {
   onOpenModal: (title: string, description: string) => void;

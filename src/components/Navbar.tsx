@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { DEFAULT_LOGO } from '@/lib/public-assets';
 
 interface NavbarProps {
   onOpenModal?: (title: string, description: string) => void;
@@ -70,7 +71,7 @@ export default function Navbar({ onOpenModal }: NavbarProps) {
       >
         <Link href="/" className="logo-img-link flex items-center no-underline">
           <img
-            src="/logo.png"
+            src={DEFAULT_LOGO}
             alt="FLYBIT Dynamics"
             className="nav-logo-img"
             style={{ height: '44px', width: 'auto', objectFit: 'contain', display: 'block' }}
