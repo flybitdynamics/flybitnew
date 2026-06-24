@@ -32,7 +32,7 @@ export default function Process({ onOpenModal }: ProcessProps) {
     },
     {
       num: '04',
-      title: 'Rehearsal',
+      title: 'Planning and Readiness',
       desc: 'Our team arrives early for full on-site calibration, formation tests, and a complete dry run.',
       modalTitle: 'Step 4: On-Site Rehearsal',
       modalDesc: 'Our crew arrives 6–12 hours early for a full rehearsal — drone calibration, formation testing, and a complete dry run of the show.',

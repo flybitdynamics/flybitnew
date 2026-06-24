@@ -21,7 +21,7 @@ export default function IntroStats() {
           </p>
           
           <p className="text-[0.9rem] text-text-muted leading-[1.95] font-sans">
-            Our fleet of 1000+ GPS-synchronized drones can paint any image, tell any story, and celebrate any milestone — 150 metres above the earth.
+            Our fleet of 250+ GPS-synchronized drones can paint any image, tell any story, and celebrate any milestone — 150 metres above the earth.
           </p>
         </div>
 
@@ -31,7 +31,7 @@ export default function IntroStats() {
           {/* Stat 1 */}
           <div className="p-8 border-r border-b border-border/30 hover:bg-white/5 transition-colors duration-300">
             <div className="font-bebas text-[2.8rem] text-gold leading-none tracking-[0.04em]">
-              1000+
+              250+
             </div>
             <div className="text-[0.68rem] tracking-[0.18em] uppercase text-text-muted mt-2">
               Drones in Fleet
@@ -39,14 +39,14 @@ export default function IntroStats() {
           </div>
 
           {/* Stat 2 */}
-          <div className="p-8 border-b border-border/30 hover:bg-white/5 transition-colors duration-300">
+          {/* <div className="p-8 border-b border-border/30 hover:bg-white/5 transition-colors duration-300">
             <div className="font-bebas text-[2.8rem] text-gold leading-none tracking-[0.04em]">
               150+
             </div>
             <div className="text-[0.68rem] tracking-[0.18em] uppercase text-text-muted mt-2">
               Shows Delivered
             </div>
-          </div>
+          </div> */}
 
           {/* Stat 3 */}
           <div className="p-8 border-r border-border/30 hover:bg-white/5 transition-colors duration-300">

@@ -10,7 +10,7 @@ interface PricingProps {
 const DRONE_STEPS = [100, 200, 300];
 const STEP_PCTS = [0, 50, 100];
 
-type PicType = 'logo' | 'numbers' | 'design';
+type PicType = 'logo' | 'design';
 
 interface PriceMap {
   [key: number]: number;
@@ -18,7 +18,6 @@ interface PriceMap {
 
 const PRICES: Record<PicType, PriceMap> = {
   logo: { 100: 250000, 200: 400000, 300: 520000 },
-  numbers: { 100: 180000, 200: 280000, 300: 400000 },
   design: { 100: 350000, 200: 550000, 300: 700000 },
 };
 
@@ -27,11 +26,6 @@ const NOTES: Record<PicType, string[]> = {
     '100 drones · Logo formation · Up to 4 min',
     '200 drones · Logo formation · Up to 5 min',
     '300 drones · Logo formation · Up to 6 min',
-  ],
-  numbers: [
-    '100 drones · Numbers formation · Up to 4 min',
-    '200 drones · Numbers formation · Up to 5 min',
-    '300 drones · Numbers formation · Up to 6 min',
   ],
   design: [
     '100 drones · Design formation · Up to 4 min',
@@ -52,49 +46,12 @@ const DESIGN_IMAGES: Record<number, string> = {
   300: '/Transperent_pricing/Design/flybit_300.png',
 };
 
-const NUMBERS_IMAGES: Record<number, string> = {
-  100: '/Transperent_pricing/number/100.png',
-  200: '/Transperent_pricing/number/200.png',
-  300: '/Transperent_pricing/number/300.png',
-};
-
 const PRICING_IMAGES: Partial<Record<PicType, Record<number, string>>> = {
   logo: LOGO_IMAGES,
-  numbers: NUMBERS_IMAGES,
   design: DESIGN_IMAGES,
 };
 
 
-
-// Pure functions for generating coordinate dots
-function getDigitPoints(digit: string, cx: number, cy: number, scale: number, density: number) {
-  const segs: Record<string, number[][]> = {
-    '0': [[1,0],[2,0],[1,6],[2,6],[0,1],[0,2],[0,3],[0,4],[0,5],[3,1],[3,2],[3,3],[3,4],[3,5]],
-    '1': [[2,0],[2,1],[2,2],[2,3],[2,4],[2,5],[2,6],[1,1]],
-    '2': [[0,0],[1,0],[2,0],[3,0],[3,1],[3,2],[2,3],[1,3],[0,3],[0,4],[0,5],[0,6],[1,6],[2,6],[3,6]],
-    '3': [[0,0],[1,0],[2,0],[3,0],[3,1],[3,2],[3,3],[2,3],[3,4],[3,5],[3,6],[2,6],[1,6],[0,6]],
-    '4': [[0,0],[0,1],[0,2],[0,3],[1,3],[2,3],[3,3],[3,0],[3,1],[3,2],[3,4],[3,5],[3,6]],
-    '5': [[0,0],[1,0],[2,0],[3,0],[0,1],[0,2],[0,3],[1,3],[2,3],[3,4],[3,5],[0,6],[1,6],[2,6],[3,6]],
-    '6': [[0,0],[1,0],[2,0],[0,1],[0,2],[0,3],[1,3],[2,3],[0,4],[0,5],[3,4],[3,5],[0,6],[1,6],[2,6]],
-    '7': [[0,0],[1,0],[2,0],[3,0],[3,1],[3,2],[2,3],[2,4],[1,5],[1,6]],
-    '8': [[1,0],[2,0],[0,1],[3,1],[0,2],[3,2],[1,3],[2,3],[0,4],[3,4],[0,5],[3,5],[1,6],[2,6]],
-    '9': [[1,0],[2,0],[0,1],[3,1],[0,2],[3,2],[1,3],[2,3],[3,4],[3,5],[1,6],[2,6]],
-  };
-  const grid = segs[digit] || segs['0'];
-  const pts: { x: number; y: number }[] = [];
-  const cellW = scale / 3;
-  const cellH = scale / 6;
-  const offX = cx - scale / 2;
-  const offY = cy - scale / 2;
-  grid.forEach(([gx, gy]) => {
-    for (let d = 0; d < density; d++) {
-      const jx = (Math.random() - 0.5) * cellW * 0.9;
-      const jy = (Math.random() - 0.5) * cellH * 0.9;
-      pts.push({ x: offX + gx * cellW + cellW / 2 + jx, y: offY + gy * cellH + cellH / 2 + jy });
-    }
-  });
-  return pts;
-}
 
 interface ConstellationPoint {
   x: number;
@@ -107,23 +64,7 @@ function getFormationPoints(type: PicType, count: number, W: number, H: number):
   const cx = W / 2, cy = H / 2;
   const pts: ConstellationPoint[] = [];
 
-  if (type === 'numbers') {
-    const labels = ['1', '0', '0'];
-    if (count >= 200) labels[0] = '2';
-    if (count >= 300) labels[0] = '3';
-
-    const numDigs = labels.length;
-    const spacing = Math.min(W / (numDigs + 1) * 0.9, 120);
-    const startX = cx - (numDigs - 1) * spacing / 2;
-    const density = Math.max(6, Math.min(22, Math.floor(count / numDigs / 18)));
-
-    labels.forEach((digit, di) => {
-      const ox = startX + di * spacing;
-      const digitPts = getDigitPoints(digit, ox, cy, spacing * 0.38, density);
-      const rgb = di % 2 === 0 ? '201,168,76' : '240,208,128';
-      digitPts.forEach((p) => pts.push({ ...p, rgb, r: 2.5 }));
-    });
-  } else if (type === 'logo') {
+  if (type === 'logo') {
     const R = Math.min(W, H) * 0.32, r2 = R * 0.55;
     const outerN = Math.floor(count * 0.55);
     const innerN = count - outerN;
@@ -157,7 +98,7 @@ function getFormationPoints(type: PicType, count: number, W: number, H: number):
 }
 
 export default function Pricing({ onOpenModal }: PricingProps) {
-  const [picType, setPicType] = useState<PicType>('numbers');
+  const [picType, setPicType] = useState<PicType>('logo');
   const [stepIdx, setStepIdx] = useState(1); // 200 default
   const [isDragging, setIsDragging] = useState(false);
 
@@ -320,7 +261,7 @@ export default function Pricing({ onOpenModal }: PricingProps) {
             Picture Type
           </div>
           <div className="pic-tabs flex gap-8 mb-10 border-b border-border/10 pb-2">
-            {(['logo', 'numbers', 'design'] as PicType[]).map((type) => (
+            {(['logo', 'design'] as PicType[]).map((type) => (
               <button
                 key={type}
                 onClick={() => setPicType(type)}
@@ -338,41 +279,43 @@ export default function Pricing({ onOpenModal }: PricingProps) {
             ))}
           </div>
 
-          {/* Drone Count Markers */}
-          <div className="ctrl-label text-[0.6rem] tracking-[0.35em] uppercase text-text-dim mb-5">
-            Count of Drones
-          </div>
-          <div className="count-markers flex justify-between mb-3 text-[0.78rem]">
-            {DRONE_STEPS.map((step, idx) => (
-              <span
-                key={step}
-                className={`transition-colors duration-200 ${
-                  stepIdx === idx ? 'text-gold font-medium' : 'text-text-dim'
-                }`}
-              >
-                {step}
-              </span>
-            ))}
-          </div>
+          {/* Drone Count Markers & Slider */}
+          <div className="max-w-[360px]">
+            <div className="ctrl-label text-[0.6rem] tracking-[0.35em] uppercase text-text-dim mb-5">
+              Count of Drones
+            </div>
+            <div className="count-markers flex justify-between mb-3 text-[0.78rem]">
+              {DRONE_STEPS.map((step, idx) => (
+                <span
+                  key={step}
+                  className={`transition-colors duration-200 ${
+                    stepIdx === idx ? 'text-gold font-medium' : 'text-text-dim'
+                  }`}
+                >
+                  {step}
+                </span>
+              ))}
+            </div>
 
-          {/* Slider track */}
-          <div
-            ref={trackRef}
-            onMouseDown={handleMouseDown}
-            onTouchStart={handleTouchStart}
-            className="slider-track relative h-1 bg-white/8 rounded-[2px] mb-10 cursor-pointer md:cursor-none select-none"
-          >
+            {/* Slider track */}
             <div
-              className="slider-fill absolute left-0 top-0 h-1 bg-gradient-to-r from-gold-dim to-gold rounded-[2px] pointer-events-none"
-              style={{ width: `${currentPct}%` }}
-            />
-            <div
-              className="slider-thumb absolute top-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-gold rounded-full pointer-events-none select-none"
-              style={{
-                left: `${currentPct}%`,
-                boxShadow: '0 0 0 4px rgba(201, 168, 76, 0.15)',
-              }}
-            />
+              ref={trackRef}
+              onMouseDown={handleMouseDown}
+              onTouchStart={handleTouchStart}
+              className="slider-track relative h-1 bg-white/8 rounded-[2px] mb-10 cursor-pointer md:cursor-none select-none"
+            >
+              <div
+                className="slider-fill absolute left-0 top-0 h-1 bg-gradient-to-r from-gold-dim to-gold rounded-[2px] pointer-events-none"
+                style={{ width: `${currentPct}%` }}
+              />
+              <div
+                className="slider-thumb absolute top-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-gold rounded-full pointer-events-none select-none"
+                style={{
+                  left: `${currentPct}%`,
+                  boxShadow: '0 0 0 4px rgba(201, 168, 76, 0.15)',
+                }}
+              />
+            </div>
           </div>
 
           {/* Price display panel */}

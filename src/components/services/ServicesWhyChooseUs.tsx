@@ -22,7 +22,7 @@ const ADVANTAGES = [
   },
   {
     title: 'Latest Technology',
-    desc: 'Cutting-edge drones with RTK GPS precision, 16M-color RGB LEDs, and encrypted ground-to-drone communication. Millimeter-accurate every time.',
+    desc: 'Cutting-edge drones with RTK GPS precision, RGB LEDs, and encrypted ground-to-drone communication. Millimeter-accurate every time.',
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" className="w-5 h-5 text-gold">
         <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
@@ -49,7 +49,7 @@ const ADVANTAGES = [
   },
   {
     title: 'Pan-India Operations',
-    desc: 'Bases in Mumbai, Delhi, Bangalore, and Ahmedabad — with rapid deployment teams ready to operate anywhere across India within 48 hours.',
+    desc: 'Bases in Mumbai, Delhi, Bangalore, and Ahmedabad — with rapid deployment teams ready to operate anywhere across India.',
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" className="w-5 h-5 text-gold">
         <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>

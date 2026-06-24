@@ -134,7 +134,7 @@ const SERVICE_ITEMS: ServiceItem[] = [
     modalDesc: 'Honor national pride with spectacular displays that celebrate our heritage, values, and achievements on the world stage. A new age of patriotic storytelling.',
     eyebrow: 'Government & National',
     title: 'Government',
-    description: '"A new age of patriotic storytelling." Trusted by state governments for Republic Day, Independence Day, G20 summits, and international events — full VVIP security clearances included.',
+    description: '"A new age of patriotic storytelling." Government and National Events like: Republic Day, Independence Day, G20 summits, and international events — full VVIP security clearances included.',
     pills: [
       'Republic Day celebrations',
       'Independence Day shows',
@@ -161,7 +161,7 @@ const SERVICE_ITEMS: ServiceItem[] = [
     modalDesc: 'Create buzz and excitement for your product launches with countdown displays, 3D reveals, and memorable brand messages. From sky to spotlight — launch like never before.',
     eyebrow: 'Product Launch',
     title: 'Product Launches',
-    description: '"From sky to spotlight — launch like never before." A 500-drone product reveal in the night sky generates press coverage, social virality, and audience awe — all in one unforgettable moment.',
+    description: '"From sky to spotlight — launch like never before." A product reveal through hundreds of drone lights in the night sky generates press coverage, social virality, and audience awe — all in one unforgettable moment.',
     pills: [
       'Countdown sequences',
       '3D product reveals',

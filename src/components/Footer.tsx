@@ -20,7 +20,7 @@ export default function Footer({ onOpenModal }: FooterProps) {
             />
           </a>
           <p className="foot-tagline text-[0.82rem] text-text-muted leading-relaxed mt-5 max-w-[260px]">
-            India's premier drone light show company — illuminating celebrations with technology and artistry since 2019.
+            India's premier drone light show company — illuminating celebrations with technology and artistry.
           </p>
         </div>
 
@@ -149,9 +149,6 @@ export default function Footer({ onOpenModal }: FooterProps) {
               <a href="mailto:info@flybitdynamics.com" className="text-text-muted hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none">
                 info@flybitdynamics.com
               </a>
-            </li>
-            <li className="text-text-muted text-[0.82rem]">
-              Mumbai · Delhi · Bangalore
             </li>
             <li>
               <button

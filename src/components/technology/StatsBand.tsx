@@ -3,10 +3,10 @@ import React from 'react';
 
 const STATS_ITEMS = [
   {
-    num: '500',
+    num: '100',
     unit: '+',
-    label: 'Max Drones Per Show',
-    sub: 'Expandable to 1000+ on request'
+    label: 'Min Drones Per Show',
+    sub: 'Expandable on request'
   },
   {
     num: '±1',
@@ -15,7 +15,7 @@ const STATS_ITEMS = [
     sub: 'RTK GPS correction'
   },
   {
-    num: '20',
+    num: '15',
     unit: 'min',
     label: 'Flight Time Per Show',
     sub: 'Hot-swappable battery system'

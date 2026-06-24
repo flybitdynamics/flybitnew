@@ -4,42 +4,26 @@ import React from 'react';
 const PROCESS_STEPS_TOP = [
   {
     num: '01',
-    title: 'Concept & Storyboarding',
-    time: '21 Days before event',
-    desc: 'We collaborate with you to define the vision, formations, narrative arc, and music sync for your show.'
+    title: 'Discovery & Consultation',
+    desc: 'Understanding your wedding vision, venue, traditions, and expectations.'
   },
   {
     num: '02',
-    title: '3D Animation & Simulation',
-    time: '15 Days before event',
-    desc: 'Our animation team builds a full 3D preview — every formation rendered exactly as it will appear in the sky.'
+    title: 'Concept Design',
+    desc: 'Creating moodboards, visual concepts, and storytelling directions.'
   },
   {
     num: '03',
-    title: 'Flight Path Programming',
-    time: '12 Days before event',
-    desc: 'Every drone\'s path is programmatically generated with RTK-GPS accuracy. Collision avoidance verified at centimeter level.'
-  },
-  {
-    num: '04',
-    title: 'Drone Preparation & Testing',
-    time: '12 Days before event',
-    desc: 'Full fleet calibration, battery tests, LED checks, and formation verification in controlled conditions.'
+    title: 'Animation & Programming',
+    desc: 'Designing aerial formations and synchronizing visuals with music.'
   }
 ];
 
 const PROCESS_STEPS_BOTTOM = [
   {
-    num: '05',
-    title: 'Safety & Permissions',
-    time: '6 Days before event',
-    desc: 'We handle all DGCA approvals, airspace NOCs, police permissions, and venue safety assessments. You don\'t lift a finger.'
-  },
-  {
-    num: '06',
-    title: 'Rehearsals',
-    time: '1–2 Days before event',
-    desc: 'Full on-site dry run with complete formation testing, timing sync, and contingency protocol verification.'
+    num: '04',
+    title: 'Technical Planning',
+    desc: 'Venue analysis, flight planning, and safety management.'
   }
 ];
 
@@ -61,8 +45,8 @@ export default function ServicesProcess() {
           </p>
         </div>
 
-        {/* Steps Grid: Row 1 (Steps 1 to 4) */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[2px] bg-border/20 rounded-[3px] overflow-hidden mb-[2px]">
+        {/* Steps Grid: Row 1 (Steps 1 to 3) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[2px] bg-border/20 rounded-[3px] overflow-hidden mb-[2px]">
           {PROCESS_STEPS_TOP.map((step) => (
             <div
               key={step.num}
@@ -74,12 +58,9 @@ export default function ServicesProcess() {
               <span className="pstep-num font-bebas text-[4rem] text-gold/12 leading-none mb-5 block select-none">
                 {step.num}
               </span>
-              <h3 className="font-cormorant text-[1.3rem] text-text mb-2">
+              <h3 className="font-cormorant text-[1.3rem] text-text mb-4">
                 {step.title}
               </h3>
-              <div className="text-[0.65rem] tracking-[0.2em] uppercase text-gold-dim mb-4 font-sans font-medium">
-                {step.time}
-              </div>
               <p className="text-[0.76rem] text-text-muted leading-[1.75] font-sans">
                 {step.desc}
               </p>
@@ -87,8 +68,8 @@ export default function ServicesProcess() {
           ))}
         </div>
 
-        {/* Steps Grid: Row 2 (Steps 5 to 7) */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[2px] bg-border/20 rounded-[3px] overflow-hidden">
+        {/* Steps Grid: Row 2 (Steps 4 to 5) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-[2px] bg-border/20 rounded-[3px] overflow-hidden">
           {PROCESS_STEPS_BOTTOM.map((step) => (
             <div
               key={step.num}
@@ -100,33 +81,27 @@ export default function ServicesProcess() {
               <span className="pstep-num font-bebas text-[4rem] text-gold/12 leading-none mb-5 block select-none">
                 {step.num}
               </span>
-              <h3 className="font-cormorant text-[1.3rem] text-text mb-2">
+              <h3 className="font-cormorant text-[1.3rem] text-text mb-4">
                 {step.title}
               </h3>
-              <div className="text-[0.65rem] tracking-[0.2em] uppercase text-gold-dim mb-4 font-sans font-medium">
-                {step.time}
-              </div>
               <p className="text-[0.76rem] text-text-muted leading-[1.75] font-sans">
                 {step.desc}
               </p>
             </div>
           ))}
 
-          {/* Highlighted Step 7 (Show Night) */}
+          {/* Highlighted Step 5 (Live Show Execution) */}
           <div className="pstep bg-gold/[0.03] p-10 relative group overflow-hidden transition-all duration-300 hover:bg-gold/[0.05]">
             <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-gold to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
             
             <span className="pstep-num font-bebas text-[4rem] text-gold/40 leading-none mb-5 block select-none">
-              07
+              05
             </span>
-            <h3 className="font-cormorant text-[1.3rem] text-text mb-2">
-              Final Show Execution
+            <h3 className="font-cormorant text-[1.3rem] text-text mb-4">
+              Live Show Execution
             </h3>
-            <div className="text-[0.65rem] tracking-[0.2em] uppercase text-gold mb-4 font-sans font-semibold">
-              Show Night
-            </div>
             <p className="text-[0.76rem] text-text-muted leading-[1.75] font-sans">
-              Your sky comes alive. Our pilots execute with military precision while you enjoy the moment. A night nobody forgets.
+              Seamless execution by our expert drone operations team.
             </p>
           </div>
         </div>
@@ -135,3 +110,4 @@ export default function ServicesProcess() {
     </section>
   );
 }
+

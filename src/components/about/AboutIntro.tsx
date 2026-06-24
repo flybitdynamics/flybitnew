@@ -34,9 +34,9 @@ export default function AboutIntro() {
             <p className="font-cormorant text-[1.6rem] italic font-light text-text leading-[1.65]">
               "At <strong className="text-gold font-normal">FLYBIT DYNAMICS</strong>, we combine cutting-edge drone technology, creative storytelling, and perfect synchronization to turn your event into a spectacle."
             </p>
-            <cite className="text-[0.65rem] tracking-[0.15em] uppercase text-text-dim mt-4 block not-italic">
+            {/* <cite className="text-[0.65rem] tracking-[0.15em] uppercase text-text-dim mt-4 block not-italic">
               — FLYBIT DYNAMICS, AHMEDABAD
-            </cite>
+            </cite> */}
           </div>
           
           <div className="about-pills mt-10 ml-6 md:ml-0">

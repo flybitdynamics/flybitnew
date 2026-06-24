@@ -38,7 +38,7 @@ export default function Services({ onOpenModal }: ServicesProps) {
     {
       num: '03',
       name: 'Festivals & Concerts',
-      desc: 'Music-synchronized drone choreography for Diwali, New Year, music festivals, and sporting events. Scale up to 3,000 drones for massive crowd experiences.',
+      desc: 'Music-synchronized drone choreography for Diwali, New Year, music festivals, and sporting events. Scale up for massive crowd experiences.',
       modalTitle: 'Festival & Concert Shows',
       modalDesc: 'Add a mind-blowing aerial dimension to any festival. Synced to live music with massive 1000+ drone deployments for crowd-scale spectacles.',
       icon: (
@@ -65,7 +65,7 @@ export default function Services({ onOpenModal }: ServicesProps) {
     {
       num: '05',
       name: 'Product Launch Spectacles',
-      desc: 'Reveal your product under 1,000 lights in the sky. A show that generates press coverage, social media virality, and audience awe — all in one night.',
+      desc: 'Reveal your product under 100s of drones lights in the sky. A show that generates press coverage, social media virality, and audience awe — all in one night.',
       modalTitle: 'Product Launch Spectacles',
       modalDesc: "Your product launch is your brand's first impression. An aerial reveal with 500+ drones creates press-worthy moments that generate media coverage worth 10x your investment.",
       icon: (

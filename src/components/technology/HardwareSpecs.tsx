@@ -134,7 +134,7 @@ export default function HardwareSpecs() {
             </p>
             
             <div className="flex flex-col gap-2.5">
-              <div className="flex items-center gap-3 text-[0.76rem] text-text-muted font-sans"><span className="w-1.5 h-1.5 bg-gold rounded-full shrink-0" /> 20+ minutes flight time</div>
+              <div className="flex items-center gap-3 text-[0.76rem] text-text-muted font-sans"><span className="w-1.5 h-1.5 bg-gold rounded-full shrink-0" /> 15 minutes flight time</div>
               <div className="flex items-center gap-3 text-[0.76rem] text-text-muted font-sans"><span className="w-1.5 h-1.5 bg-gold rounded-full shrink-0" /> Smart battery monitoring</div>
               <div className="flex items-center gap-3 text-[0.76rem] text-text-muted font-sans"><span className="w-1.5 h-1.5 bg-gold rounded-full shrink-0" /> Hot-swappable modular design</div>
               <div className="flex items-center gap-3 text-[0.76rem] text-text-muted font-sans"><span className="w-1.5 h-1.5 bg-gold rounded-full shrink-0" /> Low-voltage auto-return</div>
@@ -157,13 +157,12 @@ export default function HardwareSpecs() {
               </div>
               
               <div className="text-[0.58rem] tracking-[0.3em] uppercase text-gold-dim mb-2 font-sans font-medium">Component 05</div>
-              <h3 className="font-cormorant text-[1.7rem] text-text mb-4">16M-Color RGB LED System</h3>
+              <h3 className="font-cormorant text-[1.7rem] text-text mb-4">RGB Color LED System</h3>
               <p className="text-[0.82rem] text-text-muted leading-[1.9] mb-8 font-sans max-w-[420px]">
-                Each drone carries a high-intensity LED system capable of rendering 16 million distinct colors with sub-frame precision — enabling smooth color transitions, complex gradients, and lifelike imagery at altitude.
+                Each drone carries a high-intensity LED system capable of rendering distinct colors with sub-frame precision — enabling smooth color transitions, complex gradients, and lifelike imagery at altitude.
               </p>
               
               <div className="flex flex-col gap-2.5">
-                <div className="flex items-center gap-3 text-[0.76rem] text-text-muted font-sans"><span className="w-1.5 h-1.5 bg-gold rounded-full shrink-0" /> 16,777,216 color combinations</div>
                 <div className="flex items-center gap-3 text-[0.76rem] text-text-muted font-sans"><span className="w-1.5 h-1.5 bg-gold rounded-full shrink-0" /> Visible from 2km distance</div>
                 <div className="flex items-center gap-3 text-[0.76rem] text-text-muted font-sans"><span className="w-1.5 h-1.5 bg-gold rounded-full shrink-0" /> Frame-synchronised color switching</div>
                 <div className="flex items-center gap-3 text-[0.76rem] text-text-muted font-sans"><span className="w-1.5 h-1.5 bg-gold rounded-full shrink-0" /> Weather-rated housing</div>
