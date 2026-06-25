@@ -1,25 +1,6 @@
 'use client';
 import React from 'react';
 
-const OFFICES = [
-  {
-    tag: 'Head Office',
-    city: 'Ahmedabad',
-    addr: '511, Satyamev Eminence, Science City Road, Sola, Ahmedabad 380060',
-    link: 'https://maps.google.com/?q=Satyamev+Eminence+Science+City+Ahmedabad',
-    badge: 'Get Directions →',
-    isRapid: false
-  },
-  {
-    tag: 'Branch Office',
-    city: 'Jaipur',
-    addr: '82 B, Gopal Nagar-A, Gopalpura Bypass Rd, Jaipur 302018',
-    link: 'https://maps.google.com/?q=Gopal+Nagar+Gopalpura+Bypass+Jaipur',
-    badge: 'Get Directions →',
-    isRapid: false
-  }
-];
-
 export default function MapSection() {
   return (
     <section id="map-section" className="bg-black py-16 px-6 md:px-20 border-t border-border/40">
@@ -39,46 +20,6 @@ export default function MapSection() {
           <p className="sec-body text-[0.9rem] text-text-muted leading-[1.95] font-sans">
             Located in Ahmedabad, our studio is equipped with the latest drone technology and testing facilities. Our operations span pan-India with deployment teams ready within 48 hours.
           </p>
-        </div>
-
-        {/* Office Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-[2px] bg-border/20 rounded-[3px] overflow-hidden mb-16 fade-up">
-          {OFFICES.map((office, idx) => (
-            <div 
-              key={idx}
-              className="office-card p-10 md:p-12 relative overflow-hidden transition-all duration-300 group cursor-default bg-dark"
-            >
-              {/* Animated bottom slide border */}
-              <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-gold to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
-              
-              <div className="office-tag text-[0.58rem] tracking-[0.3em] uppercase text-gold-dim mb-2.5 font-sans">
-                {office.tag}
-              </div>
-              
-              <h3 className="office-city font-cormorant text-[1.6rem] text-text mb-3">
-                {office.city}
-              </h3>
-              
-              <p className="office-addr text-[0.8rem] text-text-muted leading-[1.8] mb-6 font-sans">
-                {office.addr}
-              </p>
-
-              {office.isRapid ? (
-                <span className="office-badge inline-block text-[0.6rem] tracking-[0.2em] uppercase px-3.5 py-1 border border-gold/20 text-gold-dim rounded-[2px] font-sans">
-                  {office.badge}
-                </span>
-              ) : (
-                <a 
-                  href={office.link} 
-                  target="_blank" 
-                  rel="noreferrer"
-                  className="office-badge inline-block text-[0.6rem] tracking-[0.2em] uppercase px-3.5 py-1 border border-gold/20 hover:border-gold hover:text-gold text-gold-dim rounded-[2px] transition-all duration-300 font-sans cursor-none"
-                >
-                  {office.badge}
-                </a>
-              )}
-            </div>
-          ))}
         </div>
 
         {/* Gray iframe Map embed */}

@@ -35,12 +35,12 @@ export default function TechnologyCta({ onOpenModal }: TechnologyCtaProps) {
         </p>
 
         <div className="flex gap-4 justify-center flex-wrap">
-          <button
+          {/* <button
             onClick={() => onOpenModal('Technical Partnership', 'Interested in our technology or a technical partnership? Share your details and our team will connect with you.')}
             className="bg-gold hover:bg-gold-light text-black font-semibold px-8 py-3.5 text-[0.72rem] tracking-[0.18em] uppercase rounded-[2px] transition-all duration-300 hover:-translate-y-0.5 block cursor-none border-none text-center"
           >
             Technical Partnership
-          </button>
+          </button> */}
           
           <button
             onClick={() => onOpenModal('Book a Show', 'Tell us about your event and we\'ll design the perfect aerial spectacle — anywhere in India.')}
@@ -51,7 +51,7 @@ export default function TechnologyCta({ onOpenModal }: TechnologyCtaProps) {
         </div>
 
         <p className="mt-10 text-[0.68rem] text-text-dim tracking-[0.12em] font-sans">
-          Available Pan-India · info@flybitdynamics.com · +91 99798 50863
+          Available Pan-India · info@flybitdynamics.com 
         </p>
       </div>
     </section>

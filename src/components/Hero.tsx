@@ -49,7 +49,7 @@ export default function Hero({ onOpenModal }: HeroProps) {
   return (
     <section
       id="hero"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-black"
+      className="relative min-h-screen flex items-center overflow-hidden bg-black"
     >
       {/* Background Image Slider — smaller frame on mobile only */}
       <div className="absolute left-1/2 -translate-x-1/2 top-20 w-[88%] max-w-[400px] h-[36vh] md:inset-0 md:left-0 md:top-0 md:translate-x-0 md:w-full md:max-w-none md:h-full pointer-events-none opacity-40 overflow-hidden">
@@ -209,20 +209,19 @@ export default function Hero({ onOpenModal }: HeroProps) {
       </svg>
 
       {/* Hero Content */}
-      <div className="relative z-10 text-center px-8 max-w-[900px] select-none">
-        <div className="text-[0.65rem] tracking-[0.4em] uppercase text-gold mb-10 flex items-center justify-center gap-5 font-sans">
-          <span className="w-[50px] h-[1px] bg-gradient-to-r from-transparent to-gold-dim" />
+      <div className="relative z-10 text-left px-6 md:px-20 max-w-[1440px] w-full mx-auto select-none">
+        <div className="text-[0.65rem] tracking-[0.4em] uppercase text-gold mb-10 flex items-center justify-start gap-4 font-sans">
+          <span className="w-10 h-[1px] bg-gold-dim" />
           India's Premier Drone Light Show Company
-          <span className="w-[50px] h-[1px] bg-gradient-to-l from-transparent to-gold-dim" />
         </div>
         <h1 className="font-bebas text-[clamp(4.5rem,13vw,12rem)] leading-[0.86] tracking-[0.03em] mb-8">
           <span className="text-gold block">FLYBIT</span>
           <span className="text-text block">DYNAMICS</span>
         </h1>
-        <p className="text-[0.95rem] text-white max-w-[430px] mx-auto mb-14 leading-[1.9] tracking-[0.02em] font-sans">
+        <p className="text-[0.95rem] text-white max-w-[480px] mb-14 leading-[1.9] tracking-[0.02em] font-sans">
           India’s trusted drone show company — delivering unforgettable aerial experiences with 250+ synchronized drones for weddings, corporate events, festivals, and grand celebrations.
         </p>
-        <div className="flex gap-5 justify-center flex-wrap">
+        <div className="flex gap-5 justify-start flex-wrap">
           <button
             onClick={() =>
               onOpenModal(

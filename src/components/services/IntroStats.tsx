@@ -51,7 +51,7 @@ export default function IntroStats() {
           {/* Stat 3 */}
           <div className="p-8 border-r border-border/30 hover:bg-white/5 transition-colors duration-300">
             <div className="font-bebas text-[2.8rem] text-gold leading-none tracking-[0.04em]">
-              8
+              5
             </div>
             <div className="text-[0.68rem] tracking-[0.18em] uppercase text-text-muted mt-2">
               Service Categories

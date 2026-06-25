@@ -12,10 +12,10 @@ export default function Testimonials({ onOpenModal }: TestimonialsProps) {
     {
       stars: '★★★★★',
       text: 'The FLYBIT show at our wedding was beyond anything we imagined. Seeing our initials written in the sky brought every guest to tears. Absolutely magical.',
-      name: 'Priya & Vikram Sharma',
-      role: 'Wedding — Mumbai, 2024',
-      modalTitle: 'Priya & Vikram Sharma',
-      modalDesc: 'Seeing our initials written across the Mumbai skyline on our wedding night was indescribable. Every guest was moved to tears. FLYBIT delivered what no other company could.',
+      name: 'Het & Rucha',
+      role: 'Wedding — Ahmedabad, 2026',
+      modalTitle: 'Het & Rucha',
+      modalDesc: 'Seeing our initials written across the Ahmedabad skyline on our wedding night was indescribable. Every guest was moved to tears. FLYBIT delivered what no other company could.',
     },
     {
       stars: '★★★★★',

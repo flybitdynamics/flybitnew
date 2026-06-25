@@ -15,7 +15,7 @@ const CATEGORIES = [
   { id: 'government', label: 'Government' },
   { id: 'launch', label: 'Product Launch' },
   { id: 'spiritual', label: 'Spiritual' },
-  { id: 'sports', label: 'Sports' },
+  { id: 'sports', label: 'Sports & Entertainment' },
 ];
 
 type ServiceItem = {

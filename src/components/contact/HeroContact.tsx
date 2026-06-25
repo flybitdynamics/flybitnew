@@ -41,7 +41,7 @@ export default function HeroContact() {
           </h1>
           
           <p className="hero-sub text-[0.95rem] text-text-muted leading-[1.9] max-w-[480px] font-sans">
-            Ready to create an unforgettable experience? Tell us your vision and we'll make it happen in the night sky — from 200 to 1000 drones, anywhere in India.
+            Ready to create an unforgettable experience? Tell us your vision and we'll make it happen in the night sky — with 100s of drones, anywhere in India.
           </p>
         </div>
 

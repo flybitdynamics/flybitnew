@@ -1,5 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 
 export default function Faq() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
@@ -53,7 +54,7 @@ export default function Faq() {
         <h2 className="sec-title">Typical Client <em>Questions</em></h2>
         <p className="sec-body">These are the questions most clients ask before moving ahead. If yours isn't here, reach out — we answer within 24 hours.</p>
         <div style={{ marginTop: '2.5rem' }}>
-          <a href="#contact" className="btn-g">Ask Us Directly →</a>
+          <Link href="/contact" className="btn-g">Ask Us Directly →</Link>
         </div>
       </div>
       <div className="fr">

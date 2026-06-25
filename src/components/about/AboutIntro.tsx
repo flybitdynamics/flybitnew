@@ -72,12 +72,12 @@ export default function AboutIntro() {
             Our clients span Social Events, Corporate Launches, Government Ceremonies, Spiritual Gatherings, and Sports — each show a bespoke, one-of-a-kind aerial experience built entirely around your vision.
           </p>
           
-          <Link
+          {/* <Link
             href="#work"
             className="bg-gold hover:bg-gold-light text-black font-medium px-9 py-3.5 text-[0.73rem] tracking-[0.18em] uppercase rounded-[2px] transition-all duration-200 hover:-translate-y-0.5 inline-block font-sans"
           >
             View Our Work →
-          </Link>
+          </Link> */}
         </div>
         
       </div>

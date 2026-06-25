@@ -2,13 +2,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 
 const CAP_ITEMS = [
-  {
-    title: 'Fleet Scale',
-    desc: 'Drones per show',
-    width: 90,
-    val: '1000',
-    unit: 'MAX FLEET'
-  },
+  // {
+  //   title: 'Fleet Scale',
+  //   desc: 'Drones per show',
+  //   width: 90,
+  //   val: '1000',
+  //   unit: 'MAX FLEET'
+  // },
   {
     title: 'Positioning Accuracy',
     desc: 'RTK GPS system',
@@ -20,14 +20,14 @@ const CAP_ITEMS = [
     title: 'LED Colors',
     desc: 'Per drone output',
     width: 100,
-    val: '16M',
+    val: 'RGB',
     unit: 'COLOR PALETTE'
   },
   {
     title: 'Flight Time',
     desc: 'Per battery cycle',
     width: 75,
-    val: '20min',
+    val: '15min',
     unit: 'FLIGHT TIME'
   },
   {

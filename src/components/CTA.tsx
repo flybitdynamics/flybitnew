@@ -57,10 +57,6 @@ export default function CTA({ onOpenModal }: CTAProps) {
             Call Us Now
           </a>
         </div>
-
-        <p className="text-[0.68rem] text-text-dim tracking-[0.12em] mt-10">
-          Available Pan-India · info@flybitdynamics.com · +91 99798 50863
-        </p>
       </div>
     </section>
   );

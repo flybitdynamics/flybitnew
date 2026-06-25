@@ -38,7 +38,7 @@ export default function Services({ onOpenModal }: ServicesProps) {
     {
       num: '03',
       name: 'Festivals & Concerts',
-      desc: 'Music-synchronized drone choreography for Diwali, New Year, music festivals, and sporting events. Scale up for massive crowd experiences.',
+      desc: 'Music-synchronized drone choreography for Diwali, New Year, music festivals, and sport events, designed for massive crowd experiences.',
       modalTitle: 'Festival & Concert Shows',
       modalDesc: 'Add a mind-blowing aerial dimension to any festival. Synced to live music with massive 1000+ drone deployments for crowd-scale spectacles.',
       icon: (

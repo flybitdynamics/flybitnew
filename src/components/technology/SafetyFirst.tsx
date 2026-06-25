@@ -49,14 +49,14 @@ export default function SafetyFirst({ onOpenModal }: SafetyFirstProps) {
             ))}
           </div>
 
-          <div className="mt-10">
+          {/* <div className="mt-10">
             <button
               onClick={() => onOpenModal('Safety Consultation', 'Learn more about our safety protocols and how we ensure every show is executed without incident.')}
               className="bg-gold hover:bg-gold-light text-black font-semibold px-8 py-3.5 text-[0.72rem] tracking-[0.18em] uppercase rounded-[2px] transition-all duration-300 hover:-translate-y-0.5 block cursor-none border-none"
             >
               Learn More About Safety
             </button>
-          </div>
+          </div> */}
         </div>
 
         {/* Right Column SVG Drone Rotor Animation */}

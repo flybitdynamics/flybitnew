@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import Link from 'next/link';
 import FadeUp from './FadeUp';
 import { publicAsset } from '@/lib/public-assets';
 
@@ -334,17 +335,12 @@ export default function Pricing({ onOpenModal }: PricingProps) {
           </div> */}
 
           <div className="pricing-cta-row flex gap-4 items-center flex-wrap">
-            <button
-              onClick={() =>
-                onOpenModal(
-                  'Get Your Quote',
-                  'Share your event details below and our pricing team will send you a custom proposal within 24 hours.'
-                )
-              }
-              className="bg-gold hover:bg-gold-light text-black font-medium px-11 py-4 text-[0.75rem] tracking-[0.18em] uppercase rounded-[2px] transition-all duration-200 cursor-pointer md:cursor-none hover:-translate-y-1 font-sans"
+            <Link
+              href="/contact"
+              className="bg-gold hover:bg-gold-light text-black font-medium px-11 py-4 text-[0.75rem] tracking-[0.18em] uppercase rounded-[2px] transition-all duration-200 cursor-pointer md:cursor-none hover:-translate-y-1 font-sans inline-block"
             >
               Get Custom Quote
-            </button>
+            </Link>
           </div>
         </FadeUp>
 
