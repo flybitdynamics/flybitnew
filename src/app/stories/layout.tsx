@@ -1,13 +1,26 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Stories & Insights | FLYBIT Dynamics',
+  title: 'Our Drone Show Portfolio | Drone Show Rajasthan, Delhi, Gujarat — FLYBIT Dynamics',
   description:
-    'Explore drone light show reels, case studies, and long-form articles from FLYBIT Dynamics — weddings, corporate events, festivals, and national spectacles across India.',
+    'Experience the best drone show company in India. View case studies and reels of our spectacular drone light shows in Jaipur, Udaipur, Ahmedabad, Gujarat, Rajasthan, and Delhi.',
+  keywords: [
+    "Drone show india",
+    "drone show rajasthan",
+    "drone show jaipur",
+    "drone show udaipur",
+    "drone show delhi",
+    "drone show gujarat",
+    "Best drone show company in India",
+    "premium drone show company in india",
+    "drone shows in jaipur",
+    "drone shows in ahmedabad",
+    "drone shows in gujarat"
+  ],
   openGraph: {
-    title: 'Stories & Insights | FLYBIT Dynamics',
+    title: 'Our Drone Show Portfolio | FLYBIT Dynamics',
     description:
-      'Reels, case studies, and insights from India\'s premier drone light show company.',
+      'Drone light show gallery, reels, and case studies across Jaipur, Udaipur, Delhi, and Ahmedabad from the best drone show company in India.',
     type: 'website',
   },
 };

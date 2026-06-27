@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 interface BookingModalProps {
   isOpen: boolean;
@@ -23,15 +23,59 @@ export default function BookingModal({
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState('');
   
-  const dropdownRef = React.useRef<HTMLDivElement>(null);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    eventType: '',
+    date: '',
+    city: '',
+    vision: ''
+  });
 
+  const [errors, setErrors] = useState({
+    name: false,
+    email: false,
+    phone: false,
+    city: false,
+    vision: false
+  });
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+
+  const isSubmittingRef = useRef(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Synchronize dropdown selection with eventType field in state
+  useEffect(() => {
+    setFormData((prev) => ({ ...prev, eventType: selectedEvent }));
+  }, [selectedEvent]);
+
+  // Reset form states when the modal is closed
   useEffect(() => {
     if (!isOpen) {
-      // Reset submission state when modal closes
       const timer = setTimeout(() => {
         setSubmitted(false);
         setSelectedEvent('');
         setDropdownOpen(false);
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          eventType: '',
+          date: '',
+          city: '',
+          vision: ''
+        });
+        setErrors({
+          name: false,
+          email: false,
+          phone: false,
+          city: false,
+          vision: false
+        });
+        setSubmitError('');
       }, 300);
       return () => clearTimeout(timer);
     }
@@ -49,9 +93,58 @@ export default function BookingModal({
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleInputChange = (field: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+    if (errors[field as keyof typeof errors]) {
+      setErrors((prev) => ({ ...prev, [field]: false }));
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    if (isSubmittingRef.current) return;
+    setSubmitError('');
+
+    const newErrors = {
+      name: !formData.name,
+      email: !formData.email,
+      phone: !formData.phone,
+      city: !formData.city,
+      vision: !formData.vision
+    };
+
+    setErrors(newErrors);
+
+    if (newErrors.name || newErrors.email || newErrors.phone || newErrors.city || newErrors.vision) {
+      setSubmitError('Please fill in all required fields.');
+      return;
+    }
+
+    isSubmittingRef.current = true;
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        setSubmitted(true);
+      } else {
+        throw new Error(data.error || 'Failed to submit enquiry.');
+      }
+    } catch (error: any) {
+      setSubmitError(error.message || 'An error occurred. Please try again.');
+    } finally {
+      isSubmittingRef.current = false;
+      setIsSubmitting(false);
+    }
   };
 
   const eventTypes = [
@@ -92,37 +185,58 @@ export default function BookingModal({
             : description}
         </p>
 
-        {!submitted && (title.toLowerCase().includes('book') || title.toLowerCase().includes('quote') || title.toLowerCase().includes('enquiry')) ? (
+        {!submitted && (title.toLowerCase().includes('book') || title.toLowerCase().includes('quote') || title.toLowerCase().includes('enquiry') || title.toLowerCase().includes('show')) ? (
           <form className="flex flex-col gap-4 font-sans" onSubmit={handleSubmit}>
+            {submitError && (
+              <div className="text-red-500 text-[0.78rem] bg-red-950/20 border border-red-900/30 p-3 rounded-[2px] leading-relaxed">
+                ✦ {submitError}
+              </div>
+            )}
+            
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <input
                 type="text"
-                placeholder="Your Name"
-                required
-                className="bg-dark-3 border border-border text-text p-[0.9rem_1.2rem] text-[0.85rem] rounded-[2px] outline-none hover:border-gold/30 focus:border-gold/40 transition-colors duration-200 cursor-text md:cursor-none"
+                placeholder="Your Name *"
+                value={formData.name}
+                onChange={(e) => handleInputChange('name', e.target.value)}
+                disabled={isSubmitting}
+                className="bg-dark-3 border text-text p-[0.9rem_1.2rem] text-[0.85rem] rounded-[2px] outline-none hover:border-gold/30 focus:border-gold/40 transition-colors duration-200 cursor-text md:cursor-none w-full"
+                style={{
+                  borderColor: errors.name ? 'rgba(201,168,76,0.5)' : 'rgba(201,168,76,0.12)'
+                }}
               />
               <input
                 type="tel"
-                placeholder="Phone Number"
-                required
-                className="bg-dark-3 border border-border text-text p-[0.9rem_1.2rem] text-[0.85rem] rounded-[2px] outline-none hover:border-gold/30 focus:border-gold/40 transition-colors duration-200 cursor-text md:cursor-none"
+                placeholder="Phone Number *"
+                value={formData.phone}
+                onChange={(e) => handleInputChange('phone', e.target.value)}
+                disabled={isSubmitting}
+                className="bg-dark-3 border text-text p-[0.9rem_1.2rem] text-[0.85rem] rounded-[2px] outline-none hover:border-gold/30 focus:border-gold/40 transition-colors duration-200 cursor-text md:cursor-none w-full"
+                style={{
+                  borderColor: errors.phone ? 'rgba(201,168,76,0.5)' : 'rgba(201,168,76,0.12)'
+                }}
               />
             </div>
             <input
               type="email"
-              placeholder="Email Address"
-              required
-              className="bg-dark-3 border border-border text-text p-[0.9rem_1.2rem] text-[0.85rem] rounded-[2px] outline-none hover:border-gold/30 focus:border-gold/40 transition-colors duration-200 cursor-text md:cursor-none"
+              placeholder="Email Address *"
+              value={formData.email}
+              onChange={(e) => handleInputChange('email', e.target.value)}
+              disabled={isSubmitting}
+              className="bg-dark-3 border text-text p-[0.9rem_1.2rem] text-[0.85rem] rounded-[2px] outline-none hover:border-gold/30 focus:border-gold/40 transition-colors duration-200 cursor-text md:cursor-none w-full"
+              style={{
+                borderColor: errors.email ? 'rgba(201,168,76,0.5)' : 'rgba(201,168,76,0.12)'
+              }}
             />
             
             {/* Custom Theme Dropdown Select */}
             <div className="relative" ref={dropdownRef}>
               <div
-                onClick={() => setDropdownOpen(!dropdownOpen)}
+                onClick={() => !isSubmitting && setDropdownOpen(!dropdownOpen)}
                 className="bg-dark-3 border border-border text-text p-[0.9rem_1.2rem] text-[0.85rem] rounded-[2px] hover:border-gold/30 transition-colors duration-200 cursor-pointer flex justify-between items-center select-none"
               >
                 <span className={selectedEvent ? 'text-text' : 'text-text-muted/60'}>
-                  {selectedEvent || 'Event Type'}
+                  {selectedEvent || 'Event Type *'}
                 </span>
                 <svg 
                   className={`fill-current h-4 w-4 text-text-muted transition-transform duration-300 ${dropdownOpen ? 'rotate-180 text-gold' : ''}`}
@@ -157,46 +271,72 @@ export default function BookingModal({
                 required
                 value={selectedEvent}
                 onChange={(e) => setSelectedEvent(e.target.value)}
+                disabled={isSubmitting}
                 className="absolute inset-0 opacity-0 pointer-events-none w-full h-full"
               >
-                <option value="" disabled>Event Type</option>
+                <option value="" disabled>Event Type *</option>
                 {eventTypes.map((type) => (
                   <option key={type} value={type}>{type}</option>
                 ))}
               </select>
             </div>
+            
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <input
                 type="text"
-                placeholder="Event Location"
-                required
-                className="bg-dark-3 border border-border text-text p-[0.9rem_1.2rem] text-[0.85rem] rounded-[2px] outline-none hover:border-gold/30 focus:border-gold/40 transition-colors duration-200 cursor-text md:cursor-none"
+                placeholder="Event Location (City) *"
+                value={formData.city}
+                onChange={(e) => handleInputChange('city', e.target.value)}
+                disabled={isSubmitting}
+                className="bg-dark-3 border text-text p-[0.9rem_1.2rem] text-[0.85rem] rounded-[2px] outline-none hover:border-gold/30 focus:border-gold/40 transition-colors duration-200 cursor-text md:cursor-none w-full"
+                style={{
+                  borderColor: errors.city ? 'rgba(201,168,76,0.5)' : 'rgba(201,168,76,0.12)'
+                }}
               />
               <input
                 type="date"
-                required
+                value={formData.date}
+                onChange={(e) => handleInputChange('date', e.target.value)}
+                disabled={isSubmitting}
                 style={{ colorScheme: 'dark' }}
-                className="bg-dark-3 border border-border text-text p-[0.9rem_1.2rem] text-[0.85rem] rounded-[2px] outline-none hover:border-gold/30 focus:border-gold/40 transition-colors duration-200 cursor-text md:cursor-none"
+                className="bg-dark-3 border border-border text-text p-[0.9rem_1.2rem] text-[0.85rem] rounded-[2px] outline-none hover:border-gold/30 focus:border-gold/40 transition-colors duration-200 cursor-text md:cursor-none w-full"
               />
             </div>
             <textarea
-              placeholder="Tell us more — drone count, duration, special formations…"
-              className="bg-dark-3 border border-border text-text p-[0.9rem_1.2rem] text-[0.85rem] rounded-[2px] outline-none hover:border-gold/30 focus:border-gold/40 transition-colors duration-200 cursor-text md:cursor-none resize-y min-h-[90px]"
+              placeholder="Tell us more — drone count, duration, special formations… *"
+              value={formData.vision}
+              onChange={(e) => handleInputChange('vision', e.target.value)}
+              disabled={isSubmitting}
+              className="bg-dark-3 border text-text p-[0.9rem_1.2rem] text-[0.85rem] rounded-[2px] outline-none hover:border-gold/30 focus:border-gold/40 transition-colors duration-200 cursor-text md:cursor-none resize-y min-h-[90px] w-full"
+              style={{
+                borderColor: errors.vision ? 'rgba(201,168,76,0.5)' : 'rgba(201,168,76,0.12)'
+              }}
             />
             <button
               type="submit"
-              className="btn-g bg-gold hover:bg-gold-light text-black font-medium p-[1rem_2.8rem] text-[0.75rem] tracking-[0.18em] uppercase rounded-[2px] transition-all duration-200 cursor-pointer md:cursor-none w-full text-center hover:-translate-y-0.5"
+              disabled={isSubmitting}
+              className="btn-g bg-gold hover:bg-gold-light text-black font-medium p-[1rem_2.8rem] text-[0.75rem] tracking-[0.18em] uppercase rounded-[2px] transition-all duration-200 cursor-pointer md:cursor-none w-full text-center hover:-translate-y-0.5 disabled:opacity-50 disabled:pointer-events-none flex items-center justify-center gap-2"
               onMouseEnter={onMouseEnterLink}
               onMouseLeave={onMouseLeaveLink}
             >
-              Send Enquiry →
+              {isSubmitting ? (
+                <>
+                  <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Sending...
+                </>
+              ) : (
+                <>Send Enquiry →</>
+              )}
             </button>
           </form>
         ) : (
-          !submitted && (
+          (submitted || !(title.toLowerCase().includes('book') || title.toLowerCase().includes('quote') || title.toLowerCase().includes('enquiry') || title.toLowerCase().includes('show'))) && (
             <button
               onClick={onClose}
-              className="border border-text/18 hover:border-gold text-text hover:text-gold font-light px-8 py-3.5 text-[0.72rem] tracking-[0.18em] uppercase rounded-[2px] cursor-pointer md:cursor-none transition-all duration-200"
+              className="border border-text/18 hover:border-gold text-text hover:text-gold font-light px-8 py-3.5 text-[0.72rem] tracking-[0.18em] uppercase rounded-[2px] cursor-pointer md:cursor-none transition-all duration-200 w-full text-center"
               onMouseEnter={onMouseEnterLink}
               onMouseLeave={onMouseLeaveLink}
             >

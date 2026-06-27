@@ -61,15 +61,15 @@ export default function AboutIntro() {
           </h2>
           
           <p className="text-[0.88rem] text-text-muted leading-[2] mb-5 font-sans">
-            From corporate launches to large-scale national celebrations, we design drone shows that don't just look good — they leave a lasting impression.
+            From corporate launches to large-scale national celebrations, we design drone shows that don't just look good — they leave a lasting impression. As the premier drone show company in India, we deliver spectacular, custom drone shows across Rajasthan, Gujarat, Delhi, and nationwide.
           </p>
           
           <p className="text-[0.88rem] text-text-muted leading-[2] mb-5 font-sans">
-            We believe in the power of light, movement, and technology to create magic. From a spark of inspiration to sky-filling animations, our drone light shows are crafted with precision and passion.
+            We believe in the power of light, movement, and technology to create magic. From a spark of inspiration to sky-filling animations, our drone light shows are crafted with precision and passion. Whether it is a premium drone show in Jaipur, Udaipur, or Ahmedabad, we bring the best drone show experience to your event.
           </p>
           
           <p className="text-[0.88rem] text-text-muted leading-[2] mb-8 font-sans">
-            Our clients span Social Events, Corporate Launches, Government Ceremonies, Spiritual Gatherings, and Sports — each show a bespoke, one-of-a-kind aerial experience built entirely around your vision.
+            Our clients span Social Events, Corporate Launches, Government Ceremonies, Spiritual Gatherings, and Sports — each show a bespoke, one-of-a-kind aerial experience built entirely around your vision. We choreograph the best drone shows in India, including Jaipur, Udaipur, Delhi, Ahmedabad, Gujarat, and other cities.
           </p>
           
           {/* <Link
