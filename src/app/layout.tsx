@@ -22,8 +22,28 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "FLYBIT Dynamics — India's Premier Drone Light Show",
-  description: "We paint your sky with 1000+ precision drones — crafting breathtaking aerial spectacles for weddings, corporate events, and national celebrations across India.",
+  title: "Best Drone Show Company in India | FLYBIT Dynamics — Drone Light Shows",
+  description: "FLYBIT Dynamics is the premium drone show company in India. We design spectacular, precision-engineered drone light shows for weddings, corporate launches, national celebrations, and private events across Jaipur, Udaipur, Rajasthan, Delhi, Gujarat, Ahmedabad, and nationwide.",
+  keywords: [
+    "Drone show india",
+    "Best drone show company in India",
+    "premium drone show company in india",
+    "drone show rajasthan",
+    "drone show jaipur",
+    "drone show udaipur",
+    "drone show delhi",
+    "drone show gujarat",
+    "drone shows in jaipur",
+    "drone shows in ahmedabad",
+    "drone shows in gujarat",
+    "drone light show india",
+    "wedding drone show india",
+    "corporate drone show india"
+  ],
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
+  alternates: {
+    canonical: '/',
+  }
 };
 
 export default function RootLayout({
@@ -38,7 +58,7 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body 
-        className="bg-black text-text font-sans antialiased overflow-x-hidden select-none md:cursor-none"
+        className="bg-black text-text font-sans antialiased overflow-x-hidden md:cursor-none"
         suppressHydrationWarning
       >
         {children}

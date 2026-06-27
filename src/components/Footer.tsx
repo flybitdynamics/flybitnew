@@ -9,7 +9,44 @@ interface FooterProps {
 
 export default function Footer({ onOpenModal }: FooterProps) {
   return (
-    <footer className="bg-dark border-t border-border px-6 md:px-20 py-14 font-sans select-none">
+    <footer className="bg-dark border-t border-border px-6 md:px-20 py-14 font-sans">
+      {/* Premium SEO Keyword Section */}
+      <div className="seo-directory border-b border-border/40 pb-10 mb-12 select-text">
+        <div className="text-[0.62rem] tracking-[0.35em] uppercase text-gold/80 mb-5 font-semibold font-sans">
+          Popular Drone Show Regions & Queries
+        </div>
+        <div className="flex flex-wrap gap-2 md:gap-2.5">
+          {[
+            "Drone Show India",
+            "Best Drone Show Company in India",
+            "Premium Drone Show Company in India",
+            "Drone Show Rajasthan",
+            "Drone Show Jaipur",
+            "Drone Show Udaipur",
+            "Drone Show Delhi",
+            "Drone Show Gujarat",
+            "Drone Show Ahmedabad",
+            "Drone Shows in Jaipur",
+            "Drone Shows in Ahmedabad",
+            "Drone Shows in Gujarat",
+            "Drone Light Show India",
+            "Wedding Drone Show India",
+            "Corporate Drone Show India",
+            "Drone Show Mumbai",
+            "Drone Show Bangalore",
+            "Drone Light Show Price India",
+            "Drone Show cost in India"
+          ].map((keyword, index) => (
+            <span 
+              key={index}
+              className="text-[0.68rem] tracking-[0.06em] text-text-muted border border-border/30 px-3.5 py-1.5 rounded-[2px] bg-dark-2/40 transition-all duration-300 hover:border-gold/30 hover:text-gold cursor-pointer"
+            >
+              #{keyword.replace(/\s+/g, '')}
+            </span>
+          ))}
+        </div>
+      </div>
+
       <div className="footer-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1fr] gap-12 lg:gap-16 mb-10">
         <div className="foot-brand">
           <a href="#" className="inline-block md:cursor-none">

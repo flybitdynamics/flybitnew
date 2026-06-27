@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 
 export default function ContactMain() {
   const [formData, setFormData] = useState({
@@ -19,6 +19,11 @@ export default function ContactMain() {
   });
 
   const [showToast, setShowToast] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [toastType, setToastType] = useState<'success' | 'error'>('success');
+  const [toastText, setToastText] = useState('');
+
+  const isSubmittingRef = useRef(false);
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -27,8 +32,9 @@ export default function ContactMain() {
     }
   };
 
-  const handleFormSubmit = (e: React.FormEvent) => {
+  const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSubmittingRef.current) return;
 
     const newErrors = {
       name: !formData.name,
@@ -38,41 +44,79 @@ export default function ContactMain() {
 
     setErrors(newErrors);
 
-    if (newErrors.name || newErrors.email || newErrors.phone) {
+    if (newErrors.name || newErrors.email || newErrors.phone || !formData.city || !formData.vision) {
+      setToastType('error');
+      setToastText('Please fill in all required fields marked with *.');
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 4500);
       return;
     }
 
-    // Success state
-    setShowToast(true);
-    setTimeout(() => {
-      setShowToast(false);
-    }, 4500);
+    isSubmittingRef.current = true;
+    setIsSubmitting(true);
 
-    // Clear Form
-    setFormData({
-      name: '',
-      email: '',
-      phone: '',
-      eventType: '',
-      date: '',
-      city: '',
-      vision: ''
-    });
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        setToastType('success');
+        setToastText('Our team will respond within 24 hours. Thank you for reaching out.');
+        setShowToast(true);
+        setTimeout(() => {
+          setShowToast(false);
+        }, 4500);
+
+        // Clear Form
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          eventType: '',
+          date: '',
+          city: '',
+          vision: ''
+        });
+      } else {
+        throw new Error(data.error || 'Failed to submit enquiry.');
+      }
+    } catch (error: any) {
+      setToastType('error');
+      setToastText(error.message || 'An error occurred. Please try again.');
+      setShowToast(true);
+      setTimeout(() => {
+        setShowToast(false);
+      }, 5000);
+    } finally {
+      isSubmittingRef.current = false;
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <>
       {/* Dynamic Overlay Success Toast */}
       <div 
-        className={`toast fixed bottom-10 right-10 bg-dark-2 border border-gold text-text p-6 rounded-[3px] text-[0.82rem] z-[1000] pointer-events-none max-w-[320px] transition-transform duration-500 cubic-bezier(0.16,1,0.3,1) ${
+        className={`toast fixed bottom-10 right-10 bg-dark-2 border text-text p-6 rounded-[3px] text-[0.82rem] z-[1000] pointer-events-none max-w-[320px] transition-transform duration-500 cubic-bezier(0.16,1,0.3,1) ${
+          toastType === 'error' ? 'border-red-500/50' : 'border-gold'
+        } ${
           showToast ? 'translate-y-0 opacity-100' : 'translate-y-[150%] opacity-0'
         }`}
       >
-        <div className="toast-title font-cormorant text-[1.1rem] text-gold mb-1 font-semibold">
-          Message Sent ✦
+        <div className={`toast-title font-cormorant text-[1.1rem] mb-1 font-semibold ${
+          toastType === 'error' ? 'text-red-500' : 'text-gold'
+        }`}>
+          {toastType === 'error' ? 'Submission Error ✦' : 'Message Sent ✦'}
         </div>
         <p className="text-text-muted text-[0.78rem] leading-[1.6]">
-          Our team will respond within 24 hours. Thank you for reaching out.
+          {toastText || 'Our team will respond within 24 hours. Thank you for reaching out.'}
         </p>
       </div>
 
@@ -223,13 +267,26 @@ export default function ContactMain() {
 
               <button 
                 type="submit"
-                className="form-submit bg-gold hover:bg-gold-light text-black font-semibold py-4 px-8 text-[0.75rem] tracking-[0.18em] uppercase rounded-[2px] transition-all duration-300 hover:-translate-y-0.5 block cursor-none border-none text-center flex items-center justify-center gap-3 w-full mt-2"
+                disabled={isSubmitting}
+                className="form-submit bg-gold hover:bg-gold-light text-black font-semibold py-4 px-8 text-[0.75rem] tracking-[0.18em] uppercase rounded-[2px] transition-all duration-300 hover:-translate-y-0.5 block cursor-none border-none text-center flex items-center justify-center gap-3 w-full mt-2 disabled:opacity-50 disabled:pointer-events-none"
               >
-                <svg viewBox="0 0 24 24" className="w-4 h-4 fill-none stroke-current stroke-[1.8]">
-                  <line x1="22" y1="2" x2="11" y2="13"/>
-                  <polygon points="22 2 15 22 11 13 2 9 22 2"/>
-                </svg>
-                Send Message
+                {isSubmitting ? (
+                  <>
+                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Sending...
+                  </>
+                ) : (
+                  <>
+                    <svg viewBox="0 0 24 24" className="w-4 h-4 fill-none stroke-current stroke-[1.8]">
+                      <line x1="22" y1="2" x2="11" y2="13"/>
+                      <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                    </svg>
+                    Send Message
+                  </>
+                )}
               </button>
               
               <p className="form-note text-[0.68rem] text-text-dim text-center mt-2 tracking-wide font-sans">
