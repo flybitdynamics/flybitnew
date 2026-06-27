@@ -4,13 +4,20 @@ import React, { useState, useEffect } from 'react';
 import { mapPublicAssets } from '@/lib/public-assets';
 
 const HERO_IMAGES = mapPublicAssets([
-  '/hero_section_images/magnific_hyperrealistic-drone-show_DBNJbakpcl.png',
-  '/hero_section_images/magnific_hyperrealistic-drone-show_hEYZ7NRvqL.png',
-  '/hero_section_images/magnific_realistic-drone-light-sho_hEYZ1mkvqL.png',
-  '/hero_section_images/magnific_ultrarealistic-drone-ligh_vuW27nLa47.png',
-  '/hero_section_images/magnific_ultrarealistic-drone-show_8vA6HoAIrU.png',
   '/hero_section_images/ChatGPT Image Jun 10, 2026, 04_40_14 PM (2).png',
   '/hero_section_images/ChatGPT Image Jun 10, 2026, 04_44_35 PM.png',
+  '/hero_section_images/magnific_cDNqawr0eP.png',
+  '/hero_section_images/magnific_exactly-150-drones-formin_5xmRn3yKxe.png',
+  '/hero_section_images/magnific_exactly-150-drones-formin_ohYrGVN829.png',
+  '/hero_section_images/magnific_exactly-160-drones-formin_dIGxWLeXSL.png',
+  '/hero_section_images/magnific_exactly-170-drones-creati_SOqYHHwUb8.png',
+  '/hero_section_images/magnific_exactly-170-drones-formin_swQWVQol8e.png',
+  '/hero_section_images/magnific_hyperrealistic-drone-show_hEYZ7NRvqL.png',
+  '/hero_section_images/magnific_photo-a-drone-light-show-_xgCn9HMjfW.png',
+  '/hero_section_images/magnific_photo-a-large-crowd-of-pe_l7F0GEVgv9.png',
+  '/hero_section_images/magnific_realistic-drone-light-sho_hEYZ1mkvqL.png',
+  '/hero_section_images/magnific_swQcNohl8e.png',
+  '/hero_section_images/magnific_ultrarealistic-spiritual-_UybVIJcwny.png',
 ]);
 
 interface HeroProps {

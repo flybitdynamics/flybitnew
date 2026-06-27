@@ -20,7 +20,7 @@ export default function StoryThumbnail({ story, className = '', showPlay = true 
           src={src}
           alt={story.title}
           loading="lazy"
-          className="w-full h-full object-cover transition-transform duration-300 ease-out group-hover:scale-105"
+          className="w-full h-full object-contain bg-black transition-transform duration-300 ease-out group-hover:scale-105"
         />
       ) : (
         <div

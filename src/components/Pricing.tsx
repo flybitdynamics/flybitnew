@@ -243,8 +243,8 @@ export default function Pricing({ onOpenModal }: PricingProps) {
             We Tailor Every Show to Your <em className="text-gold italic">Budget</em>
           </h2>
           <p className="text-[0.9rem] text-text-muted leading-relaxed mb-12 max-w-[500px]">
-            We tailor our show to your budget and imagination. Wanna see how the price changes? Play with the options below — or{' '}
-            <button
+            We tailor our show to your budget and imagination. Wanna see how the price changes? Play with the options below -{' '}
+            {/* <button
               onClick={() =>
                 onOpenModal(
                   'Full Pricing',
@@ -254,8 +254,7 @@ export default function Pricing({ onOpenModal }: PricingProps) {
               className="text-gold border-b border-gold/30 hover:border-gold cursor-pointer md:cursor-none transition-colors duration-200 bg-transparent py-0"
             >
               get a full quote
-            </button>
-            .
+            </button> */}
           </p>
 
           {/* Picture Type selector */}
