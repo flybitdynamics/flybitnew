@@ -73,7 +73,7 @@ export default function AboutPage() {
 
       {/* Main About Us Content */}
       <main>
-        <HeroAbout />
+        <HeroAbout onOpenModal={openModal} />
         <AboutIntro />
         <ServicesDetailed onOpenModal={openModal} />
         <Clients onOpenModal={openModal} />
@@ -82,7 +82,7 @@ export default function AboutPage() {
         <Faq />
         <Addons />
         <WhyChooseUs onOpenModal={openModal} />
-        <Mission />
+        <Mission onOpenModal={openModal} />
         {/* <Contact /> */}
       </main>
 

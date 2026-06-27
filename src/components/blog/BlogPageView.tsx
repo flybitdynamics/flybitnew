@@ -16,6 +16,24 @@ import type { BlogPost } from '@/lib/blogs/types';
 import { formatStoryDate } from '@/lib/stories/utils';
 import { DEFAULT_BLOG_IMAGE } from '@/lib/public-assets';
 
+function formatBlogContent(content: string): string {
+  let formatted = content;
+  
+  // Replace HTML entities like &amp; with & in headers/text
+  formatted = formatted.replace(/&amp;/g, '&');
+  
+  // Format numbered paragraphs (like "1 Concept & Story Development") into beautiful subheadings
+  formatted = formatted.replace(
+    /<p>(\d+)\s+([^<]+)<\/p>/g,
+    (_, num, text) => {
+      if (text.length > 80) return `<p>${num} ${text}</p>`;
+      return `<h3 class="text-gold font-sans font-semibold text-[1.15rem] tracking-wide mt-8 mb-3">${num}. ${text}</h3>`;
+    }
+  );
+  
+  return formatted;
+}
+
 interface BlogPageViewProps {
   blog: BlogPost;
   relatedBlogs: BlogPost[];
@@ -83,22 +101,24 @@ export default function BlogPageView({ blog, relatedBlogs }: BlogPageViewProps) 
           />
         </div>
 
-        {/* Content Layout Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14">
-          {/* Sidebar Left: Sticky TOC & Share */}
-          <aside className="lg:col-span-3 order-2 lg:order-1">
-            <div className="lg:sticky lg:top-28 space-y-6">
-              <TableOfContents />
-              <BlogShareButtons slug={blog.slug} title={blog.title} />
-            </div>
-          </aside>
+        {/* Content Layout */}
+        <div className="w-full">
+          {/* Inline Table of Contents if present */}
+          <div className="max-w-md mb-8">
+            <TableOfContents />
+          </div>
 
-          {/* Article Main Body Right */}
-          <article className="lg:col-span-9 order-1 lg:order-2">
+          <article className="w-full">
+            <style jsx global>{`
+              .prose-story, .prose-story p, .prose-story h2, .prose-story h3, .prose-story ul, .prose-story ol {
+                max-width: 100% !important;
+                width: 100% !important;
+              }
+            `}</style>
             {/* The core compiled HTML content inside our styling prose */}
             <div
-              className="prose-story font-sans text-[0.92rem] leading-relaxed text-text-muted max-w-none"
-              dangerouslySetInnerHTML={{ __html: blog.content }}
+              className="prose-story font-sans text-[0.92rem] leading-relaxed text-white w-full max-w-none"
+              dangerouslySetInnerHTML={{ __html: formatBlogContent(blog.content) }}
             />
 
             {/* Tags badges at bottom */}
@@ -114,6 +134,9 @@ export default function BlogPageView({ blog, relatedBlogs }: BlogPageViewProps) 
                 ))}
               </div>
             )}
+
+            {/* Share buttons added here after tags */}
+            <BlogShareButtons slug={blog.slug} title={blog.title} />
 
             {/* Author box */}
             <AuthorBox

@@ -81,6 +81,7 @@ export default function Portfolio({ onOpenModal }: PortfolioProps) {
         relatedStories={relatedStories}
         onClose={closeStory}
         onRelatedClick={openStory}
+        onOpenModal={onOpenModal}
       />
     </>
   );

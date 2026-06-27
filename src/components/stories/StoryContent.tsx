@@ -4,13 +4,32 @@ import type { ContentStory } from '@/lib/stories/types';
 import { formatStoryDate } from '@/lib/stories/utils';
 import Link from 'next/link';
 
+function formatStoryContent(content: string): string {
+  let formatted = content;
+  
+  // Replace HTML entities like &amp; with & in headers/text
+  formatted = formatted.replace(/&amp;/g, '&');
+  
+  // Format numbered paragraphs (like "1 Concept & Story Development") into beautiful subheadings
+  formatted = formatted.replace(
+    /<p>(\d+)\s+([^<]+)<\/p>/g,
+    (_, num, text) => {
+      if (text.length > 80) return `<p>${num} ${text}</p>`;
+      return `<h3 class="text-gold font-sans font-semibold text-[1.15rem] tracking-wide mt-8 mb-3">${num}. ${text}</h3>`;
+    }
+  );
+  
+  return formatted;
+}
+
 interface StoryContentProps {
   story: ContentStory;
   showCta?: boolean;
   compact?: boolean;
+  onOpenModal?: (title: string, description: string) => void;
 }
 
-export default function StoryContent({ story, showCta = true, compact = false }: StoryContentProps) {
+export default function StoryContent({ story, showCta = true, compact = false, onOpenModal }: StoryContentProps) {
   return (
     <div className={`font-sans ${compact ? '' : 'h-full flex flex-col'}`}>
       <span className="inline-block self-start text-[0.58rem] tracking-[0.25em] uppercase text-gold bg-gold/10 border border-gold/20 px-2.5 py-1 rounded-full mb-4">
@@ -44,7 +63,7 @@ export default function StoryContent({ story, showCta = true, compact = false }:
 
       <div
         className="story-article prose-story text-[0.88rem] text-text-muted leading-[1.95] pr-1"
-        dangerouslySetInnerHTML={{ __html: story.content }}
+        dangerouslySetInnerHTML={{ __html: formatStoryContent(story.content) }}
       />
 
       {(story.tags.length > 0 || story.seoKeywords.length > 0) && (
@@ -105,7 +124,7 @@ export default function StoryContent({ story, showCta = true, compact = false }:
                 className="border border-border hover:border-gold text-text hover:text-gold font-medium px-5 py-3 text-[0.7rem] tracking-[0.16em] uppercase rounded-[2px] transition-all hover:-translate-y-0.5 flex items-center gap-2"
               >
                 <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
-                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                  <path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/>
                 </svg>
                 Facebook
               </a>
@@ -118,7 +137,7 @@ export default function StoryContent({ story, showCta = true, compact = false }:
                 className="border border-border hover:border-gold text-text hover:text-gold font-medium px-5 py-3 text-[0.7rem] tracking-[0.16em] uppercase rounded-[2px] transition-all hover:-translate-y-0.5 flex items-center gap-2"
               >
                 <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
-                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                  <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
                 </svg>
                 LinkedIn
               </a>
@@ -134,12 +153,12 @@ export default function StoryContent({ story, showCta = true, compact = false }:
             >
               Full Story Page →
             </Link> */}
-            <Link
-              href="/contact"
-              className="bg-gold hover:bg-gold-light text-black font-medium px-6 py-3 text-[0.7rem] tracking-[0.16em] uppercase rounded-[2px] transition-all hover:-translate-y-0.5"
+            <button
+              onClick={() => onOpenModal?.('Book Your Show', "Tell us about your event and we'll design the perfect aerial spectacle — from 200 to 3,000 drones, anywhere in India.")}
+              className="bg-gold hover:bg-gold-light text-black font-medium px-6 py-3 text-[0.7rem] tracking-[0.16em] uppercase rounded-[2px] transition-all hover:-translate-y-0.5 cursor-pointer border-none"
             >
               Book a Show →
-            </Link>
+            </button>
           </div>
         )}
       </div>

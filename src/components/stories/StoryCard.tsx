@@ -24,7 +24,7 @@ export default function StoryCard({ story, onClick }: StoryCardProps) {
         }
       }}
     >
-      <StoryThumbnail story={story} className="h-[240px] shrink-0" />
+      <StoryThumbnail story={story} className="h-[200px] shrink-0" />
 
       <div className="flex flex-col flex-1 p-6 font-sans">
         <span className="inline-block self-start text-[0.58rem] tracking-[0.25em] uppercase text-gold bg-gold/10 border border-gold/20 px-2.5 py-1 rounded-full mb-3">

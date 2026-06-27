@@ -1,6 +1,8 @@
 /**
  * Converts all images under public/ to AVIF and uploads to Zata at public/{folder-structure}/file.avif
  * Generates src/lib/public-assets-manifest.json mapping local paths -> Zata URLs
+ * node scripts/upload-public-to-zata.mjs
+
  */
 import fs from 'node:fs/promises';
 import fsSync from 'node:fs';

@@ -11,6 +11,7 @@ interface StoryModalProps {
   relatedStories?: ContentStory[];
   onClose: () => void;
   onRelatedClick?: (story: ContentStory) => void;
+  onOpenModal?: (title: string, description: string) => void;
 }
 
 export default function StoryModal({
@@ -18,6 +19,7 @@ export default function StoryModal({
   relatedStories = [],
   onClose,
   onRelatedClick,
+  onOpenModal,
 }: StoryModalProps) {
   useEffect(() => {
     if (!story) return;
@@ -65,7 +67,7 @@ export default function StoryModal({
           </div>
 
           <div className="w-full md:w-[55%] flex-1 overflow-y-auto p-4 md:p-6 md:pl-3 md:pr-8">
-            <StoryContent story={story} showCta />
+            <StoryContent story={story} showCta onOpenModal={onOpenModal} />
 
             {relatedStories.length > 0 && (
               <div className="hidden md:block">
