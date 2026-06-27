@@ -96,7 +96,7 @@ export default function StoryPageView({ story, relatedStories }: StoryPageViewPr
 
       <Footer onOpenModal={openModal} />
       <BookingModal isOpen={modalOpen} onClose={() => setModalOpen(false)} title={modalTitle} description={modalDesc} />
-      <StoryModal story={activeStory} onClose={() => setActiveStory(null)} />
+      <StoryModal story={activeStory} onClose={() => setActiveStory(null)} onOpenModal={openModal} />
     </div>
   );
 }

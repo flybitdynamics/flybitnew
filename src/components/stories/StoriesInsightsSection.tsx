@@ -89,6 +89,7 @@ export default function StoriesInsightsSection({ onOpenModal }: StoriesInsightsS
         relatedStories={relatedStories}
         onClose={closeStory}
         onRelatedClick={openStory}
+        onOpenModal={onOpenModal}
       />
     </>
   );

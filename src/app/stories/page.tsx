@@ -60,6 +60,7 @@ export default function StoriesPage() {
         relatedStories={related}
         onClose={() => setActiveStory(null)}
         onRelatedClick={openStory}
+        onOpenModal={openModal}
       />
     </div>
   );

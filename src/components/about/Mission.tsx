@@ -1,7 +1,11 @@
 'use client';
 import React, { useEffect } from 'react';
 
-export default function Mission() {
+interface MissionProps {
+  onOpenModal?: (title: string, description: string) => void;
+}
+
+export default function Mission({ onOpenModal }: MissionProps) {
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
@@ -23,10 +27,13 @@ export default function Mission() {
         <div className="mission-label">Our Mission</div>
         <h2 className="mission-title">PRECISION.<br />CREATIVITY.<br />TECHNOLOGY.</h2>
         <p className="mission-body">To revolutionize event entertainment through innovative drone technology — creating emotionally impactful performances that bring people together, celebrate human achievements, and inspire wonder in audiences across India and beyond.</p>
-        <a href="#contact" className="mission-btn">
+        <button 
+          onClick={() => onOpenModal?.('Book Your Show', "Tell us about your event and we'll design the perfect aerial spectacle — from 200 to 3,000 drones, anywhere in India.")}
+          className="mission-btn cursor-pointer bg-transparent border-none"
+        >
           Book a Show
           <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" width="16" height="16"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
-        </a>
+        </button>
       </div>
     </section>
   );

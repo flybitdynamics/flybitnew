@@ -18,7 +18,11 @@ export default function AuthorBox({ author, authorImage, authorBio }: AuthorBoxP
           alt={author}
           fill
           sizes="64px"
-          className="object-cover"
+          className={
+            (!authorImage || authorImage.includes('logo') || author.toLowerCase().includes('flybit'))
+              ? 'object-contain p-1.5'
+              : 'object-cover'
+          }
         />
       </div>
       <div className="text-center sm:text-left space-y-2">
