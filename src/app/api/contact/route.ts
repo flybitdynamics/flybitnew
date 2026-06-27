@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
+import path from 'path';
 
 export async function POST(req: NextRequest) {
   try {
@@ -131,7 +132,7 @@ export async function POST(req: NextRequest) {
   <div class="wrapper">
     <div class="container">
       <div class="header">
-        <h1>Flybit Dynamics</h1>
+        <img src="cid:logo" alt="Flybit Dynamics" style="height: 44px; width: auto; display: block; margin: 0 auto;" />
       </div>
       <div class="content">
         <div class="eyebrow">✦ New Inquiry Details</div>
@@ -211,12 +212,21 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    const logoPath = path.join(process.cwd(), 'public', 'logo.png');
+
     const mailOptions = {
       from: `"${name} (Flybit Contact Form)" <${smtpUser}>`,
       to: targetEmail,
       replyTo: email,
       subject: `✦ New Event Inquiry from ${name} - ${eventType || 'General'}`,
       html: emailHtml,
+      attachments: [
+        {
+          filename: 'logo.png',
+          path: logoPath,
+          cid: 'logo'
+        }
+      ]
     };
 
     await transporter.sendMail(mailOptions);
