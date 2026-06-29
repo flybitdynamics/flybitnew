@@ -12,7 +12,7 @@ export default function Footer({ onOpenModal }: FooterProps) {
   return (
     <footer className="bg-dark border-t border-border px-6 md:px-20 py-14 font-sans">
       {/* Premium SEO Keyword Section */}
-      <div className="seo-directory border-b border-border/40 pb-10 mb-12 select-text">
+      {/* <div className="seo-directory border-b border-border/40 pb-10 mb-12 select-text">
         <div className="text-[0.62rem] tracking-[0.35em] uppercase text-gold/80 mb-5 font-semibold font-sans">
           Popular Drone Show Regions & Queries
         </div>
@@ -46,7 +46,7 @@ export default function Footer({ onOpenModal }: FooterProps) {
             </span>
           ))}
         </div>
-      </div>
+      </div> */}
 
       <div className="footer-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1fr] gap-12 lg:gap-16 mb-10">
         <div className="foot-brand">
