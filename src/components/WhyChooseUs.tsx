@@ -38,7 +38,8 @@ export default function WhyChooseUs({ onOpenModal }: WhyChooseUsProps) {
       modalDesc: 'From the initial consultation, storyboard conceptualization, script creation, regulatory clearances, setup, rehearsal, to the actual live performance, FLYBIT handles it all. You just sit back and enjoy.',
       icon: (
         <svg className="w-8 h-8 text-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.97 5.97 0 00-.75-2.985m-.99-2.34A9.054 9.054 0 0012 13c-2.207 0-4.248.788-5.84 2.1l-.007.006m13.203-3.21a3 3 0 11-4.242-4.243M8.9 9.06a3 3 0 11-4.243-4.243m12.44 15.312a10.89 10.89 0 00-1.214-3.228m-5.137-4.898a3 3 0 00-2.247-2.114m0 0A12.013 12.013 0 0012 12c.075 0 .15-.001.224-.002m0 0a12.025 12.025 0 003.023-.243m0 0a3 3 0 00-2.248-2.114" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 00-3.7-3.7 48.656 48.656 0 00-7.324 0 4.006 4.006 0 00-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l-1.5-1.5M19.5 12l1.5-1.5M4 12c0 1.232.046 2.453.138 3.662a4.006 4.006 0 003.7 3.7 48.656 48.656 0 007.324 0 4.006 4.006 0 003.7-3.7c.017-.22.032-.441.046-.662M4 12l-1.5 1.5M4 12l1.5 1.5" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4" />
         </svg>
       ),
     },

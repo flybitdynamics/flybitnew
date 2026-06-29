@@ -200,9 +200,14 @@ const SERVICE_ITEMS: ServiceItem[] = [
     cta: 'Get Quote for Spiritual ➔',
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" className="w-6 h-6 text-gold">
-        <circle cx="12" cy="12" r="10" />
-        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-        <path d="M2 12h20" />
+        {/* Namaste / Joined Hands outline */}
+        <path d="M12 3c-0.5 1.8-2.5 5-2.5 8.5c0 3 1.5 5 2.5 6M12 3c0.5 1.8 2.5 5 2.5 8.5c0 3-1.5 5-2.5 6" />
+        {/* Inner detail lines for fingers */}
+        <path d="M10.8 7.5c-0.3 1.2-1.3 3.5-1.3 6M13.2 7.5c0.3 1.2 1.3 3.5 1.3 6" />
+        {/* Thumbs */}
+        <path d="M9.5 14c-0.8-1.2-2.2-1.8-3-1.8M14.5 14c0.8-1.2 2.2-1.8 3-1.8" />
+        {/* Wrists / Sleeves base */}
+        <path d="M9.5 17.5c-1 1.5-2.5 2.5-4 3M14.5 17.5c1 1.5 2.5 2.5 4 3" />
       </svg>
     ),
   },

@@ -216,7 +216,7 @@ export default function Hero({ onOpenModal }: HeroProps) {
       </svg>
 
       {/* Hero Content */}
-      <div className="relative z-10 text-left px-6 md:px-20 max-w-[1440px] w-full mx-auto select-none">
+      <div className="relative z-10 text-left px-6 md:px-20 max-w-[1440px] w-full mx-auto select-none pt-6">
         <div className="text-[0.65rem] tracking-[0.4em] uppercase text-gold mb-10 flex items-center justify-start gap-4 font-sans">
           <span className="w-10 h-[1px] bg-gold-dim" />
           India's Premier Drone Light Show Company

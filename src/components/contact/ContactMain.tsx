@@ -189,7 +189,7 @@ export default function ContactMain() {
                   
                   <input 
                     type="email" 
-                    placeholder="your@email.com" 
+                    placeholder="your@gmail.com" 
                     value={formData.email}
                     onChange={(e) => handleInputChange('email', e.target.value)}
                     className="form-input bg-dark-3 border text-text px-5 py-3.5 font-sans text-[0.85rem] rounded-[2px] outline-none transition-all w-full"
