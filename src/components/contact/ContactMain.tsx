@@ -438,72 +438,7 @@ export default function ContactMain() {
                 </div>
               </div>
             </div>
-
-            {/* Bottom animated telemetry coordinates indicator */}
-            <div className="info-drone-panel bg-[#1a1917] border-t border-gold/5 py-10 px-8 flex justify-center items-center">
-              <svg width="320" height="100" viewBox="0 0 320 100" className="w-full max-w-[320px]">
-                {/* Call icon dots */}
-                <g fill="rgba(201,168,76,0.6)">
-                  <circle cx="30" cy="35" r="2"><animate attributeName="opacity" values="0.3;1;0.3" dur="2.4s" repeatCount="indefinite"/></circle>
-                  <circle cx="38" cy="28" r="2"><animate attributeName="opacity" values="1;0.3;1" dur="2.8s" repeatCount="indefinite"/></circle>
-                  <circle cx="47" cy="26" r="1.5"><animate attributeName="opacity" values="0.5;1;0.5" dur="3.1s" repeatCount="indefinite"/></circle>
-                  <circle cx="33" cy="43" r="2"><animate attributeName="opacity" values="0.7;0.2;0.7" dur="2.6s" repeatCount="indefinite"/></circle>
-                  <circle cx="42" cy="50" r="2"><animate attributeName="opacity" values="0.2;0.9;0.2" dur="3.4s" repeatCount="indefinite"/></circle>
-                  <circle cx="52" cy="52" r="1.5"><animate attributeName="opacity" values="1;0.4;1" dur="2.2s" repeatCount="indefinite"/></circle>
-                  <circle cx="58" cy="44" r="2"><animate attributeName="opacity" values="0.4;1;0.4" dur="3s" repeatCount="indefinite"/></circle>
-                  <circle cx="54" cy="34" r="1.5"><animate attributeName="opacity" values="0.8;0.2;0.8" dur="2.7s" repeatCount="indefinite"/></circle>
-                </g>
-                
-                {/* Location pin dots */}
-                <g fill="rgba(201,168,76,0.6)">
-                  <circle cx="118" cy="28" r="2"><animate attributeName="opacity" values="0.5;1;0.5" dur="3.2s" repeatCount="indefinite"/></circle>
-                  <circle cx="130" cy="24" r="2.5"><animate attributeName="opacity" values="0.2;0.9;0.2" dur="2.5s" repeatCount="indefinite"/></circle>
-                  <circle cx="142" cy="28" r="2"><animate attributeName="opacity" values="0.8;0.2;0.8" dur="3.5s" repeatCount="indefinite"/></circle>
-                  <circle cx="147" cy="38" r="2"><animate attributeName="opacity" values="0.4;1;0.4" dur="2.9s" repeatCount="indefinite"/></circle>
-                  <circle cx="142" cy="48" r="2"><animate attributeName="opacity" values="1;0.3;1" dur="2.3s" repeatCount="indefinite"/></circle>
-                  <circle cx="130" cy="55" r="2"><animate attributeName="opacity" values="0.3;0.8;0.3" dur="3.7s" repeatCount="indefinite"/></circle>
-                  <circle cx="118" cy="48" r="2"><animate attributeName="opacity" values="0.6;1;0.6" dur="2.6s" repeatCount="indefinite"/></circle>
-                  <circle cx="113" cy="38" r="2"><animate attributeName="opacity" values="0.2;0.7;0.2" dur="3.1s" repeatCount="indefinite"/></circle>
-                  <circle cx="130" cy="38" r="3" fill="rgba(201,168,76,0.4)"><animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite"/></circle>
-                  <circle cx="130" cy="65" r="1.5"><animate attributeName="opacity" values="0.9;0.3;0.9" dur="2.8s" repeatCount="indefinite"/></circle>
-                  <circle cx="130" cy="75" r="1"><animate attributeName="opacity" values="0.4;1;0.4" dur="3.2s" repeatCount="indefinite"/></circle>
-                </g>
-
-                {/* Envelope dots */}
-                <g fill="rgba(201,168,76,0.6)">
-                  <circle cx="208" cy="32" r="2"><animate attributeName="opacity" values="0.3;1;0.3" dur="2.7s" repeatCount="indefinite"/></circle>
-                  <circle cx="225" cy="32" r="2"><animate attributeName="opacity" values="1;0.4;1" dur="3.3s" repeatCount="indefinite"/></circle>
-                  <circle cx="243" cy="32" r="2"><animate attributeName="opacity" values="0.5;0.9;0.5" dur="2.4s" repeatCount="indefinite"/></circle>
-                  <circle cx="208" cy="50" r="2"><animate attributeName="opacity" values="0.8;0.2;0.8" dur="3.6s" repeatCount="indefinite"/></circle>
-                  <circle cx="243" cy="50" r="2"><animate attributeName="opacity" values="0.2;1;0.2" dur="2.9s" repeatCount="indefinite"/></circle>
-                  <circle cx="208" cy="65" r="2"><animate attributeName="opacity" values="0.6;1;0.6" dur="2.1s" repeatCount="indefinite"/></circle>
-                  <circle cx="225" cy="65" r="2"><animate attributeName="opacity" values="1;0.3;1" dur="3.4s" repeatCount="indefinite"/></circle>
-                  <circle cx="243" cy="65" r="2"><animate attributeName="opacity" values="0.3;0.8;0.3" dur="2.6s" repeatCount="indefinite"/></circle>
-                  <circle cx="216" cy="43" r="2.5"><animate attributeName="opacity" values="0.7;0.2;0.7" dur="3s" repeatCount="indefinite"/></circle>
-                  <circle cx="225" cy="50" r="2"><animate attributeName="opacity" values="0.4;1;0.4" dur="2.3s" repeatCount="indefinite"/></circle>
-                  <circle cx="234" cy="43" r="2.5"><animate attributeName="opacity" values="0.9;0.3;0.9" dur="3.8s" repeatCount="indefinite"/></circle>
-                </g>
-
-                {/* WhatsApp dots */}
-                <g fill="rgba(201,168,76,0.5)">
-                  <circle cx="295" cy="28" r="2"><animate attributeName="opacity" values="0.4;1;0.4" dur="3.1s" repeatCount="indefinite"/></circle>
-                  <circle cx="308" cy="32" r="2"><animate attributeName="opacity" values="1;0.2;1" dur="2.5s" repeatCount="indefinite"/></circle>
-                  <circle cx="313" cy="44" r="2"><animate attributeName="opacity" values="0.3;0.8;0.3" dur="3.6s" repeatCount="indefinite"/></circle>
-                  <circle cx="308" cy="55" r="2"><animate attributeName="opacity" values="0.7;0.1;0.7" dur="2.8s" repeatCount="indefinite"/></circle>
-                  <circle cx="295" cy="60" r="2"><animate attributeName="opacity" values="0.2;0.9;0.2" dur="3.3s" repeatCount="indefinite"/></circle>
-                  <circle cx="283" cy="56" r="2"><animate attributeName="opacity" values="0.8;0.3;0.8" dur="2.4s" repeatCount="indefinite"/></circle>
-                  <circle cx="278" cy="44" r="2"><animate attributeName="opacity" values="0.5;1;0.5" dur="3.7s" repeatCount="indefinite"/></circle>
-                  <circle cx="283" cy="32" r="2"><animate attributeName="opacity" values="1;0.4;1" dur="2.7s" repeatCount="indefinite"/></circle>
-                  <circle cx="286" cy="66" r="1.5"><animate attributeName="opacity" values="0.4;0.9;0.4" dur="3s" repeatCount="indefinite"/></circle>
-                  <circle cx="282" cy="74" r="1"><animate attributeName="opacity" values="0.2;0.8;0.2" dur="2.6s" repeatCount="indefinite"/></circle>
-                </g>
-
-                <text x="44" y="85" textAnchor="middle" fill="rgba(201,168,76,0.2)" className="font-bebas text-[7px] tracking-[2px]">CALL</text>
-                <text x="130" y="85" textAnchor="middle" fill="rgba(201,168,76,0.2)" className="font-bebas text-[7px] tracking-[2px]">VISIT</text>
-                <text x="225" y="85" textAnchor="middle" fill="rgba(201,168,76,0.2)" className="font-bebas text-[7px] tracking-[2px]">EMAIL</text>
-                <text x="295" y="85" textAnchor="middle" fill="rgba(201,168,76,0.2)" className="font-bebas text-[7px] tracking-[2px]">WHATSAPP</text>
-              </svg>
-            </div>
+            {/* Bottom animated telemetry coordinates indicator removed */}
           </div>
 
         </div>
