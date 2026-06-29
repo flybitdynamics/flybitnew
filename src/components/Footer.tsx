@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { DEFAULT_LOGO } from '@/lib/public-assets';
 
 interface FooterProps {
@@ -101,69 +102,44 @@ export default function Footer({ onOpenModal }: FooterProps) {
           </div>
           <ul className="foot-links space-y-3.5">
             <li>
-              <button
-                onClick={() =>
-                  onOpenModal(
-                    'Wedding Shows',
-                    'FLYBIT wedding drone shows — from 200-drone intimates to 2000-drone grand finales.'
-                  )
-                }
-                className="text-text-muted hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none bg-transparent p-0 border-none text-left"
+              <Link
+                href="/services?select=weddings"
+                className="text-text-muted hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none block text-left"
               >
                 Wedding Shows
-              </button>
+              </Link>
             </li>
             <li>
-              <button
-                onClick={() =>
-                  onOpenModal(
-                    'Corporate Events',
-                    'Brand launches, team events, investor days — aerial experiences that create viral moments.'
-                  )
-                }
-                className="text-text-muted hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none bg-transparent p-0 border-none text-left"
+              <Link
+                href="/services?select=corporate"
+                className="text-text-muted hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none block text-left"
               >
                 Corporate Events
-              </button>
+              </Link>
             </li>
             <li>
-              <button
-                onClick={() =>
-                  onOpenModal(
-                    'Festivals',
-                    'Music-synced shows for Diwali, New Year, concerts, and cultural festivals across India.'
-                  )
-                }
-                className="text-text-muted hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none bg-transparent p-0 border-none text-left"
+              <Link
+                href="/services?select=social"
+                className="text-text-muted hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none block text-left"
               >
                 Festivals
-              </button>
+              </Link>
             </li>
             <li>
-              <button
-                onClick={() =>
-                  onOpenModal(
-                    'Government Events',
-                    'Republic Day, Independence Day, state events — with full VVIP-grade security clearances.'
-                  )
-                }
-                className="text-text-muted hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none bg-transparent p-0 border-none text-left"
+              <Link
+                href="/services?select=government"
+                className="text-text-muted hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none block text-left"
               >
                 Government
-              </button>
+              </Link>
             </li>
             <li>
-              <button
-                onClick={() =>
-                  onOpenModal(
-                    'Custom Shows',
-                    'Portraits, mascots, animated sequences — anything you imagine, we fly.'
-                  )
-                }
-                className="text-text-muted hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none bg-transparent p-0 border-none text-left"
+              <Link
+                href="/services?select=all&scroll=custom"
+                className="text-text-muted hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none block text-left"
               >
                 Custom Shows
-              </button>
+              </Link>
             </li>
           </ul>
         </div>

@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ServiceImageSlider from './ServiceImageSlider';
 import { SERVICE_IMAGES, type ServiceImageCategory } from '@/lib/services/serviceImages';
 
@@ -266,6 +266,7 @@ function ServiceFeaturedCard({
 }) {
   return (
     <div
+      id={service.id}
       className="srv-card bg-dark p-8 md:p-14 relative group overflow-hidden transition-all duration-300 hover:bg-white/[0.02] border-b border-border/10 cursor-none"
       onClick={() => onOpenModal(service.modalTitle, service.modalDesc)}
     >
@@ -306,6 +307,33 @@ function ServiceFeaturedCard({
 
 export default function ServicesFilterDetailed({ onOpenModal }: ServicesFilterDetailedProps) {
   const [activeCategory, setActiveCategory] = useState('all');
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const select = params.get('select');
+      if (select) {
+        const isValidCat = CATEGORIES.some((cat) => cat.id === select);
+        if (isValidCat) {
+          setActiveCategory(select);
+        }
+      }
+      
+      const scroll = params.get('scroll');
+      if (scroll || select) {
+        setTimeout(() => {
+          const targetId = scroll || select;
+          const element = document.getElementById(targetId || '');
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          } else {
+            const sec = document.getElementById('services');
+            if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }, 300);
+      }
+    }
+  }, []);
 
   const matchesCategory = (cardCats: string[]) => {
     if (activeCategory === 'all') return true;
