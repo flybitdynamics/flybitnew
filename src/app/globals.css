@@ -299,8 +299,10 @@ input, textarea {
 .clients-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 1.5px;
-  background: var(--color-border);
+  background: transparent;
+  gap: 0;
+  border-top: 1px solid var(--color-border);
+  border-left: 1px solid var(--color-border);
 }
 .client-card {
   background: var(--color-dark);
@@ -313,6 +315,8 @@ input, textarea {
   position: relative;
   overflow: hidden;
   transition: background .3s;
+  border-right: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
 }
 .client-card:hover {
   background: var(--color-dark-3);

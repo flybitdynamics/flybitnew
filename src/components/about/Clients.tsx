@@ -52,8 +52,6 @@ export default function Clients({ onOpenModal }: ClientsProps) {
     <div className="client-card" onClick={() => openModal(`Government Events`, `Republic Day, Independence Day and cultural tourism shows for state government clients across Rajasthan and Gujarat.`)}><div className="client-name">Satdham Vidyamandir</div><div className="client-type">School Event</div></div>
     <div className="client-card" onClick={() => openModal(`DGP Cup`, `FLYBIT executed a spectacular drone light show for the DGP Cup, featuring athletic formations, sports animations, and tournament logo reveals in the sky.`)}><div className="client-name">Govindpur</div><div className="client-type">Gramjan Mandal</div></div>
     <div className="client-card" onClick={() => openModal(`DGP Cup`, `FLYBIT executed a spectacular drone light show for the DGP Cup, featuring athletic formations, sports animations, and tournament logo reveals in the sky.`)}><div className="client-name">KKV-Khodaldham</div><div className="client-type">Spiritual Event</div></div>
-
-
   </div>
 </section>
 

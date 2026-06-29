@@ -1,5 +1,6 @@
 'use client';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import DatePicker from './DatePicker';
 
 export default function ContactMain() {
   const [formData, setFormData] = useState({
@@ -22,8 +23,31 @@ export default function ContactMain() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [toastType, setToastType] = useState<'success' | 'error'>('success');
   const [toastText, setToastText] = useState('');
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const isSubmittingRef = useRef(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const eventTypes = [
+    'Social / Wedding',
+    'Corporate Event',
+    'Government / National',
+    'Product Launch',
+    'Spiritual Gathering',
+    'Sports & Entertainment',
+    'Technical Partnership',
+    'Other'
+  ];
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -199,26 +223,56 @@ export default function ContactMain() {
                     Event Type <span className="text-gold ml-0.5">*</span>
                   </label>
                   
-                  <select 
-                    value={formData.eventType}
-                    onChange={(e) => handleInputChange('eventType', e.target.value)}
-                    className="form-select bg-dark-3 border border-gold/10 text-text px-5 py-3.5 font-sans text-[0.85rem] rounded-[2px] outline-none transition-all w-full cursor-none appearance-none"
-                    style={{
-                      backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237a6530' stroke-width='1.5' fill='none'/%3E%3C/svg%3E")`,
-                      backgroundRepeat: 'no-repeat',
-                      backgroundPosition: 'right 1.2rem center'
-                    }}
-                  >
-                    <option value="" disabled>Select event type</option>
-                    <option>Social / Wedding</option>
-                    <option>Corporate Event</option>
-                    <option>Government / National</option>
-                    <option>Product Launch</option>
-                    <option>Spiritual Gathering</option>
-                    <option>Sports & Entertainment</option>
-                    <option>Technical Partnership</option>
-                    <option>Other</option>
-                  </select>
+                  <div className="relative" ref={dropdownRef}>
+                    <div
+                      onClick={() => !isSubmitting && setDropdownOpen(!dropdownOpen)}
+                      className="bg-dark-3 border text-text px-5 py-3.5 font-sans text-[0.85rem] rounded-[2px] outline-none transition-all w-full cursor-pointer flex justify-between items-center select-none"
+                      style={{
+                        borderColor: 'rgba(201,168,76,0.1)'
+                      }}
+                    >
+                      <span className={formData.eventType ? 'text-text' : 'text-text/40'}>
+                        {formData.eventType || 'Select event type'}
+                      </span>
+                      <svg 
+                        className={`fill-current h-4 w-4 text-text-muted transition-transform duration-300 ${dropdownOpen ? 'rotate-180 text-gold' : ''}`}
+                        viewBox="0 0 20 20"
+                      >
+                        <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" fill="#7a6530" />
+                      </svg>
+                    </div>
+
+                    {dropdownOpen && (
+                      <div className="absolute top-[calc(100%+4px)] left-0 right-0 bg-[#131313] border border-gold/10 rounded-[2px] shadow-2xl z-[600] overflow-hidden max-h-[220px] overflow-y-auto">
+                        {eventTypes.map((type) => (
+                          <div
+                            key={type}
+                            onClick={() => {
+                              handleInputChange('eventType', type);
+                              setDropdownOpen(false);
+                            }}
+                            className="px-5 py-3 hover:bg-gold/10 hover:text-gold text-[0.85rem] text-text cursor-pointer transition-colors duration-150 flex items-center justify-between"
+                          >
+                            <span>{type}</span>
+                            {formData.eventType === type && (
+                              <span className="text-gold text-[0.7rem]">✦</span>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    <select 
+                      value={formData.eventType}
+                      onChange={(e) => handleInputChange('eventType', e.target.value)}
+                      className="absolute inset-0 opacity-0 pointer-events-none w-full h-full"
+                    >
+                      <option value="" disabled>Select event type</option>
+                      {eventTypes.map((type) => (
+                        <option key={type} value={type}>{type}</option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
               </div>
 
@@ -228,12 +282,10 @@ export default function ContactMain() {
                     Preferred Event Date
                   </label>
                   
-                  <input 
-                    type="date" 
+                  <DatePicker 
                     value={formData.date}
-                    onChange={(e) => handleInputChange('date', e.target.value)}
-                    className="form-input bg-dark-3 border border-gold/10 text-text px-5 py-3.5 font-sans text-[0.85rem] rounded-[2px] outline-none transition-all w-full"
-                    style={{ colorScheme: 'dark' }}
+                    onChange={(date) => handleInputChange('date', date)}
+                    placeholder="dd/mm/yyyy"
                   />
                 </div>
 

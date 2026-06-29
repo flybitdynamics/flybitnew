@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import FadeUp from './FadeUp';
 import { publicAsset } from '@/lib/public-assets';
 
@@ -53,7 +54,7 @@ export default function About({ onOpenModal }: AboutProps) {
           Founded in 2024, FLYBIT Dynamics is India's most awarded drone light show company. We combine military-grade drone technology with cinematic storytelling to create once-in-a-lifetime aerial experiences that leave audiences speechless.
         </p>
         <p className="text-[0.9rem] text-text-muted leading-relaxed max-w-[500px] mt-5">
-            From elegant wedding finales to large-scale aerial spectacles, every Flybit Dynamics Drone Light show is thoughtfully designed, choreographed, and executed entirely in-house.        </p>
+          From elegant wedding finales to large-scale aerial spectacles, every Flybit Dynamics Drone Light show is thoughtfully designed, choreographed, and executed entirely in-house.        </p>
 
         <div className="feat-pills grid grid-cols-2 gap-5 mt-10">
           {pills.map((pill, idx) => (
@@ -67,17 +68,12 @@ export default function About({ onOpenModal }: AboutProps) {
           ))}
         </div>
 
-        <button
-          onClick={() =>
-            onOpenModal(
-              'About FLYBIT',
-              "Learn how FLYBIT Dynamics became India's most trusted drone light show company — 5 years, 150+ shows, zero incidents."
-            )
-          }
-          className="btn-g bg-gold hover:bg-gold-light text-black font-medium px-11 py-4 text-[0.75rem] tracking-[0.18em] uppercase rounded-[2px] transition-all duration-200 cursor-pointer md:cursor-none mt-10 hover:-translate-y-1 inline-block"
+        <Link
+          href="/about"
+          className="btn-g bg-gold hover:bg-gold-light text-black font-medium px-11 py-4 text-[0.75rem] tracking-[0.18em] uppercase rounded-[2px] transition-all duration-200 cursor-pointer md:cursor-none mt-10 hover:-translate-y-1 inline-block text-center"
         >
           Discover Our Story →
-        </button>
+        </Link>
       </FadeUp>
     </section>
   );
