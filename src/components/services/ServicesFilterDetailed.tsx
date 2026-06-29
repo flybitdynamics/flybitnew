@@ -1,5 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import ServiceImageSlider from './ServiceImageSlider';
 import { SERVICE_IMAGES, type ServiceImageCategory } from '@/lib/services/serviceImages';
 
@@ -306,34 +307,29 @@ function ServiceFeaturedCard({
 }
 
 export default function ServicesFilterDetailed({ onOpenModal }: ServicesFilterDetailedProps) {
+  const searchParams = useSearchParams();
   const [activeCategory, setActiveCategory] = useState('all');
+  const [highlightFlash, setHighlightFlash] = useState(false);
+  const filterBarRef = React.useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search);
-      const select = params.get('select');
-      if (select) {
-        const isValidCat = CATEGORIES.some((cat) => cat.id === select);
-        if (isValidCat) {
-          setActiveCategory(select);
-        }
-      }
-      
-      const scroll = params.get('scroll');
-      if (scroll || select) {
+    const select = searchParams.get('select');
+    if (select) {
+      const isValidCat = CATEGORIES.some((cat) => cat.id === select);
+      if (isValidCat) {
+        setActiveCategory(select);
+        // Wait for page transition to complete, then scroll
         setTimeout(() => {
-          const targetId = scroll || select;
-          const element = document.getElementById(targetId || '');
-          if (element) {
-            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          } else {
-            const sec = document.getElementById('services');
-            if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          if (filterBarRef.current) {
+            filterBarRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            // Brief flash to draw attention to the active tab
+            setHighlightFlash(true);
+            setTimeout(() => setHighlightFlash(false), 800);
           }
         }, 300);
       }
     }
-  }, []);
+  }, [searchParams]);
 
   const matchesCategory = (cardCats: string[]) => {
     if (activeCategory === 'all') return true;
@@ -354,14 +350,14 @@ export default function ServicesFilterDetailed({ onOpenModal }: ServicesFilterDe
           </h2>
         </div>
 
-        <div className="srv-filter flex gap-2 flex-wrap mb-16">
+        <div ref={filterBarRef} className="srv-filter flex gap-2 flex-wrap mb-16">
           {CATEGORIES.map((cat) => (
             <button
               key={cat.id}
               onClick={() => setActiveCategory(cat.id)}
               className={`px-6 py-2.5 font-sans text-[0.7rem] tracking-[0.14em] uppercase border transition-all duration-300 rounded-[2px] cursor-none ${
                 activeCategory === cat.id
-                  ? 'bg-gold border-gold text-black font-medium'
+                  ? `bg-gold border-gold text-black font-medium${highlightFlash ? ' ring-2 ring-gold/60 ring-offset-1 ring-offset-black' : ''}`
                   : 'bg-transparent border-border hover:border-gold hover:text-gold text-text-muted'
               }`}
             >

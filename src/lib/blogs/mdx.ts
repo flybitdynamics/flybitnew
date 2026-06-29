@@ -127,7 +127,8 @@ export function markdownToHtml(markdown: string): string {
     ) {
       continue;
     }
-    blocks[i] = `<p>${block}</p>`;
+    const normalizedBlock = block.replace(/\r?\n/g, ' ');
+    blocks[i] = `<p>${normalizedBlock}</p>`;
   }
   html = blocks.join('\n\n');
 

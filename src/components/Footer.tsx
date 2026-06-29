@@ -103,10 +103,18 @@ export default function Footer({ onOpenModal }: FooterProps) {
           <ul className="foot-links space-y-3.5">
             <li>
               <Link
+                href="/services?select=social"
+                className="text-text-muted hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none block text-left"
+              >
+                Social Events
+              </Link>
+            </li>
+            <li>
+              <Link
                 href="/services?select=weddings"
                 className="text-text-muted hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none block text-left"
               >
-                Wedding Shows
+                Weddings
               </Link>
             </li>
             <li>
@@ -114,15 +122,7 @@ export default function Footer({ onOpenModal }: FooterProps) {
                 href="/services?select=corporate"
                 className="text-text-muted hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none block text-left"
               >
-                Corporate Events
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/services?select=social"
-                className="text-text-muted hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none block text-left"
-              >
-                Festivals
+                Corporate
               </Link>
             </li>
             <li>
@@ -135,10 +135,26 @@ export default function Footer({ onOpenModal }: FooterProps) {
             </li>
             <li>
               <Link
-                href="/services?select=all&scroll=custom"
+                href="/services?select=launch"
                 className="text-text-muted hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none block text-left"
               >
-                Custom Shows
+                Product Launch
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/services?select=spiritual"
+                className="text-text-muted hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none block text-left"
+              >
+                Spiritual
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/services?select=sports"
+                className="text-text-muted hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none block text-left"
+              >
+                Sports &amp; Entertainment
               </Link>
             </li>
           </ul>

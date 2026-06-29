@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import BookingModal from '@/components/BookingModal';
@@ -80,7 +80,9 @@ export default function ServicesPage() {
       {/* Services Subsections */}
       <HeroServices />
       <IntroStats />
-      <ServicesFilterDetailed onOpenModal={openModal} />
+      <Suspense fallback={<div className="h-40 bg-black" />}>
+        <ServicesFilterDetailed onOpenModal={openModal} />
+      </Suspense>
       <ServicesProcess />
       <ServicesWhyChooseUs />
       <ServicesCta onOpenModal={openModal} />

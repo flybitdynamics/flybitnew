@@ -18,19 +18,78 @@ import { DEFAULT_BLOG_IMAGE } from '@/lib/public-assets';
 
 function formatBlogContent(content: string): string {
   let formatted = content;
-  
+
   // Replace HTML entities like &amp; with & in headers/text
   formatted = formatted.replace(/&amp;/g, '&');
-  
-  // Format numbered paragraphs (like "1 Concept & Story Development") into beautiful subheadings
+
+  // Strip <br> tags (replace with spaces)
+  formatted = formatted.replace(/<br\s*\/?>/gi, ' ');
+
+  // ── STEP 1: Convert numbered headings into styled h3 elements ─────────────
+  // Match <p> containing only a number + title (like "1 Concept & Story Development")
   formatted = formatted.replace(
-    /<p>(\d+)\s+([^<]+)<\/p>/g,
+    /<p[^>]*>\s*(\d+)[\s.\)]+([^<]{2,80}?)\s*<\/p>/g,
     (_, num, text) => {
-      if (text.length > 80) return `<p>${num} ${text}</p>`;
-      return `<h3 class="text-gold font-sans font-semibold text-[1.15rem] tracking-wide mt-8 mb-3">${num}. ${text}</h3>`;
+      return `<h3 style="font-family:var(--font-sans),sans-serif;font-size:1rem;font-weight:700;color:#ffffff;margin:1.8rem 0 0.5rem;display:block;letter-spacing:0.02em">${num}. ${text.trim()}</h3>`;
     }
   );
-  
+
+  // ── STEP 1b: Detect non-numbered title lines (short lines without terminal punctuation) ──
+  // These are section headings like "Step-by-Step: Designing Aerial Animations",
+  // "Why Aerial Animation Design Matters", "Flybit Dynamics – Drone Show Company in India"
+  formatted = formatted.replace(
+    /<p[^>]*>\s*([^<]{5,80}?)\s*<\/p>/g,
+    (match, text) => {
+      const trimmed = text.trim();
+      // Must not end with sentence-ending punctuation AND have no lowercase start
+      // (these are title-case heading lines)
+      const looksLikeHeading =
+        !/[.!?]$/.test(trimmed) &&           // doesn't end in period/! 
+        trimmed.split(' ').length <= 12 &&    // 12 words or fewer
+        /^[A-Z0-9]/.test(trimmed);           // starts with capital letter or number
+      if (looksLikeHeading) {
+        return `<h4 style="font-family:var(--font-sans),sans-serif;font-size:0.95rem;font-weight:700;color:#ffffff;margin:1.4rem 0 0.4rem;display:block">${trimmed}</h4>`;
+      }
+      return match;
+    }
+  );
+
+  // ── STEP 2: Convert bullet point paragraphs to proper lists ───────────────
+  // A <p> that contains bullet characters (•) gets converted to a list item
+  formatted = formatted.replace(
+    /<p[^>]*>\s*[•·]\s*([^<]+?)\s*<\/p>/g,
+    `<li>$1</li>`
+  );
+
+  // Wrap consecutive <li> elements in a <ul>
+  formatted = formatted.replace(
+    /(<li>[\s\S]*?<\/li>)(\s*<li>[\s\S]*?<\/li>)*/g,
+    (match) => `<ul class="blog-list">${match}</ul>`
+  );
+
+  // ── STEP 3: Smart paragraph merging ───────────────────────────────────────
+  // Only merge two consecutive <p> tags if the FIRST one ends mid-sentence
+  // (i.e., does NOT end with . ! ? : or is not a heading-like short line)
+  // This preserves intentional paragraph breaks while fixing line-wrapping artifacts
+  let changed = true;
+  while (changed) {
+    changed = false;
+    formatted = formatted.replace(
+      /<p([^>]*)>([\s\S]*?)<\/p>\s*<p([^>]*)>/g,
+      (match, attrs1, inner1, attrs2) => {
+        // Trim inner content
+        const trimmed = inner1.trim();
+        // If the first p ends with sentence-ending punctuation, keep as separate p
+        if (/[.!?:—]$/.test(trimmed)) {
+          return match; // no merge
+        }
+        // If very short (likely a continuation line), merge
+        changed = true;
+        return `<p${attrs1}>${inner1} `;
+      }
+    );
+  }
+
   return formatted;
 }
 
@@ -90,7 +149,7 @@ export default function BlogPageView({ blog, relatedBlogs }: BlogPageViewProps) 
         </header>
 
         {/* Featured Image */}
-        <div className="relative aspect-[21/9] w-full bg-dark-2 border border-border/60 rounded-[3px] overflow-hidden mb-12">
+        <div className="relative aspect-[18/10] w-full bg-dark-2 border border-border/60 rounded-[3px] overflow-hidden mb-12">
           <Image
             src={blog.image || DEFAULT_BLOG_IMAGE}
             alt={blog.title}
@@ -102,22 +161,31 @@ export default function BlogPageView({ blog, relatedBlogs }: BlogPageViewProps) 
         </div>
 
         {/* Content Layout */}
-        <div className="w-full">
+        <div className="w-full" style={{ width: '100%', maxWidth: '100%' }}>
           {/* Inline Table of Contents if present */}
-          <div className="max-w-md mb-8">
+          {/* <div className="max-w-md mb-8">
             <TableOfContents />
-          </div>
+          </div> */}
 
-          <article className="w-full">
-            <style jsx global>{`
-              .prose-story, .prose-story p, .prose-story h2, .prose-story h3, .prose-story ul, .prose-story ol {
+          <article className="w-full" style={{ width: '100%', maxWidth: '100%' }}>
+            <style dangerouslySetInnerHTML={{ __html: `
+              .prose-story, 
+              .prose-story p, 
+              .prose-story span, 
+              .prose-story div, 
+              .prose-story h2, 
+              .prose-story h3, 
+              .prose-story ul, 
+              .prose-story ol {
                 max-width: 100% !important;
                 width: 100% !important;
+                white-space: normal !important;
               }
-            `}</style>
+            ` }} />
             {/* The core compiled HTML content inside our styling prose */}
             <div
-              className="prose-story font-sans text-[0.92rem] leading-relaxed text-white w-full max-w-none"
+              className="prose-story font-sans text-[0.92rem] leading-relaxed text-white w-full"
+              style={{ width: '100%', maxWidth: '100%' }}
               dangerouslySetInnerHTML={{ __html: formatBlogContent(blog.content) }}
             />
 
@@ -184,7 +252,7 @@ export default function BlogPageView({ blog, relatedBlogs }: BlogPageViewProps) 
               Book a Show
             </button>
             <Link
-              href="/portfolio"
+              href="/stories"
               className="border border-text/18 hover:border-gold text-text hover:text-gold px-8 py-3 text-[0.72rem] tracking-[0.16em] uppercase rounded-[2px] transition-colors"
             >
               View Portfolio
