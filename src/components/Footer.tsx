@@ -68,28 +68,28 @@ export default function Footer({ onOpenModal }: FooterProps) {
           </div>
           <ul className="foot-links space-y-3.5">
             <li>
-              <a href="#about" className="text-text-muted hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none">
-                About Us
+              <a href="/about" className="text-text-muted hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none">
+                About
               </a>
             </li>
             <li>
-              <a href="#services" className="text-text-muted hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none">
+              <a href="/services" className="text-text-muted hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none">
                 Services
-              </a>
-            </li>
-            <li>
-              <a href="#showcase" className="text-text-muted hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none">
-                Showcase
-              </a>
-            </li>
-            <li>
-              <a href="#process" className="text-text-muted hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none">
-                Our Process
               </a>
             </li>
             <li>
               <a href="/stories" className="text-text-muted hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none">
                 Stories & Insights
+              </a>
+            </li>
+            <li>
+              <a href="/blog" className="text-text-muted hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none">
+                Blog
+              </a>
+            </li>
+            <li>
+              <a href="/technology" className="text-text-muted hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none">
+                Technology
               </a>
             </li>
           </ul>

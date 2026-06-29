@@ -70,7 +70,7 @@ export default function ServiceImageSlider({ images, alt }: ServiceImageSliderPr
         style={{ transform: `translateX(-${currentIndex * 100}%)` }}
       >
         {extendedImages.map((src, idx) => (
-          <div key={`${src}-${idx}`} className="relative flex-shrink-0 w-full h-full">
+          <div key={`${src}-${idx}`} className="relative flex-shrink-0 min-w-full w-full h-full">
             <img
               src={encodeServiceImagePath(src)}
               alt={alt}

@@ -179,13 +179,7 @@ export default function Showcase({ onOpenModal }: ShowcaseProps) {
             <FadeUp
               key={idx}
               delay={idx * 60}
-              onClick={() =>
-                onOpenModal(
-                  show.name,
-                  `Category: ${show.tag}\n\nThis ${show.tag.toLowerCase()} show featured stunning formations tailored specifically for the event.`
-                )
-              }
-              className="show-card shrink-0 w-[280px] md:w-[340px] h-[380px] md:h-[440px] bg-dark-3 relative overflow-hidden border border-gold/[0.06] hover:border-gold/25 cursor-pointer md:cursor-none transition-colors duration-300 group"
+              className="show-card shrink-0 w-[280px] md:w-[340px] h-[380px] md:h-[440px] bg-dark-3 relative overflow-hidden border border-gold/[0.06] hover:border-gold/25 md:cursor-none transition-colors duration-300 group"
             >
               <div className="show-card-bg absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-105">
                 <div
