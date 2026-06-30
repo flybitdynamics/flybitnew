@@ -217,14 +217,14 @@ export default function Hero({ onOpenModal }: HeroProps) {
 
       {/* Hero Content */}
       <div className="relative z-10 text-left px-6 md:px-20 max-w-[1440px] w-full mx-auto select-none pt-6">
-        <div className="text-[0.65rem] tracking-[0.4em] uppercase text-gold mb-10 flex items-center justify-start gap-4 font-sans">
+        <h1 className="text-[0.65rem] tracking-[0.4em] uppercase text-gold mb-10 flex items-center justify-start gap-4 font-sans font-medium">
           <span className="w-10 h-[1px] bg-gold-dim" />
           India's Premier Drone Light Show Company
-        </div>
-        <h1 className="font-bebas text-[clamp(4.5rem,13vw,12rem)] leading-[0.86] tracking-[0.03em] mb-8">
+        </h1>
+        <div className="font-bebas text-[clamp(4.5rem,13vw,12rem)] leading-[0.86] tracking-[0.03em] mb-8">
           <span className="text-gold block">FLYBIT</span>
           <span className="text-text block">DYNAMICS</span>
-        </h1>
+        </div>
         <p className="text-[0.95rem] text-white max-w-[480px] mb-14 leading-[1.9] tracking-[0.02em] font-sans">
           India’s trusted drone show company — delivering unforgettable aerial experiences with 250+ synchronized drones for weddings, corporate events, festivals, and grand celebrations.
         </p>

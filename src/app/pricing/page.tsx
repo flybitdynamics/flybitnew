@@ -1,0 +1,291 @@
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
+import BookingModal from '@/components/BookingModal';
+import Link from 'next/link';
+
+interface FAQItem {
+  question: string;
+  answer: string;
+}
+
+const FAQ_ITEMS: FAQItem[] = [
+  {
+    question: "What is the average cost of a drone show in India?",
+    answer: "Drone show prices in India typically start from ₹2,50,000 for a basic 100-drone formation and can scale up to ₹15,00,000+ for large-scale choreographies involving 300 to 500+ drones. The final cost depends on the number of drones, show complexity, location, and regulatory permissions."
+  },
+  {
+    question: "How long does a drone show last?",
+    answer: "Most drone light shows last between 8 to 15 minutes. This duration is optimal for audience engagement and is determined by drone battery capacity, payload, weather conditions, and landing margins. A single show can consist of 8 to 12 different formations or designs."
+  },
+  {
+    question: "Are drone shows cheaper than fireworks?",
+    answer: "While the initial cost of a drone light show can be higher than a standard display of traditional fireworks, drone shows offer massive benefits. They are eco-friendly (zero emission and noise pollution), highly customizable (can spell names, show logos, and display specific shapes), safer, and can be repeated or customized for multiple days, making them highly cost-effective for premium branding."
+  },
+  {
+    question: "What permissions are required to host a drone show in India?",
+    answer: "Conducting a drone light show in India requires strictly following DGCA guidelines. This includes securing a No Permission, No Takeoff (NPNT) clearance, local police NOC, air traffic control (ATC) approvals, and ensuring the flight is operated by a DGCA-licensed pilot. FLYBIT Dynamics handles all legal and regulatory permissions end-to-end."
+  },
+  {
+    question: "How much advance booking is required?",
+    answer: "For custom choreographies and government approvals, we recommend booking at least 3 to 4 weeks in advance. This timeline allows us to design and storyboard your animation, run software simulations, obtain DGCA clearances, and conduct site inspections."
+  }
+];
+
+export default function PricingPage() {
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalTitle, setModalTitle] = useState('');
+  const [modalDesc, setModalDesc] = useState('');
+  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
+
+  const openModal = (title: string, description: string) => {
+    setModalTitle(title);
+    setModalDesc(description);
+    setModalOpen(true);
+  };
+
+  const toggleFaq = (idx: number) => {
+    setOpenFaqIndex(openFaqIndex === idx ? null : idx);
+  };
+
+  // Inject FAQPage Schema
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": FAQ_ITEMS.map((item) => ({
+      "@type": "Question",
+      "name": item.question,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": item.answer
+      }
+    }))
+  };
+
+  return (
+    <main className="min-h-screen bg-black text-text selection:bg-gold selection:text-black">
+      {/* Dynamic Schema Injection */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
+
+      {/* Navigation Header */}
+      <Navbar onOpenModal={openModal} />
+
+      {/* Hero Section */}
+      <section className="relative pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden bg-black">
+        {/* Grid and Radial Glow Background */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            backgroundImage: `
+              radial-gradient(ellipse 70% 60% at 50% 15%, rgba(201, 168, 76, 0.08) 0%, transparent 60%),
+              linear-gradient(rgba(201, 168, 76, 0.02) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(201, 168, 76, 0.02) 1px, transparent 1px)
+            `,
+            backgroundSize: '100% 100%, 60px 60px, 60px 60px',
+          }}
+        />
+
+        <div className="relative z-10 max-w-[1440px] mx-auto px-6 md:px-20 text-center">
+          <div className="text-[0.65rem] tracking-[0.4em] uppercase text-gold mb-6 flex items-center justify-center gap-3 font-sans">
+            <span className="w-6 h-[1px] bg-gold-dim" />
+            Pricing &amp; Packages
+            <span className="w-6 h-[1px] bg-gold-dim" />
+          </div>
+          <h1 className="font-cormorant text-5xl md:text-7xl font-light text-text leading-tight mb-8">
+            How Much Does a Drone Show <br className="hidden md:inline" />
+            <em className="text-gold italic">Cost in India?</em>
+          </h1>
+          <p className="text-[0.95rem] text-text-muted max-w-[650px] mx-auto leading-[1.8] font-sans">
+            Transparent pricing packages based on drone swarm scale, formation complexity, and show choreography. We design customized aerial displays tailored perfectly to your budget.
+          </p>
+        </div>
+      </section>
+
+      {/* Pricing Packages Table */}
+      <section className="py-12 px-6 md:px-20 max-w-[1440px] mx-auto">
+        <div className="border border-gold/15 rounded-lg bg-white/[0.01] backdrop-blur-md overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse min-w-[700px] font-sans">
+              <thead>
+                <tr className="border-b border-gold/15 bg-gold/[0.02] text-[0.72rem] tracking-[0.2em] uppercase text-gold font-medium">
+                  <th className="py-6 px-8">Drone Count</th>
+                  <th className="py-6 px-6">Show Capabilities</th>
+                  <th className="py-6 px-6">Avg. Duration</th>
+                  <th className="py-6 px-6">Best Suited For</th>
+                  <th className="py-6 px-8 text-right">Starting Price</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gold/10 text-[0.88rem]">
+                <tr className="hover:bg-gold/[0.01] transition-colors duration-200">
+                  <td className="py-8 px-8 font-semibold text-text">
+                    <span className="text-gold font-bebas text-2xl tracking-[0.05em] block">100 DRONES</span>
+                    <span className="text-xs text-text-muted font-normal">Logo / Simple Formations</span>
+                  </td>
+                  <td className="py-8 px-6 text-text-muted leading-relaxed">
+                    Ideal for corporate logo launches &amp; basic text animations. Max 4 custom 2D formations.
+                  </td>
+                  <td className="py-8 px-6 text-text font-medium">Up to 4 mins</td>
+                  <td className="py-8 px-6 text-text-muted">
+                    Intimate Weddings, Brand Identity Reveals, Private Celebrations.
+                  </td>
+                  <td className="py-8 px-8 text-right">
+                    <span className="text-gold font-bebas text-2xl tracking-[0.05em] block">₹2,50,000</span>
+                    <span className="text-xs text-text-dim block">+ GST &amp; Logistics</span>
+                  </td>
+                </tr>
+                <tr className="hover:bg-gold/[0.01] transition-colors duration-200">
+                  <td className="py-8 px-8 font-semibold text-text">
+                    <span className="text-gold font-bebas text-2xl tracking-[0.05em] block">200 DRONES</span>
+                    <span className="text-xs text-text-muted font-normal">Complex 2D &amp; 3D Designs</span>
+                  </td>
+                  <td className="py-8 px-6 text-text-muted leading-relaxed">
+                    Stunning transitions, vibrant color changes, dynamic animations. Max 7 custom formations.
+                  </td>
+                  <td className="py-8 px-6 text-text font-medium">Up to 5 mins</td>
+                  <td className="py-8 px-6 text-text-muted">
+                    Grand Weddings, Corporate Gala Events, Regional Festivals.
+                  </td>
+                  <td className="py-8 px-8 text-right">
+                    <span className="text-gold font-bebas text-2xl tracking-[0.05em] block">₹4,00,000</span>
+                    <span className="text-xs text-text-dim block">+ GST &amp; Logistics</span>
+                  </td>
+                </tr>
+                <tr className="hover:bg-gold/[0.01] transition-colors duration-200 bg-gold/[0.01]">
+                  <td className="py-8 px-8 font-semibold text-text">
+                    <span className="text-gold font-bebas text-2xl tracking-[0.05em] block">300 DRONES</span>
+                    <span className="text-xs text-text-muted font-normal">Full 3D Swarm Animation</span>
+                  </td>
+                  <td className="py-8 px-6 text-text-muted leading-relaxed">
+                    Ultra-precise, cinematic storyboarding. 3D animated figures &amp; custom soundtracks. Max 10 formations.
+                  </td>
+                  <td className="py-8 px-6 text-text font-medium">Up to 6 mins</td>
+                  <td className="py-8 px-6 text-text-muted">
+                    National Celebrations, Sports Openings, Major Brand Launches, Music Festivals.
+                  </td>
+                  <td className="py-8 px-8 text-right">
+                    <span className="text-gold font-bebas text-2xl tracking-[0.05em] block">₹5,20,000</span>
+                    <span className="text-xs text-text-dim block">+ GST &amp; Logistics</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div className="py-8 px-8 bg-gold/[0.02] border-t border-gold/15 flex flex-col sm:flex-row justify-between items-center gap-6">
+            <span className="text-xs text-text-muted tracking-[0.05em] text-center sm:text-left font-sans">
+              *Note: Prices mentioned are base operational estimates. Custom requirements and complex animations may affect the cost.
+            </span>
+            <button
+              onClick={() => openModal('Request Customized Pricing', 'Enquire about our drone show packages, customizable elements, and specific local requirements.')}
+              className="bg-gold hover:bg-gold-light text-black font-semibold px-8 py-3.5 text-[0.72rem] tracking-[0.15em] uppercase rounded-[2px] transition-all duration-200"
+            >
+              Get Custom Estimate
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Factors Affecting Cost Section */}
+      <section className="py-20 bg-dark-2/20">
+        <div className="max-w-[1440px] mx-auto px-6 md:px-20">
+          <div className="text-center mb-16">
+            <div className="text-[0.62rem] tracking-[0.35em] uppercase text-gold mb-4">
+              Cost Breakdown
+            </div>
+            <h2 className="font-cormorant text-4xl md:text-5xl font-light text-text">
+              What Drives Drone Show <em className="text-gold italic">Pricing?</em>
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="p-8 border border-gold/10 rounded bg-white/[0.005] hover:border-gold/30 transition-all duration-300">
+              <span className="font-bebas text-gold text-3xl tracking-[0.05em] block mb-4">01. Drone Count</span>
+              <p className="text-[0.88rem] text-text-muted leading-relaxed font-sans">
+                The primary cost driver. A higher count of drones allows for richer details, high-density 3D models, and larger visual canvas visibility.
+              </p>
+            </div>
+
+            <div className="p-8 border border-gold/10 rounded bg-white/[0.005] hover:border-gold/30 transition-all duration-300">
+              <span className="font-bebas text-gold text-3xl tracking-[0.05em] block mb-4">02. Animation &amp; Script</span>
+              <p className="text-[0.88rem] text-text-muted leading-relaxed font-sans">
+                Custom storyboards require extensive design testing. Reusing stock formations is more affordable than developing a completely new 3D narrative.
+              </p>
+            </div>
+
+            <div className="p-8 border border-gold/10 rounded bg-white/[0.005] hover:border-gold/30 transition-all duration-300">
+              <span className="font-bebas text-gold text-3xl tracking-[0.05em] block mb-4">03. Site &amp; Permissions</span>
+              <p className="text-[0.88rem] text-text-muted leading-relaxed font-sans">
+                Sourcing local DGCA permissions, local airspace coordination, and flight setup varies by city, with strict requirements in heavy airspace.
+              </p>
+            </div>
+
+            <div className="p-8 border border-gold/10 rounded bg-white/[0.005] hover:border-gold/30 transition-all duration-300">
+              <span className="font-bebas text-gold text-3xl tracking-[0.05em] block mb-4">04. Logistics &amp; Travel</span>
+              <p className="text-[0.88rem] text-text-muted leading-relaxed font-sans">
+                Transporting highly sensitive technical hardware, drone swarms, batteries, and the ground crew safely via road/air to the event location.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Interactive FAQ Section */}
+      <section className="py-20 max-w-[900px] mx-auto px-6">
+        <div className="text-center mb-16">
+          <div className="text-[0.62rem] tracking-[0.35em] uppercase text-gold mb-4">
+            Got Questions?
+          </div>
+          <h2 className="font-cormorant text-4xl md:text-5xl font-light text-text">
+            Frequently Asked <em className="text-gold italic">Questions</em>
+          </h2>
+        </div>
+
+        <div className="space-y-4 font-sans">
+          {FAQ_ITEMS.map((faq, idx) => {
+            const isOpen = openFaqIndex === idx;
+            return (
+              <div 
+                key={idx}
+                className="border border-gold/10 rounded overflow-hidden bg-white/[0.005] transition-all duration-300"
+              >
+                <button
+                  onClick={() => toggleFaq(idx)}
+                  className="w-full text-left py-5 px-6 flex justify-between items-center text-text hover:text-gold transition-colors duration-200"
+                >
+                  <span className="font-medium text-[0.95rem]">{faq.question}</span>
+                  <span className="text-gold text-xl font-light">
+                    {isOpen ? '−' : '+'}
+                  </span>
+                </button>
+                <div 
+                  className={`px-6 overflow-hidden transition-all duration-300 ease-in-out ${
+                    isOpen ? 'max-h-[250px] pb-6 opacity-100' : 'max-h-0 opacity-0'
+                  }`}
+                >
+                  <p className="text-[0.88rem] text-text-muted leading-relaxed">
+                    {faq.answer}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* Shared Footer */}
+      <Footer onOpenModal={openModal} />
+
+      {/* Booking Form Modal */}
+      <BookingModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        title={modalTitle}
+        description={modalDesc}
+      />
+    </main>
+  );
+}
