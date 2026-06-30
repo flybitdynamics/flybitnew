@@ -48,7 +48,7 @@ export default function Footer({ onOpenModal }: FooterProps) {
         </div>
       </div> */}
 
-      <div className="footer-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1fr] gap-12 lg:gap-16 mb-10">
+      <div className="footer-grid grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-[2fr_1fr_1fr_1fr_1fr] gap-12 lg:gap-16 mb-10">
         <div className="foot-brand">
           <a href="#" className="inline-block md:cursor-none">
             <img
@@ -86,6 +86,11 @@ export default function Footer({ onOpenModal }: FooterProps) {
               </a>
             </li>
             <li>
+              <a href="/pricing" className="text-text-muted hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none">
+                Pricing Guide
+              </a>
+            </li>
+            <li>
               <a href="/stories" className="text-text-muted hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none">
                 Stories & Insights
               </a>
@@ -99,6 +104,39 @@ export default function Footer({ onOpenModal }: FooterProps) {
               <a href="/technology" className="text-text-muted hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none">
                 Technology
               </a>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <div className="foot-col-title text-[0.62rem] tracking-[0.3em] uppercase text-gold mb-6">
+            Locations
+          </div>
+          <ul className="foot-links space-y-3.5">
+            <li>
+              <Link href="/drone-show-jaipur" className="text-text-muted hover:text-gold text-[0.82rem] transition-colors duration-200 block text-left">
+                Jaipur
+              </Link>
+            </li>
+            <li>
+              <Link href="/drone-light-show-udaipur" className="text-text-muted hover:text-gold text-[0.82rem] transition-colors duration-200 block text-left">
+                Udaipur
+              </Link>
+            </li>
+            <li>
+              <Link href="/drone-show-ahmedabad" className="text-text-muted hover:text-gold text-[0.82rem] transition-colors duration-200 block text-left">
+                Ahmedabad
+              </Link>
+            </li>
+            <li>
+              <Link href="/drone-show-delhi" className="text-text-muted hover:text-gold text-[0.82rem] transition-colors duration-200 block text-left">
+                Delhi NCR
+              </Link>
+            </li>
+            <li>
+              <Link href="/drone-show-mumbai" className="text-text-muted hover:text-gold text-[0.82rem] transition-colors duration-200 block text-left">
+                Mumbai
+              </Link>
             </li>
           </ul>
         </div>

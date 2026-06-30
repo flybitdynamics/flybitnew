@@ -91,6 +91,11 @@ export default function Navbar({ onOpenModal }: NavbarProps) {
             </Link>
           </li>
           <li>
+            <Link href="/pricing" className={getLinkClass('/pricing')}>
+              Pricing
+            </Link>
+          </li>
+          <li>
             <Link href="/stories" className={getLinkClass('/stories')}>
               Portfolio
             </Link>
@@ -181,6 +186,9 @@ export default function Navbar({ onOpenModal }: NavbarProps) {
           </Link>
           <Link href="/services" className={getMobileLinkClass('/services')}>
             Services
+          </Link>
+          <Link href="/pricing" className={getMobileLinkClass('/pricing')}>
+            Pricing
           </Link>
           <Link href="/stories" className={getMobileLinkClass('/stories')}>
             Portfolio
