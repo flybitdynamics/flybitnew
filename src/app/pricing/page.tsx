@@ -13,24 +13,24 @@ interface FAQItem {
 
 const FAQ_ITEMS: FAQItem[] = [
   {
-    question: "What is the average cost of a drone show in India?",
-    answer: "Drone show prices in India typically start from ₹2,50,000 for a basic 100-drone formation and can scale up to ₹15,00,000+ for large-scale choreographies involving 300 to 500+ drones. The final cost depends on the number of drones, show complexity, location, and regulatory permissions."
+    question: "What is a drone light show?",
+    answer: "A drone light show is an aerial entertainment spectacle where a swarm of synchronized, light-emitting drones fly in coordination to form complex 2D and 3D shapes, logos, words, and animations in the night sky. This high-tech light display is controlled by specialized software and a ground control station."
   },
   {
-    question: "How long does a drone show last?",
-    answer: "Most drone light shows last between 8 to 15 minutes. This duration is optimal for audience engagement and is determined by drone battery capacity, payload, weather conditions, and landing margins. A single show can consist of 8 to 12 different formations or designs."
+    question: "What is the average drone show cost in India?",
+    answer: "Drone show prices in India typically start from ₹2,50,000 for a basic 100-drone formation and can scale up to ₹15,00,000+ for large-scale choreographies involving 300 to 500+ drones. The final cost depends on the number of drones, show complexity, location, and regulatory permissions."
   },
   {
     question: "Are drone shows cheaper than fireworks?",
     answer: "While the initial cost of a drone light show can be higher than a standard display of traditional fireworks, drone shows offer massive benefits. They are eco-friendly (zero emission and noise pollution), highly customizable (can spell names, show logos, and display specific shapes), safer, and can be repeated or customized for multiple days, making them highly cost-effective for premium branding."
   },
   {
-    question: "What permissions are required to host a drone show in India?",
-    answer: "Conducting a drone light show in India requires strictly following DGCA guidelines. This includes securing a No Permission, No Takeoff (NPNT) clearance, local police NOC, air traffic control (ATC) approvals, and ensuring the flight is operated by a DGCA-licensed pilot. FLYBIT Dynamics handles all legal and regulatory permissions end-to-end."
+    question: "Where can I find a drone light show near me in India?",
+    answer: "FLYBIT Dynamics operates pan-India, delivering custom drone light shows near you across key cities including Ahmedabad, Jaipur, Udaipur, Delhi NCR, and Mumbai. We coordinate all local site planning, logistics, and permissions to bring the show directly to your event venue."
   },
   {
-    question: "How much advance booking is required?",
-    answer: "For custom choreographies and government approvals, we recommend booking at least 3 to 4 weeks in advance. This timeline allows us to design and storyboard your animation, run software simulations, obtain DGCA clearances, and conduct site inspections."
+    question: "What permissions are required to host a drone show in India?",
+    answer: "Conducting a drone light show in India requires strictly following DGCA guidelines. This includes securing a No Permission, No Takeoff (NPNT) clearance, local police NOC, air traffic control (ATC) approvals, and ensuring the flight is operated by a DGCA-licensed pilot. FLYBIT Dynamics handles all legal and regulatory permissions end-to-end."
   }
 ];
 
