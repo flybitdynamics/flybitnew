@@ -92,7 +92,7 @@ export default function ServicesWhyChooseUs() {
                 {adv.title}
               </h3>
               
-              <p className="text-[0.8rem] text-text-muted leading-[1.9] font-sans">
+              <p className="text-[0.92rem] text-text-muted leading-[1.8] font-sans">
                 {adv.desc}
               </p>
             </div>

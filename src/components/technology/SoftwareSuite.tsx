@@ -246,7 +246,7 @@ export default function SoftwareSuite() {
                 {activeTab.title}
               </h3>
               
-              <p className="text-[0.85rem] text-text-muted leading-[1.95] font-sans mb-8">
+              <p className="text-[0.92rem] text-text-muted leading-[1.8] font-sans mb-8">
                 {activeTab.desc}
               </p>
 

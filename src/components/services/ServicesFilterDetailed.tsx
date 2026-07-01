@@ -287,7 +287,7 @@ function ServiceFeaturedCard({
           <div className="text-[0.58rem] tracking-[0.3em] uppercase text-gold-dim mb-2">{service.eyebrow}</div>
           <h3 className="font-cormorant text-[2rem] text-text mb-4">{service.title}</h3>
 
-          <p className="text-[0.85rem] text-text-muted leading-[1.9] max-w-[480px] font-sans">{service.description}</p>
+          <p className="text-[0.92rem] text-text-muted leading-[1.8] max-w-[480px] font-sans">{service.description}</p>
 
           <div className="grid grid-cols-2 gap-2.5 mt-8 max-w-[500px]">
             {service.pills.map((pill) => (

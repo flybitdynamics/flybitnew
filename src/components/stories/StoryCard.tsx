@@ -35,7 +35,7 @@ export default function StoryCard({ story, onClick }: StoryCardProps) {
           {story.title}
         </h3>
 
-        <p className="text-[0.8rem] text-text-muted leading-relaxed line-clamp-3 flex-1">
+        <p className="text-[0.92rem] text-text-muted leading-relaxed line-clamp-3 flex-1">
           {story.shortDescription}
         </p>
 

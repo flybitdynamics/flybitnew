@@ -125,7 +125,7 @@ export default function Services({ onOpenModal }: ServicesProps) {
             <div className="srv-name font-cormorant text-2xl text-text mb-4 leading-tight">
               {srv.name}
             </div>
-            <p className="srv-desc text-[0.82rem] text-text-muted leading-relaxed mb-6">
+            <p className="srv-desc text-[0.92rem] text-text-muted leading-relaxed mb-6">
               {srv.desc}
             </p>
 

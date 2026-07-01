@@ -179,7 +179,7 @@ export default function BookingModal({
         <h3 className="font-cormorant text-3xl md:text-[2rem] text-text mb-2 leading-tight">
           {submitted ? 'Enquiry Received!' : title}
         </h3>
-        <p className="text-[0.82rem] text-text-muted mb-8 leading-relaxed">
+        <p className="text-[0.92rem] text-text-muted mb-8 leading-relaxed">
           {submitted
             ? "Thank you for reaching out. Our team will contact you within 24 hours to discuss your event."
             : description}

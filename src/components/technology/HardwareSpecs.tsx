@@ -41,7 +41,7 @@ export default function HardwareSpecs() {
             
             <div className="text-[0.58rem] tracking-[0.3em] uppercase text-gold-dim mb-2 font-sans font-medium">Component 01</div>
             <h3 className="font-cormorant text-[1.7rem] text-text mb-4">Advanced Flight Controller</h3>
-            <p className="text-[0.82rem] text-text-muted leading-[1.9] mb-8 font-sans">
+            <p className="text-[0.92rem] text-text-muted leading-[1.8] mb-8 font-sans">
               Custom-built flight controllers with real-time processing capabilities, giving each drone independent decision-making power while remaining synchronized to the swarm.
             </p>
             
@@ -69,7 +69,7 @@ export default function HardwareSpecs() {
             
             <div className="text-[0.58rem] tracking-[0.3em] uppercase text-gold-dim mb-2 font-sans font-medium">Component 02</div>
             <h3 className="font-cormorant text-[1.7rem] text-text mb-4">GPS & RTK Precision</h3>
-            <p className="text-[0.82rem] text-text-muted leading-[1.9] mb-8 font-sans">
+            <p className="text-[0.92rem] text-text-muted leading-[1.8] mb-8 font-sans">
               Centimeter-level accuracy ensures every drone holds its exact position in any formation — regardless of weather, wind, or interference. Perfect aerial choreography, every time.
             </p>
             
@@ -99,7 +99,7 @@ export default function HardwareSpecs() {
             
             <div className="text-[0.58rem] tracking-[0.3em] uppercase text-gold-dim mb-2 font-sans font-medium">Component 03</div>
             <h3 className="font-cormorant text-[1.7rem] text-text mb-4">Mesh Communication</h3>
-            <p className="text-[0.82rem] text-text-muted leading-[1.9] mb-8 font-sans">
+            <p className="text-[0.92rem] text-text-muted leading-[1.8] mb-8 font-sans">
               A robust peer-to-peer communication network ensures every drone receives its commands — even if ground-to-drone signals are temporarily disrupted by interference or terrain.
             </p>
             
@@ -129,7 +129,7 @@ export default function HardwareSpecs() {
             
             <div className="text-[0.58rem] tracking-[0.3em] uppercase text-gold-dim mb-2 font-sans font-medium">Component 04</div>
             <h3 className="font-cormorant text-[1.7rem] text-text mb-4">High-Capacity Batteries</h3>
-            <p className="text-[0.82rem] text-text-muted leading-[1.9] mb-8 font-sans">
+            <p className="text-[0.92rem] text-text-muted leading-[1.8] mb-8 font-sans">
               Extended flight time with intelligent power management ensures shows run to completion — with enough reserve for safe emergency landing if conditions demand it.
             </p>
             
@@ -158,7 +158,7 @@ export default function HardwareSpecs() {
               
               <div className="text-[0.58rem] tracking-[0.3em] uppercase text-gold-dim mb-2 font-sans font-medium">Component 05</div>
               <h3 className="font-cormorant text-[1.7rem] text-text mb-4">RGB Color LED System</h3>
-              <p className="text-[0.82rem] text-text-muted leading-[1.9] mb-8 font-sans max-w-[420px]">
+              <p className="text-[0.92rem] text-text-muted leading-[1.8] mb-8 font-sans max-w-[420px]">
                 Each drone carries a high-intensity LED system capable of rendering distinct colors with sub-frame precision — enabling smooth color transitions, complex gradients, and lifelike imagery at altitude.
               </p>
               

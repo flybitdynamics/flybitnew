@@ -170,7 +170,7 @@ export default function CityLandingPage({
               <div>
                 <span className="font-bebas text-gold text-3xl tracking-[0.05em] block mb-2">Logo &amp; Brand Displays</span>
                 <span className="text-xs text-text-dim tracking-[0.1em] uppercase block mb-6">Names &amp; Brand Reveals</span>
-                <p className="text-[0.88rem] text-text-muted leading-relaxed mb-6">
+                <p className="text-[0.92rem] text-text-muted leading-relaxed mb-6">
                   Perfect for brand logos, names, and linear geometric designs. High visibility animations for weddings and launches.
                 </p>
               </div>
@@ -185,7 +185,7 @@ export default function CityLandingPage({
               <div>
                 <span className="font-bebas text-gold text-3xl tracking-[0.05em] block mb-2">Dynamic 3D Animations</span>
                 <span className="text-xs text-text-dim tracking-[0.1em] uppercase block mb-6">High Fidelity Storytelling</span>
-                <p className="text-[0.88rem] text-text-muted leading-relaxed mb-6">
+                <p className="text-[0.92rem] text-text-muted leading-relaxed mb-6">
                   Stunning 3D dynamic transitions, multi-colored drone choreography, and optimized design fidelity.
                 </p>
               </div>
@@ -199,7 +199,7 @@ export default function CityLandingPage({
               <div>
                 <span className="font-bebas text-gold text-3xl tracking-[0.05em] block mb-2">Grand Cinematic Spectacles</span>
                 <span className="text-xs text-text-dim tracking-[0.1em] uppercase block mb-6">Custom Swarm Formations</span>
-                <p className="text-[0.88rem] text-text-muted leading-relaxed mb-6">
+                <p className="text-[0.92rem] text-text-muted leading-relaxed mb-6">
                   Complex spatial layout animations, dense fleet storytelling, stadium openings, and national festival landmarks.
                 </p>
               </div>
@@ -218,7 +218,7 @@ export default function CityLandingPage({
           <h3 className="font-cormorant text-3xl text-text font-light mb-6">
             DGCA Compliant Operations in <em className="text-gold italic">{city}</em>
           </h3>
-          <p className="text-[0.88rem] text-text-muted leading-relaxed mb-10">
+          <p className="text-[0.92rem] text-text-muted leading-relaxed mb-10">
             Safety and regulatory clearance is our topmost priority. For every show in {city}, we handle coordinates mapping, ATC permissions, local police approvals, and secure DGCA clearance under Indian drone regulations. All operations are controlled by certified drone flight coordinators.
           </p>
           <button

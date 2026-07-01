@@ -130,7 +130,7 @@ export default function WhyChooseUs({ onOpenModal }: WhyChooseUsProps) {
               {adv.title}
             </div>
 
-            <p className="why-desc text-[0.82rem] text-text-muted leading-relaxed" onMouseMove={handleMouseMove}>
+            <p className="why-desc text-[0.92rem] text-text-muted leading-relaxed" onMouseMove={handleMouseMove}>
               {adv.desc}
             </p>
           </FadeUp>

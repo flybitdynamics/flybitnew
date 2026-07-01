@@ -48,7 +48,7 @@ export default function StoriesInsightsSection({ onOpenModal }: StoriesInsightsS
               <h2 className="font-cormorant text-4xl md:text-5xl font-light text-text leading-tight">
                 Our Work & <em className="text-gold italic">Insights</em>
               </h2>
-              <p className="text-[0.88rem] text-text-muted mt-4 max-w-[480px] leading-relaxed">
+              <p className="text-[0.92rem] text-text-muted mt-4 max-w-[480px] leading-relaxed">
                 Short-form reels and in-depth articles — explore how we light up the sky across India.
               </p>
             </FadeUp>
