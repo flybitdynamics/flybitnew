@@ -255,8 +255,17 @@ export default function Footer({ onOpenModal }: FooterProps) {
       </div>
 
       <div className="foot-bottom border-t border-gold/[0.07] pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-        <div className="foot-copy text-[0.7rem] text-text-dim tracking-[0.08em] text-center md:text-left">
-          © 2026 FLYBIT Dynamics. All rights reserved. DGCA Certified.
+        <div className="flex flex-col md:flex-row items-center gap-2 md:gap-5">
+          <div className="foot-copy text-[0.7rem] text-text-dim tracking-[0.08em] text-center md:text-left">
+            © 2026 FLYBIT Dynamics. All rights reserved. DGCA Certified.
+          </div>
+          <div className="flex gap-3 text-[0.7rem] text-text-dim tracking-[0.08em]">
+            <Link href="/privacy" className="hover:text-gold transition-colors">Privacy Policy</Link>
+            <span>•</span>
+            <Link href="/terms" className="hover:text-gold transition-colors">Terms of Service</Link>
+            <span>•</span>
+            <Link href="/faqs" className="hover:text-gold transition-colors">FAQs</Link>
+          </div>
         </div>
         <div className="foot-socials flex gap-3">
           {[

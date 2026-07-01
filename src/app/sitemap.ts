@@ -38,6 +38,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE}/drone-light-show-cost`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.85 },
     { url: `${BASE}/drone-show-price`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.85 },
     { url: `${BASE}/drone-light-show-jaipur`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 },
+    { url: `${BASE}/terms`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.5 },
+    { url: `${BASE}/privacy`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.5 },
+    { url: `${BASE}/faqs`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.85 },
   ];
 
   const storyRoutes: MetadataRoute.Sitemap = slugs.map((slug) => ({
