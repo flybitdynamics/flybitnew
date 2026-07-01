@@ -39,7 +39,7 @@ export default function HeroServices() {
           </h1>
           
           <p className="text-[0.95rem] text-text-muted leading-[1.9] max-w-[480px] font-sans">
-            From intimate celebrations to grand national spectacles — we transform your vision into breathtaking aerial experiences that leave lasting impressions.
+            As the Best drone show company in India, FLYBIT Dynamics transforms your vision into breathtaking aerial experiences. From corporate drone shows to cultural spectacles, our teams deliver certified operations nationwide—from a drone show delhi to a drone show rajasthan.
           </p>
         </div>
 

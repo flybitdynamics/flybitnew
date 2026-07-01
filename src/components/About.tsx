@@ -51,10 +51,11 @@ export default function About({ onOpenModal }: AboutProps) {
           India's Sky Is Our <em className="text-gold italic">Canvas</em>
         </h2>
         <p className="text-[0.9rem] text-text-muted leading-relaxed max-w-[500px]">
-          Founded in 2024, FLYBIT Dynamics is India's most awarded drone light show company. We combine military-grade drone technology with cinematic storytelling to create once-in-a-lifetime aerial experiences that leave audiences speechless.
+          Founded in 2024, FLYBIT Dynamics is the leading drone show company in India. We combine military-grade drone technology with cinematic storytelling to deliver premium drone show india events that leave audiences speechless.
         </p>
         <p className="text-[0.9rem] text-text-muted leading-relaxed max-w-[500px] mt-5">
-          From elegant wedding finales to large-scale aerial spectacles, every Flybit Dynamics Drone Light show is thoughtfully designed, choreographed, and executed entirely in-house.        </p>
+          As a specialized drone light show company, every FLYBIT drone light show is designed, choreographed, and executed in-house. We deliver the most spectacular drone light show india displays for weddings, brand events, and VVIP celebrations.
+        </p>
 
         <div className="feat-pills grid grid-cols-2 gap-5 mt-10">
           {pills.map((pill, idx) => (

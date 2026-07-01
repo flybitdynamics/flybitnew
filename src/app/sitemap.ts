@@ -23,6 +23,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE}/drone-show-ahmedabad`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 },
     { url: `${BASE}/drone-show-delhi`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 },
     { url: `${BASE}/drone-show-mumbai`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 },
+    { url: `${BASE}/what-is-a-drone-light-show`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${BASE}/drone-light-show-near-me`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${BASE}/drone-show`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.95 },
+    { url: `${BASE}/drone-show-company`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
+    { url: `${BASE}/drone-show-india`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
+    { url: `${BASE}/drone-show-company-in-india`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
+    { url: `${BASE}/drone-light-show`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
+    { url: `${BASE}/drone-light-show-india`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
+    { url: `${BASE}/drone-light-show-company`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
+    { url: `${BASE}/drone-show-cost`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.85 },
+    { url: `${BASE}/price-of-drone-show`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.85 },
+    { url: `${BASE}/drone-light-show-price`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.85 },
+    { url: `${BASE}/drone-light-show-cost`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.85 },
+    { url: `${BASE}/drone-show-price`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.85 },
+    { url: `${BASE}/drone-light-show-jaipur`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 },
   ];
 
   const storyRoutes: MetadataRoute.Sitemap = slugs.map((slug) => ({

@@ -226,7 +226,7 @@ export default function Hero({ onOpenModal }: HeroProps) {
           <span className="text-text block">DYNAMICS</span>
         </div>
         <p className="text-[0.95rem] text-white max-w-[480px] mb-14 leading-[1.9] tracking-[0.02em] font-sans">
-          India’s trusted drone show company — delivering unforgettable aerial experiences with 250+ synchronized drones for weddings, corporate events, festivals, and grand celebrations.
+          As a premier drone show company and drone light show company in India, FLYBIT Dynamics delivers unforgettable drone show india spectacles. We combine technology and art with 250+ synchronized drones for weddings, corporate launches, and festivals nationwide.
         </p>
         <div className="flex gap-5 justify-start flex-wrap">
           <button

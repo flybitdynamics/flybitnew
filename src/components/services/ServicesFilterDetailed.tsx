@@ -85,7 +85,7 @@ const SERVICE_ITEMS: ServiceItem[] = [
     modalDesc: 'From intimate 200-drone finales to 2000-drone grand celebrations — FLYBIT creates bespoke wedding drone shows with your initials, love story animations, and unforgettable sky finales above your guests.',
     eyebrow: 'Wedding Shows',
     title: 'Weddings',
-    description: '"Your love story, written in light." From sangeet nights to grand finales — we choreograph initials, hearts, portraits, and cinematic sequences that make your wedding night unforgettable.',
+    description: '"Your love story, written in light." As a premium drone show company in india, we specialize in delivering a wedding drone show india. From sangeet nights to grand finales — we choreograph initials, hearts, portraits, and cinematic sequences that make your wedding night unforgettable.',
     pills: [
       'Couple initials in the sky',
       'Wedding proposal shows',
@@ -109,7 +109,7 @@ const SERVICE_ITEMS: ServiceItem[] = [
     modalDesc: 'Elevate your corporate events with stunning aerial displays that showcase your brand values and create lasting impressions. Your brand deserves a grand canvas.',
     eyebrow: 'Corporate Events',
     title: 'Corporate',
-    description: '"Your brand deserves a grand canvas." Elevate conferences, award nights, and brand events with aerial displays that go viral and generate press coverage worth 10× your investment.',
+    description: '"Your brand deserves a grand canvas." Deliver a spectacular corporate drone show india with FLYBIT. Elevate conferences, award nights, and brand events with aerial displays that go viral and generate press coverage worth 10× your investment.',
     pills: [
       'Logo animations in 3D',
       'Product launch reveals',
@@ -135,7 +135,7 @@ const SERVICE_ITEMS: ServiceItem[] = [
     modalDesc: 'Honor national pride with spectacular displays that celebrate our heritage, values, and achievements on the world stage. A new age of patriotic storytelling.',
     eyebrow: 'Government & National',
     title: 'Government',
-    description: '"A new age of patriotic storytelling." Government and National Events like: Republic Day, Independence Day, G20 summits, and international events — full VVIP security clearances included.',
+    description: '"A new age of patriotic storytelling." Celebrate milestones with a premier drone show india. Government and National Events like: Republic Day, Independence Day, G20 summits, and international events — full VVIP security clearances included.',
     pills: [
       'Republic Day celebrations',
       'Independence Day shows',

@@ -49,7 +49,7 @@ const ADVANTAGES = [
   },
   {
     title: 'Pan-India Operations',
-    desc: 'Bases in Mumbai, Delhi, Bangalore, and Ahmedabad — with rapid deployment teams ready to operate anywhere across India.',
+    desc: 'Bases in Mumbai, Delhi, Bangalore, and Ahmedabad. From coordinating a drone show gujarat display to executing drone shows in jaipur, drone shows in ahmedabad, or drone shows in gujarat, we operate seamlessly pan-India.',
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" className="w-5 h-5 text-gold">
         <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>

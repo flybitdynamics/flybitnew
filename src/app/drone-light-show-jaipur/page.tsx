@@ -3,7 +3,7 @@
 import React from 'react';
 import CityLandingPage from '@/components/CityLandingPage';
 
-export default function JaipurPage() {
+export default function DroneLightShowJaipurPage() {
   return (
     <CityLandingPage
       city="Jaipur"
