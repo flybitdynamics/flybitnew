@@ -56,44 +56,44 @@ export default function DroneLightShowPricePage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="p-8 border border-gold/10 rounded bg-white/[0.005] flex flex-col justify-between min-h-[360px]">
               <div>
-                <span className="font-bebas text-gold text-3xl tracking-[0.05em] block mb-2">100 Drones</span>
+                <span className="font-bebas text-gold text-3xl tracking-[0.05em] block mb-2">Logo &amp; Brand Displays</span>
                 <span className="text-xs text-text-dim tracking-[0.1em] uppercase block mb-6">Logo reveals &amp; Names</span>
                 <p className="text-[0.88rem] text-text-muted leading-relaxed mb-6">
-                  Perfect for brand logos, names, and linear geometric designs. Up to 4 minutes.
+                  Perfect for brand logos, names, and linear geometric designs. Custom animations for launches.
                 </p>
               </div>
               <div className="border-t border-gold/10 pt-6">
                 <span className="text-xs text-text-dim block mb-1">Starting from</span>
-                <span className="text-gold font-bebas text-2xl tracking-[0.05em] block">₹2.5 Lakhs</span>
+                <span className="text-gold font-bebas text-2xl tracking-[0.05em] block">₹4.0 Lakhs onwards</span>
               </div>
             </div>
 
             <div className="p-8 border border-gold/25 rounded bg-gold/[0.01] flex flex-col justify-between min-h-[360px] relative">
               <span className="absolute top-4 right-4 bg-gold text-black text-[0.58rem] font-bold tracking-[0.15em] uppercase px-2.5 py-1 rounded">Popular</span>
               <div>
-                <span className="font-bebas text-gold text-3xl tracking-[0.05em] block mb-2">200 Drones</span>
-                <span className="text-xs text-text-dim tracking-[0.1em] uppercase block mb-6">Dynamic 3D Shapes</span>
+                <span className="font-bebas text-gold text-3xl tracking-[0.05em] block mb-2">Dynamic 3D Animations</span>
+                <span className="text-xs text-text-dim tracking-[0.1em] uppercase block mb-6">High Fidelity Transitions</span>
                 <p className="text-[0.88rem] text-text-muted leading-relaxed mb-6">
-                  Stunning 3D dynamic transitions, multi-colored drone choreography. Up to 5 minutes.
+                  Stunning 3D dynamic transitions, multi-colored drone choreography, and tailored shape design.
                 </p>
               </div>
               <div className="border-t border-gold/10 pt-6">
                 <span className="text-xs text-text-dim block mb-1">Starting from</span>
-                <span className="text-gold font-bebas text-2xl tracking-[0.05em] block">₹4.0 Lakhs</span>
+                <span className="text-gold font-bebas text-2xl tracking-[0.05em] block">₹4.0 Lakhs onwards</span>
               </div>
             </div>
 
             <div className="p-8 border border-gold/10 rounded bg-white/[0.005] flex flex-col justify-between min-h-[360px]">
               <div>
-                <span className="font-bebas text-gold text-3xl tracking-[0.05em] block mb-2">300+ Drones</span>
-                <span className="text-xs text-text-dim tracking-[0.1em] uppercase block mb-6">Grand Cinematic Swarms</span>
+                <span className="font-bebas text-gold text-3xl tracking-[0.05em] block mb-2">Grand Cinematic Spectacles</span>
+                <span className="text-xs text-text-dim tracking-[0.1em] uppercase block mb-6">Large Scale Formations</span>
                 <p className="text-[0.88rem] text-text-muted leading-relaxed mb-6">
-                  Unlimited animation shapes, heavy spatial layouts, precise storytelling. Up to 6 minutes.
+                  Unlimited animation shapes, heavy spatial layouts, and precise storytelling for grand landmarks.
                 </p>
               </div>
               <div className="border-t border-gold/10 pt-6">
                 <span className="text-xs text-text-dim block mb-1">Starting from</span>
-                <span className="text-gold font-bebas text-2xl tracking-[0.05em] block">₹5.2 Lakhs</span>
+                <span className="text-gold font-bebas text-2xl tracking-[0.05em] block">₹4.0 Lakhs onwards</span>
               </div>
             </div>
           </div>

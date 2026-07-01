@@ -18,7 +18,7 @@ const FAQ_ITEMS: FAQItem[] = [
   },
   {
     question: "What is the average drone show cost in India?",
-    answer: "For anyone interested in the drone light show cost in india or the general drone show pricing india rates, the cost typically starts from ₹2,50,000 for a basic 100-drone formation and can scale up for larger-scale choreographies. The final drone light show cost or drone show price depends on the number of drones, show complexity, location, and regulatory permissions."
+    answer: "For anyone interested in the drone light show cost in india or the general drone show pricing india rates, the price starts from ₹4 Lakhs onwards. The final drone light show cost or drone show price depends on the show complexity, location, and regulatory permissions."
   },
   {
     question: "Are drone shows cheaper than fireworks?",

@@ -48,7 +48,7 @@ const FAQ_ITEMS: FAQItem[] = [
   {
     category: 'pricing',
     question: "How much does a drone show cost in India?",
-    answer: "Drone show prices start from ₹2.5 Lakhs for a basic 100-drone show, scaling up to ₹4.0 Lakhs for 200 drones, and ₹5.2 Lakhs+ for 300+ drones. Pricing factors include airspace coordinates, location logistics, and custom storyboard animations."
+    answer: "Our customized drone show designs start from ₹4 Lakhs onwards. The exact pricing is determined by creative storyboard details, duration, flight coordinates, and regulatory approvals."
   },
   {
     category: 'pricing',
