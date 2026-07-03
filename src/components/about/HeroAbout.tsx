@@ -54,9 +54,9 @@ export default function HeroAbout({ onOpenModal }: HeroAboutProps) {
           maskImage: 'radial-gradient(ellipse at 30% 60%, black 5%, transparent 60%)',
         }}
       />
-      
+
       {/* Glow */}
-      <div 
+      <div
         className="absolute top-[20%] left-0 w-[45%] h-[60%] pointer-events-none"
         style={{
           background: 'radial-gradient(ellipse, rgba(10,18,45,0.7), transparent 70%)'
@@ -69,21 +69,21 @@ export default function HeroAbout({ onOpenModal }: HeroAboutProps) {
             <span className="w-[36px] h-[1px] bg-gold-dim" />
             Company Profile
           </div> */}
-          
+
           <h1 className="font-bebas text-[3.2rem] md:text-[clamp(4rem,9vw,9rem)] leading-[0.86] tracking-[0.03em] mb-8">
             <span className="text-text block">About</span>
             <span className="text-gold block">FLYBIT</span>
             <span className="text-text block">Dynamics</span>
           </h1>
-          
+
           <p className="font-cormorant text-[1.2rem] italic font-light text-text-muted leading-[1.75] max-w-[440px] mb-4">
             Lighting up the sky isn't just a show — it's an experience your audience will <em className="text-gold">never forget.</em>
           </p>
-          
+
           <p className="font-cormorant text-[1.3rem] md:text-[1.5rem] italic text-gold mb-10">
             "Precision. Creativity. Technology."
           </p>
-          
+
           <div className="flex gap-4 flex-wrap mb-14">
             <Link
               href="/stories"
@@ -98,7 +98,7 @@ export default function HeroAbout({ onOpenModal }: HeroAboutProps) {
               Book a Show
             </button>
           </div>
-          
+
           <div className="flex gap-8 md:gap-10 flex-wrap md:flex-nowrap">
             <div>
               <div className="font-bebas text-[2.4rem] text-gold leading-none tracking-[0.04em]">250+</div>
@@ -114,27 +114,27 @@ export default function HeroAbout({ onOpenModal }: HeroAboutProps) {
             </div>
           </div>
         </div>
-        
+
         <div className="relative fade-right transition-all duration-700 ease-out delay-100 mx-auto md:mx-0 w-full">
           <div className="relative border border-border rounded-[3px] overflow-hidden">
             <div className="absolute top-[-1px] left-[-1px] w-4 h-4 border-t-2 border-l-2 border-gold z-10" />
             <div className="absolute top-[-1px] right-[-1px] w-4 h-4 border-t-2 border-r-2 border-gold z-10" />
             <div className="absolute bottom-[-1px] left-[-1px] w-4 h-4 border-b-2 border-l-2 border-gold z-10" />
             <div className="absolute bottom-[-1px] right-[-1px] w-4 h-4 border-b-2 border-r-2 border-gold z-10" />
-            
+
             <div className="relative w-full aspect-[4/3] md:aspect-[5/4] overflow-hidden bg-dark-2">
-              <div 
+              <div
                 className="flex h-full"
-                style={{ 
-                  width: '400%', 
+                style={{
+                  width: '400%',
                   animation: 'about-hero-slide-pause 12s infinite',
                 }}
               >
                 {[...slides, slides[0]].map((slide, idx) => (
                   <div key={idx} className="h-full relative flex-shrink-0" style={{ width: '25%' }}>
-                    <img 
-                      src={publicAsset(slide)} 
-                      alt={`Indian flag drone formation at Science City — FLYBIT Dynamics - Slide ${idx + 1}`} 
+                    <img
+                      src={publicAsset(slide)}
+                      alt={`Indian flag drone formation at Science City — FLYBIT Dynamics - Slide ${idx + 1}`}
                       className="w-full h-full object-cover block"
                     />
                   </div>
@@ -150,13 +150,13 @@ export default function HeroAbout({ onOpenModal }: HeroAboutProps) {
                 }
               `}</style>
             </div>
-            
+
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/45 pointer-events-none z-10" />
           </div>
-          
+
           <div className="absolute bottom-[-1px] left-[-1px] bg-gold text-black px-6 py-4 z-20 rounded-tr-[3px]">
-            <span className="font-bebas text-[2.4rem] leading-none block">100%</span>
-            <span className="text-[0.56rem] tracking-[0.18em] uppercase font-medium">Made in India</span>
+            {/* <span className="font-bebas text-[2.4rem] leading-none block">100%</span> */}
+            <span className="text-[0.76rem] tracking-[0.18em] uppercase font-medium">Made in India</span>
           </div>
         </div>
       </div>

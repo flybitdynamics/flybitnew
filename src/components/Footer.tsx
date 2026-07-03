@@ -123,7 +123,7 @@ export default function Footer({ onOpenModal }: FooterProps) {
           <ul className="foot-links space-y-3.5">
             <li>
               <Link
-                href="/services?select=social"
+                href="/drone-show-for-social-events"
                 className="text-white/90 hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none block text-left"
               >
                 Social Events
@@ -131,7 +131,23 @@ export default function Footer({ onOpenModal }: FooterProps) {
             </li>
             <li>
               <Link
-                href="/services?select=weddings"
+                href="/drone-show-for-birthday"
+                className="text-white/90 hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none block text-left"
+              >
+                Birthday Shows
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/drone-show-for-proposing"
+                className="text-white/90 hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none block text-left"
+              >
+                Proposal Shows
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/drone-show-for-wedding"
                 className="text-white/90 hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none block text-left"
               >
                 Weddings
@@ -139,15 +155,15 @@ export default function Footer({ onOpenModal }: FooterProps) {
             </li>
             <li>
               <Link
-                href="/services?select=corporate"
+                href="/drone-show-for-corporate"
                 className="text-white/90 hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none block text-left"
               >
-                Corporate
+                Corporate Events
               </Link>
             </li>
             <li>
               <Link
-                href="/services?select=government"
+                href="/drone-show-for-government"
                 className="text-white/90 hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none block text-left"
               >
                 Government
@@ -155,7 +171,7 @@ export default function Footer({ onOpenModal }: FooterProps) {
             </li>
             <li>
               <Link
-                href="/services?select=launch"
+                href="/drone-show-for-product-launch"
                 className="text-white/90 hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none block text-left"
               >
                 Product Launch
@@ -163,7 +179,7 @@ export default function Footer({ onOpenModal }: FooterProps) {
             </li>
             <li>
               <Link
-                href="/services?select=spiritual"
+                href="/drone-show-for-spiritual"
                 className="text-white/90 hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none block text-left"
               >
                 Spiritual
@@ -171,7 +187,7 @@ export default function Footer({ onOpenModal }: FooterProps) {
             </li>
             <li>
               <Link
-                href="/services?select=sports"
+                href="/drone-show-for-sports-entertainment"
                 className="text-white/90 hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none block text-left"
               >
                 Sports &amp; Entertainment
