@@ -125,7 +125,8 @@ export default function Navbar({ onOpenModal }: NavbarProps) {
               }
               className="nav-book bg-gold hover:bg-gold-light text-black font-medium px-6 py-2.5 text-[0.72rem] tracking-[0.14em] uppercase rounded-[2px] transition-colors duration-200 cursor-pointer md:cursor-none border-none"
             >
-              Book Show
+              Book a Show
+              
             </button>
           </li>
         </ul>
