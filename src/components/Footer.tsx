@@ -2,7 +2,9 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { DEFAULT_LOGO } from '@/lib/public-assets';
+import { DEFAULT_LOGO, publicAsset } from '@/lib/public-assets';
+
+const FOOTER_SHOWCASE_IMAGE = publicAsset('/ChatGPT Image Jul 3, 2026, 11_43_00 AM (1).png');
 
 interface FooterProps {
   onOpenModal: (title: string, description: string) => void;
@@ -26,8 +28,8 @@ export default function Footer({ onOpenModal }: FooterProps) {
           </p>
           <div className="mt-6">
             <img
-              src="/image.png"
-              alt="FLYBIT Drone Swarm"
+              src={FOOTER_SHOWCASE_IMAGE}
+              alt="FLYBIT drone light show at Global Economic Summit India 2024"
               className="rounded-[3px] border border-gold/10 max-w-[300px] w-full h-auto object-cover opacity-80 hover:opacity-100 hover:border-gold/30 transition-all duration-300 shadow-lg"
             />
           </div>

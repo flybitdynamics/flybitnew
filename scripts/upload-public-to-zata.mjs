@@ -73,10 +73,11 @@ async function walkImages(dir, relativeBase = '') {
 }
 
 async function convertToAvif(inputPath) {
-  return sharp(inputPath)
+  const buffer = await sharp(inputPath)
     .rotate()
     .avif({ quality: AVIF_QUALITY, effort: 4 })
     .toBuffer();
+  return Buffer.from(buffer);
 }
 
 async function runPool(items, worker) {
