@@ -11,45 +11,6 @@ interface FooterProps {
 export default function Footer({ onOpenModal }: FooterProps) {
   return (
     <footer className="bg-dark border-t border-border px-6 md:px-20 py-14 font-sans">
-      {/* Premium SEO Keyword Section */}
-      <div className="seo-directory border-b border-border/40 pb-10 mb-12 select-text">
-        <div className="text-[0.62rem] tracking-[0.35em] uppercase text-gold/80 mb-5 font-semibold font-sans">
-          Popular Drone Show Regions & Queries
-        </div>
-        <div className="flex flex-wrap gap-2 md:gap-2.5">
-          {[
-            { label: "Drone Show", path: "/drone-show" },
-            { label: "Drone Show Company", path: "/drone-show-company" },
-            { label: "Drone Show in Ahmedabad", path: "/drone-show-ahmedabad" },
-            { label: "Drone Show India", path: "/drone-show-india" },
-            { label: "Drone Show Cost", path: "/drone-show-cost" },
-            { label: "Price of Drone Show", path: "/price-of-drone-show" },
-            { label: "Drone Show Company in India", path: "/drone-show-company-in-india" },
-            { label: "Drone Light Show", path: "/drone-light-show" },
-            { label: "Drone Light Show India", path: "/drone-light-show-india" },
-            { label: "Drone Light Show Near Me", path: "/drone-light-show-near-me" },
-            { label: "Drone Light Show Price", path: "/drone-light-show-price" },
-            { label: "Drone Light Show Udaipur", path: "/drone-light-show-udaipur" },
-            { label: "Drone Light Show Jaipur", path: "/drone-light-show-jaipur" },
-            { label: "What is a Drone Light Show", path: "/what-is-a-drone-light-show" },
-            { label: "Drone Show Jaipur", path: "/drone-show-jaipur" },
-            { label: "Drone Light Show Cost", path: "/drone-light-show-cost" },
-            { label: "Drone Show Delhi", path: "/drone-show-delhi" },
-            { label: "Drone Show Mumbai", path: "/drone-show-mumbai" },
-            { label: "Drone Show Price", path: "/drone-show-price" },
-            { label: "Drone Light Show Company", path: "/drone-light-show-company" }
-          ].map((item, index) => (
-            <Link 
-              key={index}
-              href={item.path}
-              className="text-[0.68rem] tracking-[0.06em] text-text-muted border border-border/30 px-3.5 py-1.5 rounded-[2px] bg-dark-2/40 transition-all duration-300 hover:border-gold/30 hover:text-gold cursor-pointer"
-            >
-              #{item.label.replace(/\s+/g, '')}
-            </Link>
-          ))}
-        </div>
-      </div>
-
       <div className="footer-grid grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-[2fr_1fr_1fr_1fr_1fr] gap-12 lg:gap-16 mb-10">
         <div className="foot-brand">
           <a href="#" className="inline-block md:cursor-none">
@@ -60,7 +21,7 @@ export default function Footer({ onOpenModal }: FooterProps) {
               style={{ height: '44px', width: 'auto', objectFit: 'contain', display: 'block' }}
             />
           </a>
-          <p className="foot-tagline text-[0.82rem] text-text-muted leading-relaxed mt-5 max-w-[260px]">
+          <p className="foot-tagline text-[0.82rem] text-white/90 leading-relaxed mt-5 max-w-[260px]">
             India's premier drone light show company — illuminating celebrations with technology and artistry.
           </p>
           <div className="mt-6">
@@ -78,42 +39,42 @@ export default function Footer({ onOpenModal }: FooterProps) {
           </div>
           <ul className="foot-links space-y-3.5">
             <li>
-              <a href="/about" className="text-text-muted hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none">
+              <a href="/about" className="text-white/90 hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none">
                 About
               </a>
             </li>
             <li>
-              <a href="/services" className="text-text-muted hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none">
+              <a href="/services" className="text-white/90 hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none">
                 Services
               </a>
             </li>
             <li>
-              <a href="/pricing" className="text-text-muted hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none">
+              <a href="/pricing" className="text-white/90 hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none">
                 Pricing Guide
               </a>
             </li>
             <li>
-              <a href="/stories" className="text-text-muted hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none">
+              <a href="/stories" className="text-white/90 hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none">
                 Stories & Insights
               </a>
             </li>
             <li>
-              <a href="/blog" className="text-text-muted hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none">
+              <a href="/blog" className="text-white/90 hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none">
                 Blog
               </a>
             </li>
             <li>
-              <a href="/technology" className="text-text-muted hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none">
+              <a href="/technology" className="text-white/90 hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none">
                 Technology
               </a>
             </li>
             <li>
-              <Link href="/what-is-a-drone-light-show" className="text-text-muted hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none block text-left">
+              <Link href="/what-is-a-drone-light-show" className="text-white/90 hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none block text-left">
                 What is a Drone Show?
               </Link>
             </li>
             <li>
-              <Link href="/drone-light-show-near-me" className="text-text-muted hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none block text-left">
+              <Link href="/drone-light-show-near-me" className="text-white/90 hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none block text-left">
                 Drone Show Near Me
               </Link>
             </li>
@@ -126,27 +87,27 @@ export default function Footer({ onOpenModal }: FooterProps) {
           </div>
           <ul className="foot-links space-y-3.5">
             <li>
-              <Link href="/drone-show-jaipur" className="text-text-muted hover:text-gold text-[0.82rem] transition-colors duration-200 block text-left">
+              <Link href="/drone-show-jaipur" className="text-white/90 hover:text-gold text-[0.82rem] transition-colors duration-200 block text-left">
                 Jaipur
               </Link>
             </li>
             <li>
-              <Link href="/drone-light-show-udaipur" className="text-text-muted hover:text-gold text-[0.82rem] transition-colors duration-200 block text-left">
+              <Link href="/drone-light-show-udaipur" className="text-white/90 hover:text-gold text-[0.82rem] transition-colors duration-200 block text-left">
                 Udaipur
               </Link>
             </li>
             <li>
-              <Link href="/drone-show-ahmedabad" className="text-text-muted hover:text-gold text-[0.82rem] transition-colors duration-200 block text-left">
+              <Link href="/drone-show-ahmedabad" className="text-white/90 hover:text-gold text-[0.82rem] transition-colors duration-200 block text-left">
                 Ahmedabad
               </Link>
             </li>
             <li>
-              <Link href="/drone-show-delhi" className="text-text-muted hover:text-gold text-[0.82rem] transition-colors duration-200 block text-left">
+              <Link href="/drone-show-delhi" className="text-white/90 hover:text-gold text-[0.82rem] transition-colors duration-200 block text-left">
                 Delhi NCR
               </Link>
             </li>
             <li>
-              <Link href="/drone-show-mumbai" className="text-text-muted hover:text-gold text-[0.82rem] transition-colors duration-200 block text-left">
+              <Link href="/drone-show-mumbai" className="text-white/90 hover:text-gold text-[0.82rem] transition-colors duration-200 block text-left">
                 Mumbai
               </Link>
             </li>
@@ -161,7 +122,7 @@ export default function Footer({ onOpenModal }: FooterProps) {
             <li>
               <Link
                 href="/services?select=social"
-                className="text-text-muted hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none block text-left"
+                className="text-white/90 hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none block text-left"
               >
                 Social Events
               </Link>
@@ -169,7 +130,7 @@ export default function Footer({ onOpenModal }: FooterProps) {
             <li>
               <Link
                 href="/services?select=weddings"
-                className="text-text-muted hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none block text-left"
+                className="text-white/90 hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none block text-left"
               >
                 Weddings
               </Link>
@@ -177,7 +138,7 @@ export default function Footer({ onOpenModal }: FooterProps) {
             <li>
               <Link
                 href="/services?select=corporate"
-                className="text-text-muted hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none block text-left"
+                className="text-white/90 hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none block text-left"
               >
                 Corporate
               </Link>
@@ -185,7 +146,7 @@ export default function Footer({ onOpenModal }: FooterProps) {
             <li>
               <Link
                 href="/services?select=government"
-                className="text-text-muted hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none block text-left"
+                className="text-white/90 hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none block text-left"
               >
                 Government
               </Link>
@@ -193,7 +154,7 @@ export default function Footer({ onOpenModal }: FooterProps) {
             <li>
               <Link
                 href="/services?select=launch"
-                className="text-text-muted hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none block text-left"
+                className="text-white/90 hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none block text-left"
               >
                 Product Launch
               </Link>
@@ -201,7 +162,7 @@ export default function Footer({ onOpenModal }: FooterProps) {
             <li>
               <Link
                 href="/services?select=spiritual"
-                className="text-text-muted hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none block text-left"
+                className="text-white/90 hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none block text-left"
               >
                 Spiritual
               </Link>
@@ -209,7 +170,7 @@ export default function Footer({ onOpenModal }: FooterProps) {
             <li>
               <Link
                 href="/services?select=sports"
-                className="text-text-muted hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none block text-left"
+                className="text-white/90 hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none block text-left"
               >
                 Sports &amp; Entertainment
               </Link>
@@ -223,17 +184,17 @@ export default function Footer({ onOpenModal }: FooterProps) {
           </div>
           <ul className="foot-links space-y-3.5">
             <li>
-              <a href="tel:+919979850863" className="text-text-muted hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none">
+              <a href="tel:+919979850863" className="text-white/90 hover:text-gold text-[0.82rem] font-sans transition-colors duration-200 md:cursor-none">
                 +91 99798 50863
               </a>
             </li>
             <li>
-              <a href="tel:+919227428262" className="text-text-muted hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none">
+              <a href="tel:+919227428262" className="text-white/90 hover:text-gold text-[0.82rem] font-sans transition-colors duration-200 md:cursor-none">
                 +91 92274 28262
               </a>
             </li>
             <li>
-              <a href="mailto:info@flybitdynamics.com" className="text-text-muted hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none">
+              <a href="mailto:info@flybitdynamics.com" className="text-white/90 hover:text-gold text-[0.82rem] font-sans transition-colors duration-200 md:cursor-none">
                 info@flybitdynamics.com
               </a>
             </li>
@@ -322,7 +283,7 @@ export default function Footer({ onOpenModal }: FooterProps) {
               rel="noopener noreferrer"
               aria-label={soc.label}
               title={soc.label}
-              className="social w-9 h-9 border border-border rounded-full flex items-center justify-center text-text-muted hover:text-gold hover:border-gold transition-all duration-200 md:cursor-none"
+              className="social w-9 h-9 border border-border rounded-full flex items-center justify-center text-white/90 hover:text-gold hover:border-gold transition-all duration-200 md:cursor-none"
             >
               {soc.icon}
             </a>

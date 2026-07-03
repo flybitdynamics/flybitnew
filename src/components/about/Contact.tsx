@@ -41,12 +41,8 @@ export default function Contact() {
     <p className="sec-body" style={{marginBottom: '2rem'}}>Ready to create something extraordinary? Tell us about your event and we'll respond within 24 hours with a concept proposal.</p>
     <div className="contact-offices">
       <div className="office-card">
-        <div className="office-tag">Head Office · Ahmedabad</div>
+        <div className="office-tag">Address</div>
         <div className="office-addr">511, Satyamev Eminence,<br />Science City Road, Sola,<br />Ahmedabad – 380060, Gujarat</div>
-      </div>
-      <div className="office-card">
-        <div className="office-tag">Branch Office · Jaipur</div>
-        <div className="office-addr">82 B, Gopal Nagar-A,<br />Gopalpura Bypass Road,<br />Jaipur – 302018, Rajasthan</div>
       </div>
     </div>
     <div className="contact-details">

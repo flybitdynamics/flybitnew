@@ -158,7 +158,7 @@ export default function ContactMain() {
                 Connect <span className="text-gold italic">With Us</span>
               </h2>
               
-              <p className="sec-body text-[0.82rem] text-text-muted leading-[1.8] font-sans">
+              <p className="sec-body text-[0.82rem] text-white/90 leading-[1.8] font-sans">
                 Fill in the details below and our team will get back to you within 24 hours.
               </p>
             </div>
@@ -370,10 +370,10 @@ export default function ContactMain() {
                   <div className="info-label text-[0.6rem] tracking-[0.3em] uppercase text-gold-dim mb-1.5 font-sans">
                     Phone
                   </div>
-                  <div className="info-val font-cormorant text-[1.15rem] text-text leading-normal font-medium">
+                  <div className="info-val font-sans text-[0.95rem] text-white/90 leading-normal">
                     +91 92274 28262
                   </div>
-                  <div className="info-val font-cormorant text-[1.15rem] text-text leading-normal font-medium mb-1">
+                  <div className="info-val font-sans text-[0.95rem] text-white/90 leading-normal mb-1">
                     +91 99798 50863
                   </div>
                   <a href="tel:+919227428262" className="info-link inline-flex items-center gap-1.5 text-[0.66rem] tracking-[0.16em] uppercase text-gold-dim hover:text-gold transition-all duration-300 font-sans mt-2">
@@ -394,7 +394,7 @@ export default function ContactMain() {
                   <div className="info-label text-[0.6rem] tracking-[0.3em] uppercase text-gold-dim mb-1.5 font-sans">
                     Email
                   </div>
-                  <div className="info-val font-cormorant text-[1.15rem] text-text leading-normal font-medium mb-1">
+                  <div className="info-val font-sans text-[0.95rem] text-white/90 leading-normal mb-1">
                     info@flybitdynamics.com
                   </div>
                   <a href="mailto:info@flybitdynamics.com" className="info-link inline-flex items-center gap-1.5 text-[0.66rem] tracking-[0.16em] uppercase text-gold-dim hover:text-gold transition-all duration-300 font-sans mt-2">
@@ -413,39 +413,13 @@ export default function ContactMain() {
                 </div>
                 <div className="info-content">
                   <div className="info-label text-[0.6rem] tracking-[0.3em] uppercase text-gold-dim mb-1.5 font-sans">
-                    Head Office — Ahmedabad
+                    Address
                   </div>
-                  <p className="info-sub text-[0.78rem] text-text-muted leading-[1.7] max-w-[280px] font-sans">
+                  <p className="info-sub text-[0.78rem] text-white/90 leading-[1.7] max-w-[280px] font-sans">
                     511, Satyamev Eminence, Science City Road, Sola, Ahmedabad 380060
                   </p>
                   <a 
                     href="https://maps.google.com/?q=Satyamev+Eminence+Science+City+Road+Ahmedabad" 
-                    target="_blank" 
-                    rel="noreferrer"
-                    className="info-link inline-flex items-center gap-1.5 text-[0.66rem] tracking-[0.16em] uppercase text-gold-dim hover:text-gold transition-all duration-300 font-sans mt-2"
-                  >
-                    Get Directions →
-                  </a>
-                </div>
-              </div>
-
-              {/* Jaipur branch office block */}
-              <div className="info-block py-8 last:border-b-0 flex gap-6 items-start hover:bg-transparent">
-                <div className="info-icon w-11 h-11 border border-gold/20 hover:border-gold/50 hover:bg-gold/5 transition-all duration-300 rounded-[2px] flex items-center justify-center shrink-0">
-                  <svg viewBox="0 0 24 24" className="w-5 h-5 fill-none stroke-gold stroke-[1.4]">
-                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-                    <polyline points="9 22 9 12 15 12 15 22"/>
-                  </svg>
-                </div>
-                <div className="info-content">
-                  <div className="info-label text-[0.6rem] tracking-[0.3em] uppercase text-gold-dim mb-1.5 font-sans">
-                    Branch Office — Jaipur
-                  </div>
-                  <p className="info-sub text-[0.78rem] text-text-muted leading-[1.7] max-w-[280px] font-sans">
-                    82 B, Gopal Nagar-A, Gopalpura Bypass Rd, Jaipur 302018
-                  </p>
-                  <a 
-                    href="https://maps.google.com/?q=Gopal+Nagar+Gopalpura+Bypass+Jaipur" 
                     target="_blank" 
                     rel="noreferrer"
                     className="info-link inline-flex items-center gap-1.5 text-[0.66rem] tracking-[0.16em] uppercase text-gold-dim hover:text-gold transition-all duration-300 font-sans mt-2"
@@ -466,7 +440,7 @@ export default function ContactMain() {
                     href="https://www.instagram.com/flybitdynamics" 
                     target="_blank" 
                     rel="noopener noreferrer" 
-                    className="soc-btn flex items-center gap-2.5 px-5 py-2.5 border border-gold/12 hover:border-gold/40 text-text-muted hover:text-gold text-[0.72rem] tracking-[0.1em] rounded-[2px] transition-all duration-300 font-sans"
+                    className="soc-btn flex items-center gap-2.5 px-5 py-2.5 border border-gold/12 hover:border-gold/40 text-white/90 hover:text-gold text-[0.72rem] tracking-[0.1em] rounded-[2px] transition-all duration-300 font-sans"
                   >
                     <svg viewBox="0 0 24 24" className="w-4 h-4 fill-none stroke-current stroke-[1.5]">
                       <rect x="2" y="2" width="20" height="20" rx="5"/>
@@ -480,7 +454,7 @@ export default function ContactMain() {
                     href="https://www.youtube.com/@FlybitDynamics" 
                     target="_blank" 
                     rel="noopener noreferrer" 
-                    className="soc-btn flex items-center gap-2.5 px-5 py-2.5 border border-gold/12 hover:border-gold/40 text-text-muted hover:text-gold text-[0.72rem] tracking-[0.1em] rounded-[2px] transition-all duration-300 font-sans"
+                    className="soc-btn flex items-center gap-2.5 px-5 py-2.5 border border-gold/12 hover:border-gold/40 text-white/90 hover:text-gold text-[0.72rem] tracking-[0.1em] rounded-[2px] transition-all duration-300 font-sans"
                   >
                     <svg viewBox="0 0 24 24" className="w-4 h-4 fill-none stroke-current stroke-[1.5]">
                       <path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.95 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.95C5.12 20 12 20 12 20s6.88 0 8.59-.47a2.78 2.78 0 0 0 1.95-1.95A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/>
@@ -493,7 +467,7 @@ export default function ContactMain() {
                     href="https://www.linkedin.com/company/flybitdynamics/" 
                     target="_blank" 
                     rel="noopener noreferrer" 
-                    className="soc-btn flex items-center gap-2.5 px-5 py-2.5 border border-gold/12 hover:border-gold/40 text-text-muted hover:text-gold text-[0.72rem] tracking-[0.1em] rounded-[2px] transition-all duration-300 font-sans"
+                    className="soc-btn flex items-center gap-2.5 px-5 py-2.5 border border-gold/12 hover:border-gold/40 text-white/90 hover:text-gold text-[0.72rem] tracking-[0.1em] rounded-[2px] transition-all duration-300 font-sans"
                   >
                     <svg viewBox="0 0 24 24" className="w-4 h-4 fill-none stroke-current stroke-[1.5]">
                       <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>

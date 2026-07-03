@@ -17,7 +17,7 @@ export default function MapSection() {
             </h2>
           </div>
           
-          <p className="sec-body text-[0.9rem] text-text-muted leading-[1.95] font-sans">
+          <p className="sec-body text-[0.9rem] text-white/90 leading-[1.95] font-sans">
             Located in Ahmedabad, our studio is equipped with the latest drone technology and testing facilities. Our operations span pan-India with deployment teams ready within 48 hours.
           </p>
         </div>
@@ -37,7 +37,7 @@ export default function MapSection() {
             <h4 className="map-ov-title font-cormorant text-[1.1rem] text-text mb-1.5 font-medium">
               Flybit Dynamics Pvt Ltd
             </h4>
-            <p className="map-ov-addr text-[0.75rem] text-text-muted leading-[1.7] mb-4 font-sans">
+            <p className="map-ov-addr text-[0.75rem] text-white/90 leading-[1.7] mb-4 font-sans">
               511, Satyamev Eminence, Science City Road, Sola, Ahmedabad 380060
             </p>
             <a 

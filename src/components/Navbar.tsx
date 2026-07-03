@@ -50,7 +50,7 @@ export default function Navbar({ onOpenModal }: NavbarProps) {
     return `text-[0.72rem] tracking-[0.14em] uppercase transition-colors duration-200 relative after:content-[''] after:absolute after:bottom-[-4px] after:left-0 after:right-0 after:h-[1px] after:bg-gold after:transition-transform after:duration-300 md:cursor-none ${
       active
         ? 'text-gold after:scale-x-100'
-        : 'text-text-muted hover:text-gold after:scale-x-0 hover:after:scale-x-100'
+        : 'text-white/90 hover:text-gold after:scale-x-0 hover:after:scale-x-100'
     }`;
   };
 

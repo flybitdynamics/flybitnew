@@ -106,7 +106,64 @@ export default function PricingPage() {
         </div>
       </section>
 
+      {/* Packages Section */}
+      <section className="py-20 bg-dark-2/10 font-sans border-b border-gold/10">
+        <div className="max-w-[1440px] mx-auto px-6 md:px-20">
+          <div className="text-center mb-16">
+            <div className="text-[0.62rem] tracking-[0.35em] uppercase text-gold mb-4">
+              Our Packages
+            </div>
+            <h2 className="font-cormorant text-4xl md:text-5xl font-light text-text">
+              Tailored Swarm Displays for <em className="text-gold italic">Your Vision</em>
+            </h2>
+          </div>
 
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="p-8 border border-gold/10 rounded bg-white/[0.005] flex flex-col justify-between min-h-[360px]">
+              <div>
+                <span className="font-bebas text-gold text-3xl tracking-[0.05em] block mb-2">Logo &amp; Brand Displays</span>
+                <span className="text-xs text-text-dim tracking-[0.1em] uppercase block mb-6">Logo reveals &amp; Names</span>
+                <p className="text-[0.92rem] text-text-muted leading-relaxed mb-6 font-sans">
+                  Perfect for brand logos, names, and linear geometric designs. Custom animations for launches.
+                </p>
+              </div>
+              <div className="border-t border-gold/10 pt-6">
+                <span className="text-xs text-text-dim block mb-1">Starting from</span>
+                <span className="text-gold font-bebas text-2xl tracking-[0.05em] block">₹4.0 Lakhs onwards</span>
+              </div>
+            </div>
+
+            <div className="p-8 border border-gold/25 rounded bg-gold/[0.01] flex flex-col justify-between min-h-[360px] relative">
+              <span className="absolute top-4 right-4 bg-gold text-black text-[0.58rem] font-bold tracking-[0.15em] uppercase px-2.5 py-1 rounded">Popular</span>
+              <div>
+                <span className="font-bebas text-gold text-3xl tracking-[0.05em] block mb-2">Dynamic 3D Animations</span>
+                <span className="text-xs text-text-dim tracking-[0.1em] uppercase block mb-6">High Fidelity Transitions</span>
+                <p className="text-[0.92rem] text-text-muted leading-relaxed mb-6 font-sans">
+                  Stunning 3D dynamic transitions, multi-colored drone choreography, and tailored shape design.
+                </p>
+              </div>
+              <div className="border-t border-gold/10 pt-6">
+                <span className="text-xs text-text-dim block mb-1">Starting from</span>
+                <span className="text-gold font-bebas text-2xl tracking-[0.05em] block">₹4.0 Lakhs onwards</span>
+              </div>
+            </div>
+
+            <div className="p-8 border border-gold/10 rounded bg-white/[0.005] flex flex-col justify-between min-h-[360px]">
+              <div>
+                <span className="font-bebas text-gold text-3xl tracking-[0.05em] block mb-2">Grand Cinematic Spectacles</span>
+                <span className="text-xs text-text-dim tracking-[0.1em] uppercase block mb-6">Large Scale Formations</span>
+                <p className="text-[0.92rem] text-text-muted leading-relaxed mb-6 font-sans">
+                  Unlimited animation shapes, heavy spatial layouts, and precise storytelling for grand landmarks.
+                </p>
+              </div>
+              <div className="border-t border-gold/10 pt-6">
+                <span className="text-xs text-text-dim block mb-1">Starting from</span>
+                <span className="text-gold font-bebas text-2xl tracking-[0.05em] block">₹4.0 Lakhs onwards</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Factors Affecting Cost Section */}
       <section className="py-20 bg-dark-2/20">

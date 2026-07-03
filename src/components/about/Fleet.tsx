@@ -65,7 +65,7 @@ export default function Fleet() {
           <div className="fleet-desc">Ultra-detailed, premium formations. National-scale celebrations and government events.</div>
         </div>
       </div>
-      <p style={{fontSize: '.7rem', color: 'var(--text-dim)', marginTop: '1rem', textAlign: 'center', letterSpacing: '.06em'}}>Larger fleets available on request · 2km sky engagement radius</p>
+      <p style={{fontSize: '.7rem', color: 'var(--color-text-muted)', marginTop: '1rem', textAlign: 'center', letterSpacing: '.06em'}}>Larger fleets available on request · 2km sky engagement radius</p>
     </div>
   </div>
 </section>
