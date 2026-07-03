@@ -52,6 +52,7 @@ export const metadata: Metadata = {
 };
 
 import WhatsAppButton from "@/components/WhatsAppButton";
+import BackToTopButton from "@/components/BackToTopButton";
 
 export default function RootLayout({
   children,
@@ -111,6 +112,7 @@ export default function RootLayout({
       >
         {children}
         <WhatsAppButton />
+        <BackToTopButton />
       </body>
     </html>
   );
