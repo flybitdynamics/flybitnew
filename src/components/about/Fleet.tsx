@@ -40,7 +40,7 @@ export default function Fleet() {
       <div className="eyebrow">Drone Fleet Size</div>
       <h2 className="sec-title">Scale That <em>Matches</em> Your Vision</h2>
       <p className="sec-body">The scale of our drone fleet determines the complexity and precision of our aerial formations — enabling us to craft visually stunning and immersive experiences for any event size.</p>
-      <p className="sec-body" style={{marginTop: '1.2rem'}}>From intimate 100-drone shows to 250+ drone spectacles, every configuration is purpose-built for your venue, audience, and creative brief. Larger fleets on request.</p>
+      <p className="sec-body" style={{marginTop: '1.2rem'}}>From intimate 100-drone shows to 150 drone spectacles, every configuration is purpose-built for your venue, audience, and creative brief. Larger fleets on request.</p>
     </div>
     <div className="fr">
       <div className="fleet-steps">
@@ -58,11 +58,6 @@ export default function Fleet() {
           <div className="fleet-num">200</div>
           <div className="fleet-label">Drones</div>
           <div className="fleet-desc">Full brand narrative sequences. Our most popular configuration for mid-large events.</div>
-        </div>
-        <div className="fleet-step" onClick={() => openModal(`250 Drones`, `250 drones is our premium configuration — ultra-detailed formations, full colour gradients, and complex animated sequences for national-scale events.`)}>
-          <div className="fleet-num">250</div>
-          <div className="fleet-label">Drones</div>
-          <div className="fleet-desc">Ultra-detailed, premium formations. National-scale celebrations and government events.</div>
         </div>
       </div>
       <p style={{fontSize: '.7rem', color: 'var(--color-text-muted)', marginTop: '1rem', textAlign: 'center', letterSpacing: '.06em'}}>Larger fleets available on request · 2km sky engagement radius</p>

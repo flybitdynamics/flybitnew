@@ -55,8 +55,8 @@ export default function WhyChooseUs({ onOpenModal }: WhyChooseUsProps) {
       ),
     },
     {
-      title: '100 to 250+ Drones',
-      desc: '100 to 250+ drones per show, 10–12 min duration.',
+      title: '100 to 150 Drones',
+      desc: '100 to 150 drones per show, 10–12 min duration.',
       modalTitle: '100 to 500+ Drones Scale',
       modalDesc: 'From intimate premium private events to grand regional celebrations, we deploy fleets ranging from 100 up to 500+ highly precise storytelling drones, operating a spectacular 10 to 12 minutes of active animation.',
       icon: (

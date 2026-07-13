@@ -55,13 +55,13 @@ export default function ServicesProcess() {
               {/* Gold gradient slide line */}
               <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-gold to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
               
-              <span className="pstep-num font-bebas text-[4rem] text-gold/12 leading-none mb-5 block select-none">
+              <span className="pstep-num font-bebas text-[4rem] text-gold/30 leading-none mb-5 block select-none">
                 {step.num}
               </span>
               <h3 className="font-cormorant text-[1.3rem] text-text mb-4">
                 {step.title}
               </h3>
-              <p className="text-[0.76rem] text-text-muted leading-[1.75] font-sans">
+              <p className="text-[0.92rem] text-text-muted leading-relaxed font-sans">
                 {step.desc}
               </p>
             </div>
@@ -78,13 +78,13 @@ export default function ServicesProcess() {
               {/* Gold gradient slide line */}
               <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-gold to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
               
-              <span className="pstep-num font-bebas text-[4rem] text-gold/12 leading-none mb-5 block select-none">
+              <span className="pstep-num font-bebas text-[4rem] text-gold/30 leading-none mb-5 block select-none">
                 {step.num}
               </span>
               <h3 className="font-cormorant text-[1.3rem] text-text mb-4">
                 {step.title}
               </h3>
-              <p className="text-[0.76rem] text-text-muted leading-[1.75] font-sans">
+              <p className="text-[0.92rem] text-text-muted leading-relaxed font-sans">
                 {step.desc}
               </p>
             </div>
@@ -94,13 +94,13 @@ export default function ServicesProcess() {
           <div className="pstep bg-gold/[0.03] p-10 relative group overflow-hidden transition-all duration-300 hover:bg-gold/[0.05]">
             <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-gold to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
             
-            <span className="pstep-num font-bebas text-[4rem] text-gold/40 leading-none mb-5 block select-none">
+            <span className="pstep-num font-bebas text-[4rem] text-gold/65 leading-none mb-5 block select-none">
               05
             </span>
             <h3 className="font-cormorant text-[1.3rem] text-text mb-4">
               Live Show Execution
             </h3>
-            <p className="text-[0.76rem] text-text-muted leading-[1.75] font-sans">
+            <p className="text-[0.92rem] text-text-muted leading-relaxed font-sans">
               Seamless execution by our expert drone operations team.
             </p>
           </div>

@@ -122,7 +122,7 @@ export default function HeroServices() {
                 x="170" 
                 y="305" 
                 textAnchor="middle" 
-                fill="rgba(201,168,76,0.18)" 
+                fill="rgba(201,168,76,0.75)" 
                 className="font-bebas text-[9px] tracking-[4px]"
               >
                 GPS SYNCED · RTK PRECISION

@@ -23,7 +23,7 @@ const dmSans = DM_Sans({
 
 export const metadata: Metadata = {
   title: "Best Drone Show Company in India | FLYBIT Dynamics",
-  description: "FLYBIT Dynamics delivers India's most spectacular drone light shows — weddings, corporate launches, festivals & national events. 100-250+ drones. Book now.",
+  description: "FLYBIT Dynamics delivers India's most spectacular drone light shows — weddings, corporate launches, festivals & national events. 100-150 drones. Book now.",
   keywords: [
     "Drone show india",
     "Best drone show company in India",

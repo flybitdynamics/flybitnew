@@ -87,7 +87,7 @@ export default function Contact() {
         <option>100 Drones</option>
         <option>150 Drones</option>
         <option>200 Drones</option>
-        <option>250+ Drones</option>
+        <option>150 Drones</option>
         <option>Not Sure — Need Guidance</option>
       </select>
       <textarea className="cf-input cf-textarea" placeholder="Tell us more — theme, formations, special moments…"></textarea>

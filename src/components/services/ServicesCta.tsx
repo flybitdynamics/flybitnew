@@ -49,7 +49,7 @@ export default function ServicesCta({ onOpenModal }: ServicesCtaProps) {
           </a>
         </div>
         
-        <p className="cta-note mt-10 text-[0.68rem] text-text-dim tracking-[0.12em] font-sans">
+        <p className="cta-note mt-10 text-[0.68rem] text-text-muted tracking-[0.12em] font-sans">
           Available Pan-India · info@flybitdynamics.com 
         </p>
       </div>

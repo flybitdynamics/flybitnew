@@ -164,7 +164,7 @@ export default function HeroTechnology() {
                 x="210" 
                 y="410" 
                 textAnchor="middle" 
-                fill="rgba(201,168,76,0.15)" 
+                fill="rgba(201,168,76,0.75)" 
                 className="font-bebas text-[8px] tracking-[5px]"
               >
                 RTK · GPS · MESH COMM

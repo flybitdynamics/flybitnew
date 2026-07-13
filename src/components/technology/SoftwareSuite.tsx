@@ -228,7 +228,7 @@ export default function SoftwareSuite() {
                   {tab.name}
                 </h4>
                 
-                <p className="text-[0.72rem] text-text-dim mt-1 font-sans">
+                <p className="text-[0.72rem] text-white/65 mt-1 font-sans">
                   {tab.hint}
                 </p>
               </button>

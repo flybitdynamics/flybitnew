@@ -49,7 +49,7 @@ export default function StatsBand() {
               {item.label}
             </div>
             
-            <div className="text-[0.72rem] text-text-dim mt-1.5 font-sans">
+            <div className="text-[0.72rem] text-white/65 mt-1.5 font-sans">
               {item.sub}
             </div>
           </div>

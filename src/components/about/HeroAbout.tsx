@@ -101,7 +101,7 @@ export default function HeroAbout({ onOpenModal }: HeroAboutProps) {
 
           <div className="flex gap-8 md:gap-10 flex-wrap md:flex-nowrap">
             <div>
-              <div className="font-bebas text-[2.4rem] text-gold leading-none tracking-[0.04em]">250+</div>
+              <div className="font-bebas text-[2.4rem] text-gold leading-none tracking-[0.04em]">150+</div>
               <div className="text-[0.6rem] tracking-[0.2em] uppercase text-text-dim mt-1">Drones Available</div>
             </div>
             <div>

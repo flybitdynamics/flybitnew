@@ -139,7 +139,7 @@ export default function BlogPageView({ blog, relatedBlogs }: BlogPageViewProps) 
             {blog.title}
           </h1>
 
-          <div className="flex flex-wrap items-center gap-4 text-xs font-sans text-text-dim pb-6 border-b border-border/40">
+          <div className="flex flex-wrap items-center gap-4 text-xs font-sans text-white/65 pb-6 border-b border-border/40">
             <span>By {blog.author}</span>
             <span className="w-1.5 h-1.5 rounded-full bg-border" />
             <span>{formatStoryDate(blog.date)}</span>

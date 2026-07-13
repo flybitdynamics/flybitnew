@@ -40,7 +40,7 @@ export default function BlogCard({ blog }: BlogCardProps) {
       {/* Card Body */}
       <div className="p-6 flex flex-col flex-grow">
         {/* Meta row */}
-        <div className="flex items-center gap-3 text-[0.68rem] font-sans tracking-wide text-text-dim mb-3">
+        <div className="flex items-center gap-3 text-[0.68rem] font-sans tracking-wide text-white/65 mb-3">
           <span>{formatStoryDate(blog.date)}</span>
           <span className="w-1.5 h-1.5 rounded-full bg-border" />
           <span>{blog.readingTime || '3 min read'}</span>
