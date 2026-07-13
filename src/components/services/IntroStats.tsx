@@ -31,7 +31,7 @@ export default function IntroStats() {
           {/* Stat 1 */}
           <div className="p-8 border-r border-b border-border/30 hover:bg-white/5 transition-colors duration-300">
             <div className="font-bebas text-[2.8rem] text-gold leading-none tracking-[0.04em]">
-              150+
+              150
             </div>
             <div className="text-[0.68rem] tracking-[0.18em] uppercase text-text-muted mt-2">
               Drones in Fleet
