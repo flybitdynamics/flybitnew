@@ -6,7 +6,23 @@ import Footer from '@/components/Footer';
 import BookingModal from '@/components/BookingModal';
 import Link from 'next/link';
 
-export default function DroneLightShowPage() {
+export interface DroneShowIndiaLandingProps {
+  eyebrow?: string;
+  h1Prefix?: string;
+  h1Highlight: string;
+  intro: string;
+  ctaTitle: string;
+  ctaModalDesc: string;
+}
+
+export default function DroneShowIndiaLanding({
+  eyebrow = 'NATIONWIDE OPERATIONS',
+  h1Prefix = 'Premier',
+  h1Highlight,
+  intro,
+  ctaTitle,
+  ctaModalDesc,
+}: DroneShowIndiaLandingProps) {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalTitle, setModalTitle] = useState('');
   const [modalDesc, setModalDesc] = useState('');
@@ -21,7 +37,6 @@ export default function DroneLightShowPage() {
     <main className="min-h-screen bg-black text-text selection:bg-gold selection:text-black">
       <Navbar onOpenModal={openModal} />
 
-      {/* Hero Section */}
       <section className="relative pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden bg-black border-b border-gold/10">
         <div
           className="absolute inset-0 pointer-events-none"
@@ -38,71 +53,66 @@ export default function DroneLightShowPage() {
         <div className="relative z-10 max-w-[1440px] mx-auto px-6 md:px-20 text-center">
           <div className="text-[0.65rem] tracking-[0.4em] uppercase text-gold mb-6 flex items-center justify-center gap-3 font-sans font-medium">
             <span className="w-6 h-[1px] bg-gold-dim" />
-            FLYBIT DYNAMICS
+            {eyebrow}
             <span className="w-6 h-[1px] bg-gold-dim" />
           </div>
           <h1 className="font-cormorant text-5xl md:text-7xl font-light text-text leading-tight mb-8">
-            Advanced <em className="text-gold italic">Drone Light Shows</em>
+            {h1Prefix} <em className="text-gold italic">{h1Highlight}</em> Displays
           </h1>
           <p className="text-[0.95rem] text-text-muted max-w-[650px] mx-auto leading-[1.8] font-sans">
-            Breathtaking aerial displays created using synchronized swarm drone technology. An eco-friendly, highly customizable, and premium alternative to traditional fireworks.
+            {intro}
           </p>
         </div>
       </section>
 
-      {/* Overview capabilities */}
       <section className="py-20 bg-dark-2/20 font-sans">
         <div className="max-w-[1440px] mx-auto px-6 md:px-20 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div>
             <div className="text-[0.62rem] tracking-[0.35em] uppercase text-gold mb-4">
-              Premium Aerial Displays
+              Regional Operations
             </div>
             <h2 className="font-cormorant text-4xl md:text-5xl font-light text-text leading-tight mb-8">
-              A Modern Alternative <em className="text-gold italic">to Fireworks</em>
+              Serving Major Cities <em className="text-gold italic">Nationwide</em>
             </h2>
             <p className="text-[0.92rem] text-text-muted leading-relaxed mb-6">
-              Our synchronized drone light displays generate massive social virality and brand impact. With millions of custom colors, our swarms paint hearts, couple initial monograms, VVIP logos, and complex 3D shapes across the night sky.
+              Our active regional setup enables rapid deployment for drone shows across all major hubs in India, including Jaipur, Udaipur, Ahmedabad, Delhi, and Mumbai.
             </p>
             <p className="text-[0.92rem] text-text-muted leading-relaxed">
-              We operate under 100% compliant safety parameters, securing municipal permissions, police NOCs, and Air Traffic Control clearances for every single flight location.
+              We manage local airspace regulations and secure flight NOCs end-to-end for every region, ensuring the highest standards of safety compliance under DGCA rules.
             </p>
           </div>
 
           <div className="border border-gold/15 p-8 rounded bg-black/40 relative overflow-hidden flex flex-col justify-between min-h-[300px]">
-            <span className="text-gold font-bebas text-2xl tracking-[0.1em] uppercase block mb-4">Core Strengths</span>
+            <span className="text-gold font-bebas text-2xl tracking-[0.1em] uppercase block mb-4">Active Hubs</span>
             <ul className="space-y-4 text-[0.88rem] text-text-muted">
-              <li><strong>Centimeter Precision:</strong> RTK-based GPS coordinates ensure exact swarm positions.</li>
-              <li><strong>Zero Sound Pollution:</strong> Perfect for residential hotels, palaces, and wildlife zones.</li>
-              <li><strong>Custom 3D animations:</strong> Fully custom designs rendered by our studio team.</li>
+              <li><strong>North India:</strong> Delhi NCR airspace clearances, Gurugram, Noida, and regional hubs.</li>
+              <li><strong>West India:</strong> Mumbai metropolitan setups, Ahmedabad, and Gujarat cultural shows.</li>
+              <li><strong>Rajasthan:</strong> Royal destination weddings in Fairmont Jaipur, Udaipur lakesides, and Jodhpur.</li>
             </ul>
           </div>
         </div>
       </section>
 
-      {/* Booking CTA */}
       <section className="py-20 border-t border-gold/10 bg-dark-3/10 font-sans">
         <div className="max-w-[800px] mx-auto px-6 text-center">
-          <h3 className="font-cormorant text-4xl text-text font-light mb-6">
-            Plan a Drone Light Show
-          </h3>
+          <h2 className="font-cormorant text-4xl text-text font-light mb-6">
+            {ctaTitle}
+          </h2>
           <p className="text-[0.88rem] text-text-muted leading-relaxed mb-10">
-            Contact us today to schedule airspace audits and receive custom storyboard design proposals.{' '}
-            <Link href="/drone-light-show-in-india" className="text-gold hover:text-gold-light underline underline-offset-2">
-              Explore drone light show india services →
-            </Link>
+            Submit details for your event location to receive a custom animation storyboard and feasibility estimate.
           </p>
-          <div className="flex gap-4 justify-center">
+          <div className="flex flex-wrap gap-4 justify-center">
             <button
-              onClick={() => openModal('Request Light Show Estimate', 'Get an estimate for a custom drone light show.')}
+              onClick={() => openModal('Request Show Proposal', ctaModalDesc)}
               className="bg-gold hover:bg-gold-light text-black font-semibold px-8 py-3.5 text-[0.75rem] tracking-[0.15em] uppercase rounded-[2px] transition-colors duration-200"
             >
-              Get Free Estimate
+              Inquire Now
             </button>
             <Link
               href="/pricing"
               className="border border-text/20 hover:border-gold text-text hover:text-gold px-8 py-3.5 text-[0.75rem] tracking-[0.15em] uppercase rounded-[2px] transition-colors duration-200"
             >
-              View Pricing Guide
+              Pricing Guide
             </Link>
           </div>
         </div>

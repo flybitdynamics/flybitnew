@@ -20,6 +20,15 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: '/drone-light-show-india',
+        destination: '/drone-light-show-in-india',
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

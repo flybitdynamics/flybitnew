@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     "drone light show company"
   ],
   alternates: {
-    canonical: '/drone-light-show-india',
+    canonical: '/drone-light-show-in-india',
   }
 };
 

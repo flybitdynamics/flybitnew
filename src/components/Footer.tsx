@@ -76,6 +76,11 @@ export default function Footer({ onOpenModal }: FooterProps) {
               </Link>
             </li>
             <li>
+              <Link href="/drone-light-show-in-india" className="text-white/90 hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none block text-left">
+                Drone Light Show India
+              </Link>
+            </li>
+            <li>
               <Link href="/drone-light-show-near-me" className="text-white/90 hover:text-gold text-[0.82rem] transition-colors duration-200 md:cursor-none block text-left">
                 Drone Show Near Me
               </Link>

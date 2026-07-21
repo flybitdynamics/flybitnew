@@ -30,6 +30,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE}/drone-show-india`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
     { url: `${BASE}/drone-show-company-in-india`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
     { url: `${BASE}/drone-light-show`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
+    { url: `${BASE}/drone-light-show-in-india`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.98 },
     { url: `${BASE}/drone-light-show-india`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
     { url: `${BASE}/drone-light-show-company`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
     { url: `${BASE}/drone-show-cost`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.85 },
