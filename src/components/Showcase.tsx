@@ -8,7 +8,30 @@ interface ShowcaseProps {
   onOpenModal: (title: string, description: string) => void;
 }
 
-const SHOWS_RAW = [
+export interface ShowItem {
+  tag: string;
+  cat: string;
+  name: string;
+  src: string;
+  isVideo?: boolean;
+  videoUrl?: string;
+  instagramUrl?: string;
+}
+
+const SHOWS_RAW: ShowItem[] = [
+  // Video Show Reels
+  { tag: 'Spiritual Video', cat: 'videos', isVideo: true, name: 'Amrut Vandana Drone Show', src: '/reelsthumbnail/amrut vandana.png', videoUrl: '/stories/YyETexLFNGtBRZkqv6Qu/video.mp4' },
+  { tag: 'Sports Video', cat: 'videos', isVideo: true, name: 'GDP Cup 2026 Drone Spectacle', src: '/reelsthumbnail/GDP cup 2026.png', videoUrl: '/stories/Zd7nGPrFQYPGLtU3njiS/video.mp4' },
+  { tag: 'Spiritual Video', cat: 'videos', isVideo: true, name: 'Hanuman Jayanti Drone Show', src: '/reelsthumbnail/hanuman jayanti.png', videoUrl: '/stories/mwSAWYi49Z8wt2YBK7SB/video.mp4' },
+  { tag: 'Wedding Video', cat: 'videos', isVideo: true, name: 'Het & Rucha Wedding Drone Show', src: '/reelsthumbnail/Het & Rucha Wedding.png', videoUrl: '/stories/AO1Z8RQ9AM6JHQp6EySN/video.mp4' },
+  { tag: 'Spiritual Video', cat: 'videos', isVideo: true, name: 'Khodiyar Ma Temple Drone Show', src: '/reelsthumbnail/khodiyar ma temple ( kkv ).png', videoUrl: '/stories/V1SakUWqB5qHXhklphTw/video.mp4' },
+  { tag: 'Spiritual Video', cat: 'videos', isVideo: true, name: 'Namotsav Drone Light Performance', src: '/reelsthumbnail/namotsav.png', videoUrl: '/stories/Cb1YHJMLLjm6XMmoOZpx/video.mp4' },
+  { tag: 'Wedding Video', cat: 'videos', isVideo: true, name: 'Prateek & Jenny Wedding Drones', src: '/reelsthumbnail/prateek & jenny wedding drones show.png', videoUrl: '/stories/peiPa6iVL3irXCVrKDNQ/video.mp4' },
+  { tag: 'Spiritual Video', cat: 'videos', isVideo: true, name: 'Ram Navami Sky Performance', src: '/reelsthumbnail/ram navmi.png', videoUrl: '/stories/n0HrUCdju1Q2chJh1S42/video.mp4' },
+  { tag: 'Tech & Ent Video', cat: 'videos', isVideo: true, name: 'Science City Drone Show', src: '/reelsthumbnail/science city drones show.png', videoUrl: '/stories/3fXIKCCdkWQLC4ZtpBCZ/video.mp4' },
+  { tag: 'Drone Show Video', cat: 'videos', isVideo: true, name: 'IPL Opening Drone Show', src: '/reelsthumbnail/magnific_enhance-this-real-drone-l_jSazQqBLD0.png', videoUrl: '/stories/QEy7ZR7rK1gQDS7g105G/video.mp4' },
+
+  // Photo Showcase Items
   { tag: 'Wedding', cat: 'wedding', name: 'Grand Sky Finale', src: '/past_shows/wedding images/ChatGPT Image May 29, 2026, 10_21_15 AM.png' },
   { tag: 'National Event', cat: 'government', name: 'Republic Day', src: '/past_shows/Gov. & national/wildmind_zeel_2026_03_14_12_16_20.jpg' },
   { tag: 'Spiritual', cat: 'spiritual', name: 'Divine Celebration', src: '/past_shows/Spiritual images/magnific_enhance-this-real-wedding_0pimfkMTfW.png' },
@@ -60,7 +83,6 @@ const SHOWS_RAW = [
 
 const SHOWS_UNORDERED = SHOWS_RAW.map((show) => ({ ...show, src: publicAsset(show.src) }));
 
-// Interleave the shows so that categories alternate instead of appearing in blocks
 const interleaveShows = (shows: typeof SHOWS_UNORDERED) => {
   const groups: Record<string, typeof SHOWS_UNORDERED> = {};
   shows.forEach((show) => {
@@ -89,6 +111,7 @@ const SHOWS = interleaveShows(SHOWS_UNORDERED);
 
 const TABS = [
   { label: 'All Shows', cat: 'all' },
+  { label: 'Videos 🎬', cat: 'videos' },
   { label: 'Weddings', cat: 'wedding' },
   { label: 'Corporate', cat: 'corporate' },
   { label: 'Spiritual', cat: 'spiritual' },
@@ -98,6 +121,7 @@ const TABS = [
 
 export default function Showcase({ onOpenModal }: ShowcaseProps) {
   const [activeTab, setActiveTab] = useState('all');
+  const [activeVideoItem, setActiveVideoItem] = useState<ShowItem | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const filteredShows = SHOWS.filter((s) => activeTab === 'all' || s.cat === activeTab);
@@ -114,19 +138,22 @@ export default function Showcase({ onOpenModal }: ShowcaseProps) {
     }
   };
 
-
+  const handleCardClick = (show: ShowItem) => {
+    if (show.isVideo) {
+      setActiveVideoItem(show);
+    } else {
+      onOpenModal(show.name, `Enquire about ${show.name} (${show.tag})`);
+    }
+  };
 
   return (
-    <section
-      id="showcase"
-      className="bg-black select-none overflow-hidden"
-    >
-      <div className="showcase-head flex flex-col md:flex-row justify-between items-start md:items-end px-6 md:px-20 mb-2 font-sans">
+    <section id="showcase" className="bg-black select-none overflow-hidden py-12">
+      <div className="showcase-head flex flex-col md:flex-row justify-between items-start md:items-end px-6 md:px-20 mb-4 font-sans">
         <div>
-          <div className="eyebrow text-[0.62rem] tracking-[0.4em] uppercase text-gold mb-4">
-            Past Shows
+          <div className="eyebrow text-[0.62rem] tracking-[0.4em] uppercase text-gold mb-3">
+            Portfolio Showcase
           </div>
-          <h2 className="font-cormorant text-4xl md:text-5xl font-light text-text leading-tight mb-4 md:mb-0">
+          <h2 className="font-cormorant text-4xl md:text-5xl font-light text-text leading-tight mb-2 md:mb-0">
             Moments We've <em className="text-gold italic">Painted</em>
           </h2>
         </div>
@@ -137,10 +164,10 @@ export default function Showcase({ onOpenModal }: ShowcaseProps) {
           <button
             key={idx}
             onClick={() => setActiveTab(tab.cat)}
-            className={`stab px-6 py-2.5 text-[0.7rem] tracking-[0.14em] uppercase rounded-[2px] cursor-pointer md:cursor-none transition-all duration-200 shrink-0 ${
+            className={`stab px-6 py-2.5 text-[0.7rem] tracking-[0.14em] uppercase rounded-[2px] cursor-pointer transition-all duration-200 shrink-0 ${
               activeTab === tab.cat
-                ? 'bg-gold border-gold text-black active'
-                : 'bg-transparent border border-border text-text-muted hover:bg-gold hover:border-gold hover:text-black'
+                ? 'bg-gold border-gold text-black font-semibold'
+                : 'bg-transparent border border-border text-text-muted hover:bg-gold/20 hover:border-gold hover:text-gold'
             }`}
           >
             {tab.label}
@@ -150,7 +177,7 @@ export default function Showcase({ onOpenModal }: ShowcaseProps) {
 
       {/* Showcase Horizontal Scroll Wrapper */}
       <div className="relative">
-        {/* Mobile Scroll Controls */}
+        {/* Scroll Controls */}
         <button
           onClick={scrollLeft}
           className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-10 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full border border-gold/20 bg-black/80 text-gold hover:bg-gold/20 transition-colors backdrop-blur-sm shadow-lg cursor-pointer"
@@ -172,28 +199,128 @@ export default function Showcase({ onOpenModal }: ShowcaseProps) {
 
         <div
           ref={scrollRef}
-          className="showcase-scroll flex overflow-x-auto gap-[2px] px-6 md:px-20 pb-8 scrollbar-none font-sans"
+          className="showcase-scroll flex overflow-x-auto gap-[12px] px-6 md:px-20 pb-8 scrollbar-none font-sans"
           style={{ scrollbarWidth: 'none' }}
         >
           {filteredShows.map((show, idx) => (
             <FadeUp
               key={idx}
-              delay={idx * 60}
-              className="show-card shrink-0 w-[280px] md:w-[340px] h-[380px] md:h-[440px] bg-dark-3 relative overflow-hidden border border-gold/[0.06] hover:border-gold/25 md:cursor-none transition-colors duration-300 group"
+              delay={(idx % 6) * 50}
+              className="show-card shrink-0 w-[280px] md:w-[340px] h-[380px] md:h-[440px] bg-dark-3 relative overflow-hidden border border-gold/[0.1] hover:border-gold/50 rounded-[4px] cursor-pointer transition-all duration-300 group shadow-lg"
             >
-              <div className="show-card-bg absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-105">
-                <div
-                  className="w-full h-full bg-contain bg-no-repeat bg-center"
-                  style={{ backgroundImage: `url('${show.src}')` }}
-                />
-                <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500" />
+              <div
+                className="w-full h-full"
+                onClick={() => handleCardClick(show)}
+              >
+                <div className="show-card-bg absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-105">
+                  <div
+                    className="w-full h-full bg-contain bg-center bg-black/90 bg-no-repeat p-2"
+                    style={{ backgroundImage: `url('${show.src}')` }}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-black/10 group-hover:via-black/20 transition-colors duration-500" />
+                </div>
+
+                {/* Video Tag / Play Overlay */}
+                {show.isVideo && (
+                  <>
+                    <div className="absolute top-4 right-4 z-10 flex items-center gap-1.5 px-3 py-1 bg-black/80 border border-gold/50 text-gold text-[0.62rem] font-medium tracking-[0.18em] uppercase rounded-full backdrop-blur-md">
+                      <svg viewBox="0 0 24 24" className="w-3 h-3 fill-gold">
+                        <polygon points="5,3 19,12 5,21" />
+                      </svg>                      VIDEO
+                    </div>
+                    <div className="absolute inset-0 flex items-center justify-center z-10">
+                      <div className="w-14 h-14 rounded-full bg-gold/90 border border-gold text-black flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform duration-300">
+                        <svg viewBox="0 0 24 24" className="w-6 h-6 ml-0.5 fill-black">
+                          <polygon points="5,3 19,12 5,21" />
+                        </svg>
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                {/* Info Footer */}
+                <div className="absolute bottom-0 inset-x-0 p-6 z-10 flex flex-col justify-end">
+                  <span className="text-[0.6rem] tracking-[0.25em] uppercase text-gold font-medium mb-1">
+                    {show.tag}
+                  </span>
+                  <h3 className="font-cormorant text-xl text-white font-normal group-hover:text-gold transition-colors">
+                    {show.name}
+                  </h3>
+                  <div className="mt-2 text-[0.65rem] tracking-[0.15em] uppercase text-gold-dim group-hover:text-gold flex items-center gap-1">
+                    {show.isVideo ? 'Watch Reel Video →' : 'Enquire Show →'}
+                  </div>
+                </div>
               </div>
-
-
             </FadeUp>
           ))}
         </div>
       </div>
+
+      {/* Interactive Video Modal */}
+      {activeVideoItem && (
+        <div
+          className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 md:p-8"
+          onClick={() => setActiveVideoItem(null)}
+        >
+          <div
+            className="relative w-full max-w-4xl bg-dark-2 border border-gold/30 rounded-[8px] overflow-hidden shadow-2xl p-4 md:p-6"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setActiveVideoItem(null)}
+              className="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-black/70 border border-gold/30 text-gold flex items-center justify-center hover:bg-gold hover:text-black transition-colors"
+              aria-label="Close modal"
+            >
+              ✕
+            </button>
+
+            <div className="mb-4">
+              <span className="text-[0.62rem] tracking-[0.25em] uppercase text-gold">{activeVideoItem.tag}</span>
+              <h3 className="font-cormorant text-2xl md:text-3xl text-text font-light">{activeVideoItem.name}</h3>
+            </div>
+
+            <div className="relative aspect-video w-full bg-black rounded-[4px] overflow-hidden flex items-center justify-center border border-border/20">
+              {activeVideoItem.videoUrl ? (
+                <video
+                  src={publicAsset(activeVideoItem.videoUrl)}
+                  controls
+                  autoPlay
+                  className="w-full h-full object-contain"
+                />
+              ) : activeVideoItem.instagramUrl ? (
+                <iframe
+                  src={`${activeVideoItem.instagramUrl.replace(/\/$/, '')}/embed`}
+                  title={activeVideoItem.name}
+                  className="w-full h-full border-0"
+                  allowFullScreen
+                />
+              ) : (
+                <div className="flex flex-col items-center justify-center gap-3 p-8 text-center">
+                  <div className="w-16 h-16 rounded-full bg-gold/10 border border-gold/40 flex items-center justify-center text-gold">
+                    <svg viewBox="0 0 24 24" className="w-8 h-8 fill-gold">
+                      <polygon points="5,3 19,12 5,21" />
+                    </svg>
+                  </div>
+                  <p className="text-text text-xl font-cormorant">{activeVideoItem.name}</p>
+                  <p className="text-text-muted text-sm max-w-md">
+                    High-definition drone show video highlight. Contact FLYBIT Dynamics to view complete event reels and technical choreography.
+                  </p>
+                  <button
+                    onClick={() => {
+                      const name = activeVideoItem.name;
+                      setActiveVideoItem(null);
+                      onOpenModal(`Video Reel Enquiry: ${name}`, `I would like to request full video reels and details for ${name}.`);
+                    }}
+                    className="mt-2 px-6 py-2.5 bg-gold text-black font-semibold text-xs tracking-wider uppercase rounded-[2px] hover:bg-gold-light transition-colors"
+                  >
+                    Request Full Video Reel
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

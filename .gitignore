@@ -43,3 +43,7 @@ firebase-service-account.json
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Ignore large local video files
+public/**/*.mp4
+_local_assets_backup/

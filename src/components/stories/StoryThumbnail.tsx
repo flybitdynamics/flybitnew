@@ -1,6 +1,7 @@
 'use client';
 
 import type { ContentStory } from '@/lib/stories/types';
+import { publicAsset } from '@/lib/public-assets';
 
 interface StoryThumbnailProps {
   story: ContentStory;
@@ -9,8 +10,9 @@ interface StoryThumbnailProps {
 }
 
 export default function StoryThumbnail({ story, className = '', showPlay = true }: StoryThumbnailProps) {
-  const hasImage = Boolean(story.thumbnailUrl || story.coverImageUrl);
-  const src = story.thumbnailUrl || story.coverImageUrl;
+  const rawSrc = story.thumbnailUrl || story.coverImageUrl;
+  const src = publicAsset(rawSrc);
+  const hasImage = Boolean(src);
 
   return (
     <div className={`relative overflow-hidden bg-dark-3 ${className}`}>
@@ -20,10 +22,11 @@ export default function StoryThumbnail({ story, className = '', showPlay = true 
           src={src}
           alt={story.title}
           loading="lazy"
-          className="w-full h-full object-contain bg-black transition-transform duration-300 ease-out group-hover:scale-105"
+          className="w-full h-full object-contain object-center bg-black/90 p-2 transition-transform duration-300 ease-out group-hover:scale-105"
         />
       ) : (
         <div
+
           className="w-full h-full flex items-center justify-center transition-transform duration-300 ease-out group-hover:scale-105"
           style={{
             background: 'linear-gradient(135deg, #110826 0%, #081120 50%, #060607 100%)',

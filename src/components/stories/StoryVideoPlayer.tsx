@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import type { ContentStory } from '@/lib/stories/types';
+import { publicAsset } from '@/lib/public-assets';
 import { getInstagramEmbedUrl } from '@/lib/stories/utils';
 
 interface StoryVideoPlayerProps {
@@ -18,8 +19,11 @@ export default function StoryVideoPlayer({
 }: StoryVideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
 
+  const videoSrc = story.videoUrl ? publicAsset(story.videoUrl) : '';
+  const posterSrc = publicAsset(story.thumbnailUrl || story.coverImageUrl);
+
   useEffect(() => {
-    if (!autoPlay || !story.videoUrl) return;
+    if (!autoPlay || !videoSrc) return;
 
     const video = videoRef.current;
     if (!video) return;
@@ -29,25 +33,25 @@ export default function StoryVideoPlayer({
     const playPromise = video.play();
     if (playPromise) {
       playPromise.catch(() => {
-        /* Browser may block autoplay with sound; controls remain available */
+        /* Autoplay fallback */
       });
     }
-  }, [autoPlay, story.id, story.videoUrl]);
+  }, [autoPlay, story.id, videoSrc]);
 
-  if (story.videoUrl) {
+  if (videoSrc) {
     return (
-      <div className={`relative bg-black rounded-[3px] overflow-hidden flex items-center justify-center ${className}`}>
+      <div className={`relative bg-black rounded-[4px] overflow-hidden flex items-center justify-center group ${className}`}>
         <video
           ref={videoRef}
           key={story.id}
-          src={story.videoUrl}
+          src={videoSrc}
           controls
           autoPlay={autoPlay}
           muted
           loop
           playsInline
           preload="auto"
-          poster={story.thumbnailUrl || story.coverImageUrl || undefined}
+          poster={posterSrc || undefined}
           className="w-full h-auto max-h-full object-contain mx-auto"
         >
           <track kind="captions" />
@@ -63,18 +67,17 @@ export default function StoryVideoPlayer({
       const src = autoPlay ? `${embedUrl}?autoplay=1` : embedUrl;
       return (
         <div className={`w-full h-full flex items-center justify-center bg-black/40 rounded-[3px] ${className}`}>
-          <div className="relative w-full max-w-[385px] h-full max-h-[695px] aspect-[9/16] bg-black rounded-[12px] border border-border/20 overflow-hidden shadow-2xl">
+          <div className="relative w-full max-w-[385px] h-full max-h-[695px] aspect-[9/16] bg-black rounded-[12px] border border-border/20 overflow-hidden shadow-2xl flex items-center justify-center">
             <iframe
               key={story.id}
               src={src}
-              title={`${story.title} — Instagram`}
-              className="absolute inset-0 w-full h-full border-0"
+              title={`${story.title} — Video`}
+              className="w-full h-full border-0"
               scrolling="no"
               style={{ overflow: 'hidden' }}
               allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
               allowFullScreen
               loading="eager"
-              referrerPolicy="no-referrer-when-downgrade"
             />
           </div>
         </div>

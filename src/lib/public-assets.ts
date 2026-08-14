@@ -4,11 +4,56 @@ type PublicAssetManifest = Record<string, string>;
 
 const manifestMap = manifest as PublicAssetManifest;
 
-/** Resolve a local /public path to its Zata AVIF URL (falls back to local path if not uploaded). */
+function extractRelativeManifestPath(targetUrl: string): string {
+  if (!targetUrl) return '';
+  for (const prefix of ['/public/', '/stories/', '/reelsthumbnail/']) {
+    const idx = targetUrl.indexOf(prefix);
+    if (idx !== -1) {
+      return targetUrl.slice(idx);
+    }
+  }
+  return targetUrl;
+}
+
+/** Resolve a local path or asset path to Cloudflare R2 URL (if NEXT_PUBLIC_MEDIA_BASE_URL is set) or relative path. */
 export function publicAsset(localPath: string): string {
-  if (/^https?:\/\//i.test(localPath)) return localPath;
-  const key = localPath.startsWith('/') ? localPath : `/${localPath}`;
-  return manifestMap[key] ?? key;
+  if (!localPath) return '';
+
+  const baseUrl = (
+    process.env.NEXT_PUBLIC_MEDIA_BASE_URL ||
+    process.env.NEXT_PUBLIC_CLOUDFLARE_URL ||
+    ''
+  ).replace(/\/$/, '');
+
+  let relPath = localPath;
+
+  if (/^https?:\/\//i.test(localPath)) {
+    if (localPath.includes('zata.ai') || localPath.includes('r2.dev')) {
+      relPath = extractRelativeManifestPath(localPath);
+    } else {
+      return localPath;
+    }
+  }
+
+  const key = relPath.startsWith('/') ? relPath : `/${relPath}`;
+
+  // Serve local static story thumbnails directly from local public/ directory
+  if (key.startsWith('/stories/') && key.endsWith('.png')) {
+    return key;
+  }
+
+  const manifestTarget = manifestMap[key];
+  const finalRel = manifestTarget ? extractRelativeManifestPath(manifestTarget) : key;
+
+  if (baseUrl) {
+    const safePath = finalRel
+      .split('/')
+      .map((segment) => encodeURIComponent(segment))
+      .join('/');
+    return `${baseUrl}${safePath}`;
+  }
+
+  return finalRel;
 }
 
 export function mapPublicAssets(paths: readonly string[]): string[] {

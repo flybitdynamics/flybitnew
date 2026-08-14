@@ -1,6 +1,6 @@
 import type { Timestamp } from 'firebase/firestore';
 import type { BlogPost, BlogPostFaq, BlogStatus } from './types';
-import { DEFAULT_BLOG_IMAGE, DEFAULT_LOGO } from '@/lib/public-assets';
+import { DEFAULT_BLOG_IMAGE, DEFAULT_LOGO, publicAsset } from '@/lib/public-assets';
 
 function toIso(value: unknown): string {
   if (!value) return new Date().toISOString();
@@ -9,6 +9,14 @@ function toIso(value: unknown): string {
     return (value as Timestamp).toDate().toISOString();
   }
   return new Date().toISOString();
+}
+
+function toLocalPath(url: unknown, prefix: string, fallback: string): string {
+  const str = String(url || '');
+  if (!str) return fallback;
+  const idx = str.indexOf(`/${prefix}/`);
+  const relativePath = idx !== -1 ? str.substring(idx) : str;
+  return publicAsset(relativePath) || fallback;
 }
 
 export function mapFirestoreDoc(id: string, data: Record<string, unknown>): BlogPost {
@@ -27,11 +35,11 @@ export function mapFirestoreDoc(id: string, data: Record<string, unknown>): Blog
             : new Date().toISOString().split('T')[0])
     ),
     author: String(data.author || 'Admin'),
-    authorImage: String(data.authorImage || DEFAULT_LOGO),
+    authorImage: toLocalPath(data.authorImage, 'blogs', DEFAULT_LOGO),
     authorBio: String(data.authorBio || ''),
     category: String(data.category || 'Technology'),
     tags: Array.isArray(data.tags) ? (data.tags as string[]) : [],
-    image: String(data.image || DEFAULT_BLOG_IMAGE),
+    image: toLocalPath(data.image, 'blogs', DEFAULT_BLOG_IMAGE),
     featured: Boolean(data.featured),
     published: Boolean(data.published),
     status: (data.status === 'draft' ? 'draft' : 'published') as BlogStatus,

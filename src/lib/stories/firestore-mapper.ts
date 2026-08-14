@@ -1,6 +1,7 @@
 import type { Timestamp } from 'firebase/firestore';
 import type { ContentStory, ShowType, StoryStatus } from './types';
 import { SHOW_TYPES } from './types';
+import { publicAsset } from '@/lib/public-assets';
 
 function toIso(value: unknown): string {
   if (!value) return new Date().toISOString();
@@ -9,6 +10,14 @@ function toIso(value: unknown): string {
     return (value as Timestamp).toDate().toISOString();
   }
   return new Date().toISOString();
+}
+
+function toLocalPath(url: unknown, prefix: string): string {
+  const str = String(url || '');
+  if (!str) return '';
+  const idx = str.indexOf(`/${prefix}/`);
+  const relativePath = idx !== -1 ? str.substring(idx) : str;
+  return publicAsset(relativePath);
 }
 
 export function mapFirestoreDoc(id: string, data: Record<string, unknown>): ContentStory {
@@ -23,9 +32,9 @@ export function mapFirestoreDoc(id: string, data: Record<string, unknown>): Cont
     showType,
     shortDescription: String(data.shortDescription || ''),
     content: String(data.content || ''),
-    thumbnailUrl: String(data.thumbnailUrl || ''),
-    coverImageUrl: String(data.coverImageUrl || ''),
-    videoUrl: String(data.videoUrl || ''),
+    thumbnailUrl: toLocalPath(data.thumbnailUrl, 'stories'),
+    coverImageUrl: toLocalPath(data.coverImageUrl, 'stories'),
+    videoUrl: toLocalPath(data.videoUrl, 'stories'),
     instagramUrl: String(data.instagramUrl || ''),
     xUrl: String(data.xUrl || ''),
     facebookUrl: String(data.facebookUrl || ''),

@@ -10,6 +10,21 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
+        hostname: "*.r2.dev",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "*.cloudflare.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "*.imagedelivery.net",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
         hostname: "storage.googleapis.com",
         pathname: "/**",
       },
