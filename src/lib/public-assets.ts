@@ -15,6 +15,20 @@ function extractRelativeManifestPath(targetUrl: string): string {
   return targetUrl;
 }
 
+function safeDecode(str: string): string {
+  let prev = str;
+  try {
+    let current = decodeURIComponent(str);
+    while (current !== prev) {
+      prev = current;
+      current = decodeURIComponent(current);
+    }
+  } catch {
+    // ignore malformed URI components
+  }
+  return prev;
+}
+
 /** Resolve a local path or asset path to Cloudflare R2 URL (if NEXT_PUBLIC_MEDIA_BASE_URL is set) or relative path. */
 export function publicAsset(localPath: string): string {
   if (!localPath) return '';
@@ -48,7 +62,7 @@ export function publicAsset(localPath: string): string {
   if (baseUrl) {
     const safePath = finalRel
       .split('/')
-      .map((segment) => encodeURIComponent(segment))
+      .map((segment) => encodeURIComponent(safeDecode(segment)))
       .join('/');
     return `${baseUrl}${safePath}`;
   }
