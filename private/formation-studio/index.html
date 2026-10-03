@@ -94,7 +94,7 @@
   #legend span { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-left: 8px; }
   table.stats button { padding: 2px 7px; font-size: 11px; margin-left: 6px; }
   table.stats .bad { color: var(--bad); font-weight: 600; } table.stats .warn { color: var(--warn); font-weight: 600; } table.stats .ok { color: var(--ok); }
-  .tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; background: var(--panel2); border: 1px solid var(--line);
+  .tabs { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px; background: var(--panel2); border: 1px solid var(--line);
     border-radius: 9px; padding: 3px; margin-bottom: 12px; }
   .tabs button { border: 0; background: transparent; padding: 7px; font-weight: 600; color: var(--muted); }
   .tabs button.on { background: var(--accent); color: #04121b; }
@@ -136,15 +136,33 @@
     <h1>Drone Formation Studio</h1>
     <div class="sub">Upload an image or type text, set the drone count, and preview it as a sky formation.</div>
 
-    <div class="tabs"><button id="tabImage" class="on">Image</button><button id="tabText">Text</button></div>
+    <div class="tabs"><button id="tabImage" class="on">Image</button><button id="tabText">Text</button><button id="tabDots">Dotted</button></div>
 
     <div id="imagePane">
       <div class="drop" id="drop">
         <b>Upload image</b>
-        <small>Click or drop a PNG / JPG — line art, or a dotted picture (1 drone per dot).</small>
+        <small>Click or drop a PNG / JPG. Line art works best.</small>
         <input type="file" id="file" accept="image/*" hidden>
       </div>
       <div style="margin-top:8px"><button id="sampleBtn" style="width:100%">Try the sample line-art image</button></div>
+    </div>
+
+    <div id="dotsPane" style="display:none">
+      <div class="drop" id="dotDrop">
+        <b>Upload dotted image</b>
+        <small>A drone-show photo or any picture made of dots — drones are placed on the dots.</small>
+        <input type="file" id="dotFile" accept="image/*" hidden>
+      </div>
+      <label class="f" style="margin-top:8px"><span>Dots are</span>
+        <select id="dotPolarity">
+          <option value="auto">Auto detect</option>
+          <option value="light">Light dots on dark</option>
+          <option value="dark">Dark dots on light</option>
+        </select></label>
+      <label class="f"><span>Dot sensitivity <em id="dotSensVal" style="color:var(--muted);font-style:normal">50</em></span><input type="range" id="dotSens" min="0" max="100" value="50"></label>
+      <label class="check"><input type="checkbox" id="dotsMain" checked> Ignore dots outside the main group (ground lights, glare, phones)</label>
+      <label class="check"><input type="checkbox" id="dotColours" checked> Give each drone its dot's colour</label>
+      <div class="small">Uses the <b>Number of drones</b> below: fewer than the dots → spread evenly over them; more → every dot is used.</div>
     </div>
 
     <div id="textPane" style="display:none">
@@ -192,7 +210,6 @@
         <option value="lines">Line art (follow strokes)</option>
         <option value="edges">Photo (outline edges)</option>
         <option value="fill">Filled shape (fill area)</option>
-        <option value="dots">Dotted image (1 drone per dot)</option>
       </select></label>
     <label class="f"><span>Lines / shape are</span>
       <select id="polarity">
@@ -200,11 +217,8 @@
         <option value="dark">Dark on light bg</option>
         <option value="light">Light on dark bg</option>
       </select></label>
-    <label class="check" id="dotsMainRow" style="display:none"><input type="checkbox" id="dotsMain" checked> Ignore dots outside the main group (ground lights, glare, phones)</label>
-    <div id="mergeRow">
     <label class="f"><span>Join double lines closer than (m)</span><input type="number" id="merge" value="0.6" min="0" max="10" step="0.1"></label>
     <div style="color:var(--muted);font-size:12px;margin:-2px 0 6px">Drones follow the centre of each line. Raise this (1–2 m) if your lines are drawn as two outlines and you still see doubled rows; lower it to 0 to keep very close lines apart.</div>
-    </div>
     <label class="f"><span>Sensitivity <em id="sensVal" style="color:var(--muted);font-style:normal">50</em></span><input type="range" id="sens" min="0" max="100" value="50"></label>
     </div>
 
@@ -308,13 +322,12 @@ function params() {
     // text is rendered black-on-white, so its detection settings are fixed
     mode: state.source === 'text' ? { centre: 'lines', outline: 'lines', filled: 'fill' }[$('textStyle').value] : $('mode').value,
     polarity: state.source === 'text' ? 'dark' : $('polarity').value,
-    colorMode: $('colorMode').value,
+    colorMode: state.source === 'dots' && $('dotColours').checked ? 'image' : $('colorMode').value,
+    source: state.source,
     color: $('color').value,
     orient: $('orient').value,
     alt: Math.max(0, num('alt', 40)),
     fit: $('fit').checked,
-    dotsMain: $('dotsMain').checked,
-    stippleGap: state.source === 'image' ? state.stippleGap || 0 : 0,
     merge: state.source === 'text' ? 0 : Math.max(0, num('merge', 0.6)),
     sens: state.source === 'text' ? 50 : +$('sens').value,
   };
@@ -416,10 +429,7 @@ function buildCandidates(img, p, crop = { x: 0, y: 0, w: img.naturalWidth, h: im
 
   // metres per raster pixel (the image is fitted inside the width × height area)
   const mppEarly = Math.min(p.areaW / w, p.areaH / h);
-  // "Join double lines" (metres) — and for a drawing made of dots, at least enough to
-  // bridge the gap between neighbouring dots so they read as one stroke
-  const stippleJoin = p.stippleGap > 0 ? Math.ceil(p.stippleGap * s / 2) + 1 : 0;
-  const joinPx = p.mode === 'fill' ? 0 : Math.max(Math.round(p.merge / mppEarly / 2), stippleJoin);
+  const joinPx = p.mode === 'fill' ? 0 : Math.round(p.merge / mppEarly / 2);
   if (joinPx > 0) {
     // morphological closing: two outlines of one stroke (or the two borders of a
     // hollow line) melt into one solid band, whose centre line thinning then finds
@@ -787,24 +797,6 @@ function detectDots(img, p) {
   return { dots, removed, w, h, lightDots, canvas: c, median };
 }
 
-// What kind of picture is this?
-//  'show'    — a drone-show photo: light dots on a dark sky → Dotted mode, 1 drone per dot
-//  'stipple' — a drawing whose lines are made of dots on a light background → stays Line art,
-//              but the gaps between its dots are bridged so the dots read as strokes
-//  'plain'   — anything else
-function classifyPicture(img) {
-  const det = detectDots(img, { polarity: 'auto', sens: 50, dotsMain: false });
-  const n = det.dots.length;
-  if (n < 12) return { kind: 'plain', gapPx: 0 };
-  const area = det.dots.reduce((a, q) => a + q.area, 0) / (det.w * det.h);
-  const nn = nearestNeighbours(Float32Array.from(det.dots, q => q.x), Float32Array.from(det.dots, q => q.y), Math.max(det.w, det.h));
-  const medNN = Float32Array.from(nn).sort()[Math.floor(n / 2)];
-  const toSource = img.naturalWidth / det.w;                  // detection px → original image px
-  if (det.median < 70 && n <= 3000 && area < 0.06) return { kind: 'show', gapPx: medNN * toSource };
-  if (det.median > 150 && n >= 150 && area < 0.25) return { kind: 'stipple', gapPx: medNN * toSource };
-  return { kind: 'plain', gapPx: 0 };
-}
-
 function placeDots(det, p) {
   const ds = det.dots;
   let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
@@ -839,6 +831,23 @@ function drawDotsPreview(det) {
   g.lineWidth = Math.max(1.5, det.w / 500);
   g.strokeStyle = '#5ad1ff'; for (const q of det.dots) { g.beginPath(); g.arc(q.x, q.y, r, 0, 6.283); g.stroke(); }
   g.strokeStyle = '#ff5d6c'; for (const q of det.removed) { g.beginPath(); g.moveTo(q.x - r, q.y - r); g.lineTo(q.x + r, q.y + r); g.moveTo(q.x + r, q.y - r); g.lineTo(q.x - r, q.y + r); g.stroke(); }
+}
+
+// Dotted tab: detect the dots and hand them to the normal formation finishing code
+// as if each dot were a candidate point (its colour travels as the "pixel" colour).
+function prepareDots(p) {
+  const det = detectDots(state.img, { polarity: $('dotPolarity').value, sens: +$('dotSens').value, dotsMain: $('dotsMain').checked });
+  drawDotsPreview(det);
+  state.dotsInfo = { dots: det.dots.length, removed: det.removed.length };
+  if (!det.dots.length) {
+    state.drones = []; state.stats = null; state.dirty = true; $('hud').style.display = 'none'; $('alert').style.display = 'none';
+    renderStats(); showStatus('bad', 'No dots were found. Move the <b>Dot sensitivity</b> slider up, or set <b>Dots are</b> to match your picture.');
+    return null;
+  }
+  const pl = placeDots(det, p);
+  const n = pl.xs.length;
+  pl.pix = Int32Array.from({ length: n }, (_, i) => i);
+  return { cand: { cx: { length: det.dots.length }, pathLen: 0, fillArea: 0, pixCol: pl.cols }, pl };
 }
 
 function placeFill(cand, p) {
@@ -1006,6 +1015,7 @@ function nearestNeighbours(xs, ys, area, outIds = null) {
 // ---------- generate ----------
 function generate() {
   if (state.source === 'image' && !state.img) return;
+  if (state.source === 'dots') { if (!state.dotPhoto) return; state.img = state.dotPhoto; }
   $('busy').style.display = 'block';
   setTimeout(async () => {
     try {
@@ -1125,13 +1135,16 @@ function setSource(src) {
   state.source = src;
   $('tabImage').classList.toggle('on', src === 'image');
   $('tabText').classList.toggle('on', src === 'text');
+  $('tabDots').classList.toggle('on', src === 'dots');
+  $('dotsPane').style.display = src === 'dots' ? '' : 'none';
   $('imagePane').style.display = src === 'image' ? '' : 'none';
   $('textPane').style.display = src === 'text' ? '' : 'none';
   $('detectPane').style.display = src === 'image' ? '' : 'none';
   if (src === 'image') state.img = state.photo || null;
-  $('genBtn').disabled = src === 'image' && !state.photo;
+  if (src === 'dots') state.img = state.dotPhoto || null;
+  $('genBtn').disabled = (src === 'image' && !state.photo) || (src === 'dots' && !state.dotPhoto);
   state.view = { zoom: 1, ox: 0, oy: 0 };
-  if (src === 'text' || state.photo) { generate(); return; }
+  if (src === 'text' || (src === 'image' && state.photo) || (src === 'dots' && state.dotPhoto)) { generate(); return; }
   // image tab with nothing uploaded yet: clear the sky
   state.drones = []; state.stats = null; state.params = null; state.dirty = true;
   ['hud', 'status', 'preview'].forEach(id => $(id).style.display = 'none');
@@ -1141,6 +1154,7 @@ function setSource(src) {
 }
 $('tabImage').onclick = () => setSource('image');
 $('tabText').onclick = () => setSource('text');
+$('tabDots').onclick = () => setSource('dots');
 $('text').style.fontFamily = `"${$('font').value}", sans-serif`;
 const updateTextLook = () => {
   $('text').style.fontFamily = `"${$('font').value}", sans-serif`;
@@ -1157,16 +1171,17 @@ let textDebounce;
 function runGenerate() {
   stopShow();
   const p = params();
-  if (p.mode === 'dots') return runGenerateDots(p);
-  let cand = buildCandidates(state.img, p);
-  if (p.fit && cand.bounds) {
+  const dotsRun = state.source === 'dots' ? prepareDots(p) : null;
+  if (state.source === 'dots' && !dotsRun) return;
+  let cand = dotsRun ? dotsRun.cand : buildCandidates(state.img, p);
+  if (!dotsRun && p.fit && cand.bounds) {
     // second pass on just the drawing (plus a small margin), so it fills the area at full detail
     const b = cand.bounds, pad = Math.max(b.w, b.h) * 0.02;
     const x = Math.max(0, b.x - pad), y = Math.max(0, b.y - pad);
     const crop = { x, y, w: Math.min(state.img.naturalWidth, b.x + b.w + pad) - x, h: Math.min(state.img.naturalHeight, b.y + b.h + pad) - y };
     cand = buildCandidates(state.img, p, crop);
   }
-  drawPreview(cand);
+  if (!dotsRun) drawPreview(cand);
   if (cand.cx.length === 0) {
     state.drones = []; state.stats = null; state.dirty = true; $('hud').style.display = 'none'; $('alert').style.display = 'none';
     renderStats(); showStatus('bad', 'No lines were detected. Try another <b>Mode</b>, flip <b>Lines / shape are</b>, or move the sensitivity slider.');
@@ -1174,22 +1189,7 @@ function runGenerate() {
   }
   // Line drawings: drones evenly spaced along each traced stroke.
   // Filled shapes: farthest-point sampling spreads them evenly over the area.
-  const pl = p.mode === 'fill' ? placeFill(cand, p) : placeOnStrokes(cand, p);
-  finishFormation(p, pl, cand, { pathLen: cand.pathLen, fillArea: cand.fillArea, fill: p.mode === 'fill' });
-}
-
-function runGenerateDots(p) {
-  const det = detectDots(state.img, p);
-  drawDotsPreview(det);
-  if (!det.dots.length) {
-    state.drones = []; state.stats = null; state.dirty = true; $('hud').style.display = 'none'; $('alert').style.display = 'none';
-    renderStats(); showStatus('bad', 'No dots were found. Move the <b>Sensitivity</b> slider up, or set <b>Lines / shape are</b> to match your picture (light dots on dark, or dark dots on light).');
-    return;
-  }
-  finishFormation(p, placeDots(det, p), null, { dots: det.dots.length, dotsRemoved: det.removed.length });
-}
-
-function finishFormation(p, pl, cand, extra) {
+  const pl = dotsRun ? dotsRun.pl : p.mode === 'fill' ? placeFill(cand, p) : placeOnStrokes(cand, p);
   const { xs, ys, pix, capacity, recommended } = pl;
   const n = xs.length;
   const nnId = new Int32Array(n);
@@ -1200,11 +1200,10 @@ function finishFormation(p, pl, cand, extra) {
   const rankOf = new Int32Array(n);
   ids.forEach((k, rank) => rankOf[k] = rank);
   state.drones = ids.map((k, rank) => {
-    const col = pl.cols ? [pl.cols[k * 3], pl.cols[k * 3 + 1], pl.cols[k * 3 + 2]]
-      : [cand.pixCol[pix[k] * 3], cand.pixCol[pix[k] * 3 + 1], cand.pixCol[pix[k] * 3 + 2]];
+    const ci = pix[k] * 3;
     return {
       x: xs[k], y: ys[k], nn: nn[k], nnIdx: nnId[k] >= 0 ? rankOf[nnId[k]] : -1,
-      r: col[0], g: col[1], b: col[2],
+      r: cand.pixCol[ci], g: cand.pixCol[ci + 1], b: cand.pixCol[ci + 2],
       heat: spacingColour(nn[k], p),
       sx: n > 1 ? rank / (n - 1) * p.areaW : p.areaW / 2,
       sy: p.areaH + GROUND_GAP + (rank % 3) * 0.8,
@@ -1224,7 +1223,8 @@ function finishFormation(p, pl, cand, extra) {
   let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
   for (const d of state.drones) { minX = Math.min(minX, d.x); maxX = Math.max(maxX, d.x); minY = Math.min(minY, d.y); maxY = Math.max(maxY, d.y); }
   state.stats = {
-    placed: n, requested: p.n, ...extra,
+    placed: n, requested: p.n, candidates: cand.cx.length,
+    pathLen: cand.pathLen, fillArea: cand.fillArea, fill: p.mode === 'fill',
     minNN, maxNN, avgNN: n > 1 ? sumNN / n : 0, tooClose, tooFar,
     capacity, recommended,
     width: maxX - minX, height: maxY - minY,
@@ -1262,9 +1262,9 @@ function renderStats() {
   const rows = [
     ['Drones placed', `${s.placed.toLocaleString()}${s.placed < s.requested ? ` of ${s.requested.toLocaleString()}` : ''}`],
     ['Formation size', `${s.width.toFixed(1)} × ${s.height.toFixed(1)} m`],
-    s.dots ? ['Dots detected', `${s.dots}${s.dotsRemoved ? ` <small style="color:var(--muted)">(${s.dotsRemoved} ignored)</small>` : ''}`]
+    p.source === 'dots' ? ['Dots detected', `${state.dotsInfo.dots}${state.dotsInfo.removed ? ` <small style="color:var(--muted)">(${state.dotsInfo.removed} ignored)</small>` : ''}`]
       : s.fill ? ['Filled area', `≈ ${Math.round(s.fillArea).toLocaleString()} m²`]
-      : ['Drawn path length', `≈ ${Math.round(s.pathLen).toLocaleString()} m`],
+           : ['Drawn path length', `≈ ${Math.round(s.pathLen).toLocaleString()} m`],
     [`<b>Minimum distance</b><br><small style="color:var(--muted)">${pairTxt(s.minPair)}</small>`,
       `<span class="${cls(s.minNN, p.minS, Infinity)}">${f1(s.minNN)}</span><button data-focus="min">Show</button>`],
     [`<b>Maximum distance</b><br><small style="color:var(--muted)">largest gap to nearest drone, ${pairTxt(s.maxPair)}</small>`,
@@ -1322,13 +1322,14 @@ function renderStatus() {
   if (s.capacity >= 2 && s.recommended && s.recommended <= s.capacity && (s.requested > s.capacity || s.requested < s.recommended))
     acts.push([`Use ${Math.round((s.recommended + s.capacity) / 2)} (balanced)`, setCount(Math.round((s.recommended + s.capacity) / 2))]);
 
-  if (s.dots) {
+  if (p.source === 'dots') {
+    const D = state.dotsInfo;
     const setArea = f => () => { $('areaW').value = Math.ceil(p.areaW * f); $('areaH').value = Math.ceil(p.areaH * f); generate(); };
     const setCount = v => () => { $('count').value = v; generate(); };
-    const ign = s.dotsRemoved ? ` ${s.dotsRemoved} lights outside the main group were ignored (red ✕ in the preview).` : '';
-    const using = s.placed < s.dots ? `Using ${s.placed} of the picture's ${s.dots} dots, spread evenly.`
-      : s.requested > s.dots ? `The picture has only ${s.dots} dots, so all ${s.dots} are used (you asked for ${s.requested}).`
-      : `All ${s.dots} dots are used.`;
+    const ign = D.removed ? ` ${D.removed} lights outside the main group were ignored (red ✕ in the preview).` : '';
+    const using = s.placed < D.dots ? `Using ${s.placed} of the picture's ${D.dots} dots, spread evenly.`
+      : s.requested > D.dots ? `The picture has only ${D.dots} dots, so all ${D.dots} are used (you asked for ${s.requested}).`
+      : `All ${D.dots} dots are used.`;
     if (s.tooClose > 0) {
       const f = p.minS / s.minNN * 1.02, acts = [];
       if (s.capacity < s.placed) acts.push([`Use ${s.capacity} drones`, setCount(s.capacity)]);
@@ -1579,18 +1580,7 @@ function worldCoords(d) {
 // ---------- inputs ----------
 function loadImageFromSrc(src) {
   const img = new Image();
-  img.onload = () => {
-    state.photo = state.img = img; $('genBtn').disabled = false; state.view = { zoom: 1, ox: 0, oy: 0 };
-    // a drone-show photo → Dotted mode (drones placed on its dots, in their colours);
-    // a drawing made of dots → Line art with the dot gaps bridged
-    const kind = classifyPicture(img);
-    state.stippleGap = kind.kind === 'stipple' ? kind.gapPx : 0;
-    state.pictureKind = kind.kind;
-    if (kind.kind === 'show') { $('mode').value = 'dots'; $('colorMode').value = 'image'; }
-    else if ($('mode').value === 'dots') $('mode').value = 'lines';
-    syncModeControls();
-    generate();
-  };
+  img.onload = () => { state.photo = state.img = img; $('genBtn').disabled = false; state.view = { zoom: 1, ox: 0, oy: 0 }; generate(); };
   img.onerror = () => showStatus('bad', 'That file could not be read as an image.');
   img.src = src;
 }
@@ -1612,20 +1602,34 @@ $('sampleBtn').onclick = async () => {
     loadFile(new File([blob], 'sample.png', { type: blob.type || 'image/png' }));
   } catch { showStatus('warn', 'The sample loads only when the page is served over http (e.g. <code>python3 -m http.server</code>). Uploading your own image works everywhere.'); }
 };
+function loadDotFile(file) {
+  if (!file || !file.type.startsWith('image/')) return showStatus('bad', 'Please choose an image file (PNG, JPG, WebP).');
+  state.dotName = file.name.replace(/\.[^.]+$/, '');
+  const fr = new FileReader();
+  fr.onload = () => {
+    const img = new Image();
+    img.onload = () => { state.dotPhoto = state.img = img; $('genBtn').disabled = false; state.view = { zoom: 1, ox: 0, oy: 0 }; generate(); };
+    img.onerror = () => showStatus('bad', 'That file could not be read as an image.');
+    img.src = fr.result;
+  };
+  fr.readAsDataURL(file);
+}
+$('dotDrop').onclick = () => $('dotFile').click();
+$('dotFile').onchange = e => loadDotFile(e.target.files[0]);
+['dragover', 'dragenter'].forEach(ev => $('dotDrop').addEventListener(ev, e => { e.preventDefault(); $('dotDrop').classList.add('over'); }));
+['dragleave', 'drop'].forEach(ev => $('dotDrop').addEventListener(ev, e => { e.preventDefault(); $('dotDrop').classList.remove('over'); }));
+$('dotDrop').addEventListener('drop', e => loadDotFile(e.dataTransfer.files[0]));
+$('dotSens').oninput = () => $('dotSensVal').textContent = $('dotSens').value;
+['dotPolarity', 'dotSens', 'dotsMain', 'dotColours'].forEach(id =>
+  $(id).addEventListener('change', () => { if (state.source === 'dots') generate(); }));
+
 $('genBtn').onclick = generate;
 $('replayBtn').onclick = () => { state.animStart = performance.now(); };
 $('resetBtn').onclick = () => { state.view = { zoom: 1, ox: 0, oy: 0 }; state.dirty = true; };
 $('sens').oninput = () => $('sensVal').textContent = $('sens').value;
 
-function syncModeControls() {
-  const dots = $('mode').value === 'dots';
-  $('dotsMainRow').style.display = dots ? '' : 'none';
-  $('mergeRow').style.display = dots ? 'none' : '';
-}
-$('mode').addEventListener('change', syncModeControls);
-
 let debounce;
-['count', 'areaW', 'areaH', 'strict', 'dotsMain', 'minS', 'maxS', 'mode', 'polarity', 'sens', 'orient', 'alt', 'fit', 'merge'].forEach(id =>
+['count', 'areaW', 'areaH', 'strict', 'minS', 'maxS', 'mode', 'polarity', 'sens', 'orient', 'alt', 'fit', 'merge'].forEach(id =>
   $(id).addEventListener('change', () => { clearTimeout(debounce); debounce = setTimeout(generate, 150); }));
 ['colorMode', 'color'].forEach(id => $(id).addEventListener('input', () => {
   if (state.params) { state.params.colorMode = $('colorMode').value; state.params.color = $('color').value; }
@@ -1683,7 +1687,8 @@ function addScene() {
     const c = p.colorMode === 'image' ? [d.r, d.g, d.b] : fixed;
     return [Math.round(d.x * 100) / 100, Math.round(d.y * 100) / 100, c[0], c[1], c[2]];
   });
-  const name = state.source === 'text' ? $('text').value.replace(/\s+/g, ' ').trim().slice(0, 40) : (state.photoName || 'Image');
+  const name = state.source === 'text' ? $('text').value.replace(/\s+/g, ' ').trim().slice(0, 40)
+    : state.source === 'dots' ? (state.dotName || 'Dotted image') : (state.photoName || 'Image');
   state.show.scenes.push({
     id: Date.now() + Math.random(), name, pts, areaW: p.areaW, areaH: p.areaH, minS: p.minS,
     hold: 4, trans: null, minNN: st.minNN, tooClose: st.tooClose, thumb: makeThumb(pts, p.areaW, p.areaH),
@@ -2111,7 +2116,7 @@ function exportPoints() {
     return { x: x - p.areaW / 2, y: p.orient === 'vertical' ? 0 : y - p.areaH / 2, z, c };
   });
 }
-const exportName = () => (state.source === 'text' ? $('text').value : state.photoName || 'formation')
+const exportName = () => (state.source === 'text' ? $('text').value : state.source === 'dots' ? state.dotName || 'dotted' : state.photoName || 'formation')
   .replace(/\s+/g, '-').replace(/[^\wऀ-ॿ-]/g, '').slice(0, 40) || 'formation';
 
 // ---- minimal binary FBX 7.4 writer (same layout as Blender's own exporter) ----
