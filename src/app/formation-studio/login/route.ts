@@ -5,7 +5,6 @@ import { createSessionToken, credentialsMatch, SESSION_SECONDS, STUDIO_COOKIE, S
 export async function POST(request: Request) {
   const cfg = studioConfig();
   const back = new URL(STUDIO_PATH, request.url);
-  if (!cfg) return NextResponse.redirect(back, 303);
 
   const form = await request.formData().catch(() => null);
   const user = String(form?.get('user') ?? '');
@@ -17,7 +16,7 @@ export async function POST(request: Request) {
   }
 
   const res = NextResponse.redirect(back, 303);
-  res.cookies.set(STUDIO_COOKIE, createSessionToken(cfg), {
+  res.cookies.set(STUDIO_COOKIE, createSessionToken(password), {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',

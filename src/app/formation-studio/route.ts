@@ -1,16 +1,9 @@
-import { hasStudioSession, privateHeaders, studioConfig, studioFile, STUDIO_PATH } from '@/lib/formation-studio/auth';
+import { hasStudioSession, privateHeaders, studioFile, STUDIO_PATH } from '@/lib/formation-studio/auth';
 
 export const dynamic = 'force-dynamic';
 
 // GET /formation-studio — the Drone Formation Studio when signed in, otherwise the sign-in page.
 export async function GET(request: Request) {
-  if (!studioConfig()) {
-    return html(page('Not set up yet',
-      `<p class="msg">The studio login is not configured on this server. Set <code>FORMATION_STUDIO_USER</code>,
-       <code>FORMATION_STUDIO_PASSWORD</code> and <code>FORMATION_STUDIO_SECRET</code> (32+ characters) in the
-       hosting environment variables, then redeploy.</p>`), 503);
-  }
-
   if (await hasStudioSession()) {
     const studio = (await studioFile('index.html')).toString('utf8');
     // small sign-out control on top of the studio page
@@ -54,13 +47,11 @@ function page(title: string, inner: string) {
   input:focus { outline: 2px solid #5ad1ff; outline-offset: 0; }
   button { width: 100%; padding: 11px; border: 0; border-radius: 8px; background: #5ad1ff; color: #04121b; font: 600 15px system-ui; cursor: pointer; margin-top: 4px; }
   .err { color: #ff5d6c; font-size: 13px; margin: 0 0 10px; }
-  .msg { color: #c5cbe0; font-size: 14px; }
-  code { color: #5ad1ff; }
 </style></head>
 <body><main class="card">
   <img class="logo" src="/logo.png" alt="FLYBIT Dynamics">
   <h1>Drone Formation Studio</h1>
-  <p class="sub">${title === 'Sign in' ? 'Internal tool — sign in to continue' : title}</p>
+  <p class="sub">Internal tool — sign in to continue</p>
   ${inner}
 </main></body></html>`;
 }

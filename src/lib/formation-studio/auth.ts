@@ -1,34 +1,55 @@
-import { createHmac, timingSafeEqual } from 'node:crypto';
+import { createHash, scryptSync, timingSafeEqual } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { cookies } from 'next/headers';
 
-// Drone Formation Studio is an internal tool: one ID + password from env vars,
-// session in a signed httpOnly cookie. The cookie value is `<expiry>.<hmac>`, so it
-// cannot be forged without FORMATION_STUDIO_SECRET (unlike a fixed cookie value).
+// Drone Formation Studio is an internal tool behind one ID + password.
+// This repo is public, so the password is never stored in plain text — only two
+// one-way scrypt hashes:
+//   - LOGIN hash:   checks the password typed on the sign-in form
+//   - SESSION check: the session cookie is scrypt(password, session salt), which can
+//     only be produced by someone who knows the password; we store sha256 of it.
+// Reading this file is not enough to sign in or to forge a cookie.
+// To change the login without editing code, set FORMATION_STUDIO_USER and
+// FORMATION_STUDIO_PASSWORD in the hosting environment (they take priority).
 
 export const STUDIO_COOKIE = 'flybit_formation_studio';
 export const STUDIO_PATH = '/formation-studio';
 export const SESSION_SECONDS = 60 * 60 * 24 * 7; // 7 days
 
+const LOGIN_SALT = 'flybit-formation-studio/login';
+const SESSION_SALT = 'flybit-formation-studio/session';
+const SCRYPT = { N: 16384, r: 8, p: 1 } as const;
+
+const BUILT_IN = {
+  user: 'flybitadmin',
+  loginHash: '0564cad547708b173448b021bd05c0247be8b72b931dafec690b9fa272ca3fdf',
+  sessionCheck: '704b4b2a28267ccf2d3c43a3635b9001e484fca993a5a469f3374ea82cd0b696',
+};
+
 const FILES_DIR = path.join(process.cwd(), 'private', 'formation-studio');
+
+const loginHashOf = (password: string) => scryptSync(password, LOGIN_SALT, 32, SCRYPT).toString('hex');
+const sessionTokenOf = (password: string) => scryptSync(password, SESSION_SALT, 32, SCRYPT).toString('base64url');
+const sha256 = (v: string) => createHash('sha256').update(v).digest('hex');
 
 interface StudioConfig {
   user: string;
-  password: string;
-  secret: string;
+  loginHash: string;
+  sessionCheck: string;
 }
 
-export function studioConfig(): StudioConfig | null {
+let envCache: { key: string; cfg: StudioConfig } | null = null;
+
+export function studioConfig(): StudioConfig {
   const user = process.env.FORMATION_STUDIO_USER?.trim();
   const password = process.env.FORMATION_STUDIO_PASSWORD;
-  const secret = process.env.FORMATION_STUDIO_SECRET;
-  if (!user || !password || !secret || secret.length < 32) return null;
-  return { user, password, secret };
-}
-
-function sign(payload: string, secret: string) {
-  return createHmac('sha256', secret).update(payload).digest('base64url');
+  if (!user || !password) return BUILT_IN;
+  const key = `${user}\n${password}`;
+  if (envCache?.key !== key) {
+    envCache = { key, cfg: { user, loginHash: loginHashOf(password), sessionCheck: sha256(sessionTokenOf(password)) } };
+  }
+  return envCache.cfg;
 }
 
 function safeEqual(a: string, b: string) {
@@ -37,27 +58,21 @@ function safeEqual(a: string, b: string) {
 }
 
 export function credentialsMatch(cfg: StudioConfig, user: string, password: string) {
-  // compare both fields every time so the response time doesn't reveal which one was wrong
+  // check both fields every time so the response time doesn't reveal which one was wrong
   const okUser = safeEqual(user.trim().toLowerCase(), cfg.user.toLowerCase());
-  const okPass = safeEqual(password, cfg.password);
+  const okPass = safeEqual(loginHashOf(password), cfg.loginHash);
   return okUser && okPass;
 }
 
-export function createSessionToken(cfg: StudioConfig) {
-  const expires = Math.floor(Date.now() / 1000) + SESSION_SECONDS;
-  return `${expires}.${sign(`${cfg.user}:${expires}`, cfg.secret)}`;
+// Only called after credentialsMatch succeeded, with the password just typed.
+export function createSessionToken(password: string) {
+  return sessionTokenOf(password);
 }
 
 export async function hasStudioSession(): Promise<boolean> {
-  const cfg = studioConfig();
-  if (!cfg) return false;
   const token = (await cookies()).get(STUDIO_COOKIE)?.value;
-  if (!token) return false;
-  const [expires, sig] = token.split('.');
-  if (!expires || !sig || !/^\d+$/.test(expires)) return false;
-  if (Number(expires) < Date.now() / 1000) return false;
-  // signing includes the user, so changing FORMATION_STUDIO_USER or the secret signs everyone out
-  return safeEqual(sig, sign(`${cfg.user}:${expires}`, cfg.secret));
+  if (!token || token.length > 100) return false;
+  return safeEqual(sha256(token), studioConfig().sessionCheck);
 }
 
 export function studioFile(name: 'index.html' | 'sample.png') {
