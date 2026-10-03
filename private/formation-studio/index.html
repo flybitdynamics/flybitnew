@@ -314,6 +314,7 @@ function params() {
     alt: Math.max(0, num('alt', 40)),
     fit: $('fit').checked,
     dotsMain: $('dotsMain').checked,
+    stippleGap: state.source === 'image' ? state.stippleGap || 0 : 0,
     merge: state.source === 'text' ? 0 : Math.max(0, num('merge', 0.6)),
     sens: state.source === 'text' ? 50 : +$('sens').value,
   };
@@ -415,7 +416,10 @@ function buildCandidates(img, p, crop = { x: 0, y: 0, w: img.naturalWidth, h: im
 
   // metres per raster pixel (the image is fitted inside the width × height area)
   const mppEarly = Math.min(p.areaW / w, p.areaH / h);
-  const joinPx = p.mode === 'fill' ? 0 : Math.round(p.merge / mppEarly / 2);
+  // "Join double lines" (metres) — and for a drawing made of dots, at least enough to
+  // bridge the gap between neighbouring dots so they read as one stroke
+  const stippleJoin = p.stippleGap > 0 ? Math.ceil(p.stippleGap * s / 2) + 1 : 0;
+  const joinPx = p.mode === 'fill' ? 0 : Math.max(Math.round(p.merge / mppEarly / 2), stippleJoin);
   if (joinPx > 0) {
     // morphological closing: two outlines of one stroke (or the two borders of a
     // hollow line) melt into one solid band, whose centre line thinning then finds
@@ -783,11 +787,22 @@ function detectDots(img, p) {
   return { dots, removed, w, h, lightDots, canvas: c, median };
 }
 
-// a picture "looks dotted" when it is mostly plain background with many similar small blobs
-function looksDotted(img) {
-  const det = detectDots(img, { polarity: 'auto', sens: 50, dotsMain: true });
-  const area = det.dots.reduce((a, q) => a + q.area, 0);
-  return det.dots.length >= 12 && area < det.w * det.h * 0.06 && (det.median < 70 || det.median > 200);
+// What kind of picture is this?
+//  'show'    — a drone-show photo: light dots on a dark sky → Dotted mode, 1 drone per dot
+//  'stipple' — a drawing whose lines are made of dots on a light background → stays Line art,
+//              but the gaps between its dots are bridged so the dots read as strokes
+//  'plain'   — anything else
+function classifyPicture(img) {
+  const det = detectDots(img, { polarity: 'auto', sens: 50, dotsMain: false });
+  const n = det.dots.length;
+  if (n < 12) return { kind: 'plain', gapPx: 0 };
+  const area = det.dots.reduce((a, q) => a + q.area, 0) / (det.w * det.h);
+  const nn = nearestNeighbours(Float32Array.from(det.dots, q => q.x), Float32Array.from(det.dots, q => q.y), Math.max(det.w, det.h));
+  const medNN = Float32Array.from(nn).sort()[Math.floor(n / 2)];
+  const toSource = img.naturalWidth / det.w;                  // detection px → original image px
+  if (det.median < 70 && n <= 3000 && area < 0.06) return { kind: 'show', gapPx: medNN * toSource };
+  if (det.median > 150 && n >= 150 && area < 0.25) return { kind: 'stipple', gapPx: medNN * toSource };
+  return { kind: 'plain', gapPx: 0 };
 }
 
 function placeDots(det, p) {
@@ -799,12 +814,20 @@ function placeDots(det, p) {
   const m = Math.min(p.areaW / (bw || 1), p.areaH / (bh || 1));
   const scale = Number.isFinite(m) && m > 0 ? m : 1;
   const ox = (p.areaW - bw * scale) / 2, oy = (p.areaH - bh * scale) / 2;
-  const xs = new Float32Array(ds.length), ys = new Float32Array(ds.length), cols = new Uint8Array(ds.length * 3);
-  ds.forEach((q, i) => {
-    xs[i] = ox + (q.x - x0) * scale; ys[i] = oy + (q.y - y0) * scale;
-    cols[i * 3] = q.c[0]; cols[i * 3 + 1] = q.c[1]; cols[i * 3 + 2] = q.c[2];
-  });
-  return { xs, ys, cols, pix: null, capacity: ds.length, recommended: ds.length };
+  const M = ds.length, ax = new Float32Array(M), ay = new Float32Array(M);
+  ds.forEach((q, i) => { ax[i] = ox + (q.x - x0) * scale; ay[i] = oy + (q.y - y0) * scale; });
+  // use the requested number of drones: farthest-point picking spreads them evenly
+  // over the dots; capacity = how many dots can be used while staying minS apart
+  const fp = farthestPoints(ax, ay, Math.min(p.n, M), p.minS, p.maxS);
+  let n = Math.min(p.n, M, fp.order.length);
+  if (p.strict) n = Math.min(n, fp.capacity);
+  const xs = new Float32Array(n), ys = new Float32Array(n), cols = new Uint8Array(n * 3);
+  for (let k = 0; k < n; k++) {
+    const i = fp.order[k], q = ds[i];
+    xs[k] = ax[i]; ys[k] = ay[i];
+    cols[k * 3] = q.c[0]; cols[k * 3 + 1] = q.c[1]; cols[k * 3 + 2] = q.c[2];
+  }
+  return { xs, ys, cols, pix: null, capacity: Math.min(M, fp.capacity), recommended: fp.recommended ? Math.min(M, fp.recommended) : M };
 }
 
 function drawDotsPreview(det) {
@@ -1163,9 +1186,7 @@ function runGenerateDots(p) {
     renderStats(); showStatus('bad', 'No dots were found. Move the <b>Sensitivity</b> slider up, or set <b>Lines / shape are</b> to match your picture (light dots on dark, or dark dots on light).');
     return;
   }
-  // the drone count is fixed by the picture: one drone per dot
-  const pd = { ...p, n: det.dots.length, area: p.area };
-  finishFormation(pd, placeDots(det, pd), null, { dots: det.dots.length, dotsRemoved: det.removed.length, requestedBox: p.n });
+  finishFormation(p, placeDots(det, p), null, { dots: det.dots.length, dotsRemoved: det.removed.length });
 }
 
 function finishFormation(p, pl, cand, extra) {
@@ -1302,21 +1323,21 @@ function renderStatus() {
     acts.push([`Use ${Math.round((s.recommended + s.capacity) / 2)} (balanced)`, setCount(Math.round((s.recommended + s.capacity) / 2))]);
 
   if (s.dots) {
-    // dotted picture: the count is fixed, only the size of the formation can change
     const setArea = f => () => { $('areaW').value = Math.ceil(p.areaW * f); $('areaH').value = Math.ceil(p.areaH * f); generate(); };
+    const setCount = v => () => { $('count').value = v; generate(); };
     const ign = s.dotsRemoved ? ` ${s.dotsRemoved} lights outside the main group were ignored (red ✕ in the preview).` : '';
+    const using = s.placed < s.dots ? `Using ${s.placed} of the picture's ${s.dots} dots, spread evenly.`
+      : s.requested > s.dots ? `The picture has only ${s.dots} dots, so all ${s.dots} are used (you asked for ${s.requested}).`
+      : `All ${s.dots} dots are used.`;
     if (s.tooClose > 0) {
-      const f = p.minS / s.minNN * 1.02;
-      showStatus('bad', `<b class="bad">${s.dots} dots → ${s.dots} drones, but too tight.</b> At ${p.areaW} × ${p.areaH} m the closest dots are only ${f1(s.minNN)} apart. ` +
-        `Enlarge the area to about <b>${Math.ceil(p.areaW * f)} × ${Math.ceil(p.areaH * f)} m</b> to keep ${p.minS} m.${ign}`,
-        [[`Use ${Math.ceil(p.areaW * f)} × ${Math.ceil(p.areaH * f)} m`, setArea(f)]]);
+      const f = p.minS / s.minNN * 1.02, acts = [];
+      if (s.capacity < s.placed) acts.push([`Use ${s.capacity} drones`, setCount(s.capacity)]);
+      acts.push([`Enlarge to ${Math.ceil(p.areaW * f)} × ${Math.ceil(p.areaH * f)} m`, setArea(f)]);
+      showStatus('bad', `<b class="bad">Too tight.</b> ${using} ${s.tooClose} drones are closer than ${p.minS} m (closest ${f1(s.minNN)}). ` +
+        `At ${p.areaW} × ${p.areaH} m at most <b>${s.capacity}</b> of these dots can be used ${p.minS} m apart.${ign}`, acts);
     } else {
-      // shrinking the whole picture closes the gaps; the closest pair limits how far
-      const f = Math.max(p.maxS / s.maxNN, p.minS / s.minNN * 1.02);
-      const acts = s.tooFar && f < 0.98 ? [[`Shrink to ${Math.ceil(p.areaW * f)} × ${Math.ceil(p.areaH * f)} m${p.minS / s.minNN * 1.02 > p.maxS / s.maxNN ? ' (smallest safe size)' : ''}`, setArea(f)]] : [];
-      showStatus(s.tooFar ? 'warn' : 'ok', `<b class="${s.tooFar ? 'warn' : 'ok'}">${s.dots} dots → ${s.dots} drones.</b> Neighbours are ${f1(s.minNN)}–${f1(s.maxNN)} apart.` +
-        `${s.tooFar ? ` ${s.tooFar} dots are more than ${p.maxS} m from their neighbour at this size.` : ''}${ign}` +
-        (s.requestedBox !== s.dots ? ` <span style="color:var(--muted)">(The Number of drones box is ignored for dotted pictures.)</span>` : ''), acts);
+      showStatus(s.tooFar ? 'warn' : 'ok', `<b class="${s.tooFar ? 'warn' : 'ok'}">${s.placed} drones on the dots.</b> ${using} Neighbours are ${f1(s.minNN)}–${f1(s.maxNN)} apart.` +
+        `${s.tooFar ? ` ${s.tooFar} drones are more than ${p.maxS} m from their neighbour.` : ''}${ign}`);
     }
     return;
   }
@@ -1560,8 +1581,12 @@ function loadImageFromSrc(src) {
   const img = new Image();
   img.onload = () => {
     state.photo = state.img = img; $('genBtn').disabled = false; state.view = { zoom: 1, ox: 0, oy: 0 };
-    // dotted picture (e.g. a drone-show photo) → one drone per dot, in the dots' own colours
-    if (looksDotted(img)) { $('mode').value = 'dots'; $('colorMode').value = 'image'; }
+    // a drone-show photo → Dotted mode (drones placed on its dots, in their colours);
+    // a drawing made of dots → Line art with the dot gaps bridged
+    const kind = classifyPicture(img);
+    state.stippleGap = kind.kind === 'stipple' ? kind.gapPx : 0;
+    state.pictureKind = kind.kind;
+    if (kind.kind === 'show') { $('mode').value = 'dots'; $('colorMode').value = 'image'; }
     else if ($('mode').value === 'dots') $('mode').value = 'lines';
     syncModeControls();
     generate();
