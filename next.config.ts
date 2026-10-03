@@ -1,6 +1,12 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Drone Formation Studio is served by route handlers behind a login (not from /public),
+  // so its files must be bundled with those routes explicitly.
+  outputFileTracingIncludes: {
+    '/formation-studio': ['./private/formation-studio/**/*'],
+    '/formation-studio/sample': ['./private/formation-studio/**/*'],
+  },
   images: {
     remotePatterns: [
       {

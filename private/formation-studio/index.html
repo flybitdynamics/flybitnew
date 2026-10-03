@@ -1,0 +1,2035 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Drone Formation Studio</title>
+<style>
+  :root {
+    --bg: #0b0f1a; --panel: #121829; --panel2: #182038; --line: #26304d;
+    --text: #e6eaf5; --muted: #8b95b3; --accent: #5ad1ff; --ok: #3ddc97; --warn: #ffb547; --bad: #ff5d6c;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text);
+    font: 14px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  .app { display: grid; grid-template-columns: 340px 1fr; height: 100vh; }
+  aside { background: var(--panel); border-right: 1px solid var(--line); overflow-y: auto; padding: 18px 16px 28px; }
+  h1 { font-size: 17px; margin: 0 0 2px; letter-spacing: .2px; }
+  .sub { color: var(--muted); font-size: 12px; margin-bottom: 16px; }
+  .sec { margin: 18px 0 8px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
+  .drop { border: 1.5px dashed var(--line); border-radius: 10px; padding: 14px; text-align: center; cursor: pointer;
+    background: var(--panel2); transition: border-color .15s; }
+  .drop:hover, .drop.over { border-color: var(--accent); }
+  .drop small { color: var(--muted); display: block; margin-top: 4px; }
+  #preview { width: 100%; margin-top: 10px; border-radius: 8px; background: #000; display: none; image-rendering: pixelated; }
+  label.f { display: grid; grid-template-columns: 1fr 120px; align-items: center; gap: 8px; margin: 7px 0; }
+  label.f span { color: #c5cbe0; }
+  input[type=number], select { width: 100%; background: var(--panel2); color: var(--text); border: 1px solid var(--line);
+    border-radius: 6px; padding: 6px 8px; font: inherit; }
+  input[type=range] { width: 100%; }
+  input[type=color] { width: 100%; height: 32px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel2); padding: 2px; }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  button { background: var(--panel2); color: var(--text); border: 1px solid var(--line); border-radius: 7px;
+    padding: 8px 10px; font: inherit; cursor: pointer; }
+  button:hover { border-color: var(--accent); }
+  button.primary { background: var(--accent); color: #04121b; border-color: var(--accent); font-weight: 600; width: 100%; padding: 10px; margin-top: 12px; }
+  button:disabled { opacity: .45; cursor: not-allowed; }
+  .status { border-radius: 8px; padding: 9px 11px; margin-top: 12px; font-size: 13px; border: 1px solid var(--line); background: var(--panel2); }
+  .status.ok { border-color: color-mix(in srgb, var(--ok) 55%, transparent); }
+  .status.warn { border-color: color-mix(in srgb, var(--warn) 60%, transparent); }
+  .status.bad { border-color: color-mix(in srgb, var(--bad) 60%, transparent); }
+  .status b.ok { color: var(--ok); } .status b.warn { color: var(--warn); } .status b.bad { color: var(--bad); }
+  .status .acts { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+  .status .acts button { padding: 5px 8px; font-size: 12px; }
+  table.stats { width: 100%; border-collapse: collapse; margin-top: 6px; font-size: 13px; }
+  table.stats td { padding: 4px 0; border-bottom: 1px solid var(--line); }
+  table.stats td:last-child { text-align: right; font-variant-numeric: tabular-nums; }
+  .check { display: flex; gap: 8px; align-items: center; margin: 7px 0; color: #c5cbe0; }
+  main { position: relative; overflow: hidden; display: flex; flex-direction: column; }
+  .stage { position: relative; flex: 1; min-height: 0; }
+  #track { flex: none; background: var(--panel); border-top: 1px solid var(--line); padding: 6px 10px 8px; max-height: 46%; overflow-y: auto; }
+  .trackBar { display: flex; align-items: center; gap: 6px 8px; flex-wrap: wrap; margin-bottom: 6px; }
+  .trackBar button { padding: 6px 10px; font-size: 13px; }
+  .trackBar button.primary { width: auto; margin: 0; padding: 6px 14px; }
+  #playTime { font-variant-numeric: tabular-nums; font-size: 13px; color: #c5cbe0; min-width: 92px; }
+  #scrub { flex: 1; min-width: 120px; }
+  #fleetInfo { font-size: 12px; color: var(--muted); }
+  #safeLbl { font-size: 12px; color: #c5cbe0; white-space: nowrap; }
+  #safeLbl input { padding: 3px 5px; font-size: 12px; }
+  #sceneList { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; }
+  .scene { flex: none; width: 156px; background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; padding: 6px; font-size: 12px; position: relative; }
+  .scene.now { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset; }
+  #track.collapsed #sceneList { display: none; }
+  #track.collapsed .trackBar { margin-bottom: 0; }
+  .scene img { width: 100%; height: 54px; object-fit: contain; background: #050a18; border-radius: 5px; display: block; }
+  .scene .num { position: absolute; left: 10px; top: 10px; background: rgba(0,0,0,.6); border-radius: 4px; padding: 0 5px; font-weight: 700; }
+  .scene .nm { font-weight: 600; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .scene .meta { color: var(--muted); }
+  .scene .times { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-top: 4px; }
+  .scene .times label { color: var(--muted); font-size: 11px; }
+  .scene .times input { padding: 3px 5px; font-size: 12px; }
+  .scene .chk { margin-top: 4px; font-size: 11px; }
+  .scene .chk.bad { color: var(--bad); } .scene .chk.ok { color: var(--ok); } .scene .chk.warn { color: var(--warn); }
+  .scene .btns { display: flex; gap: 4px; margin-top: 5px; }
+  .scene .btns button { flex: 1; padding: 3px 0; font-size: 12px; }
+  #hud .addBtn { margin-top: 8px; width: 100%; background: var(--accent); color: #04121b; border-color: var(--accent); font-weight: 700; padding: 6px; }
+  #playBadge { position: absolute; left: 12px; top: 12px; background: rgba(18,24,41,.88); border: 1px solid var(--accent); border-radius: 10px;
+    padding: 8px 12px; display: none; font-size: 13px; }
+  #playBadge b { font-size: 16px; }
+  #sky { width: 100%; height: 100%; display: block; cursor: grab; }
+  #sky.drag { cursor: grabbing; }
+  .toolbar { position: absolute; top: 12px; right: 12px; display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+  .toolbar button { background: rgba(18,24,41,.85); backdrop-filter: blur(6px); font-size: 13px; }
+  .empty { position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted); text-align: center; pointer-events: none; }
+  .empty div { max-width: 360px; }
+  .empty strong { color: var(--text); font-size: 16px; display: block; margin-bottom: 6px; }
+  #tip { position: absolute; pointer-events: none; background: rgba(10,14,25,.92); border: 1px solid var(--line);
+    border-radius: 6px; padding: 6px 8px; font-size: 12px; display: none; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  #busy { position: absolute; left: 50%; bottom: 40px; transform: translateX(-50%); background: rgba(18,24,41,.85); border: 1px solid var(--line);
+    padding: 6px 10px; border-radius: 7px; font-size: 13px; display: none; }
+  #alert { position: absolute; left: 50%; top: 54px; transform: translateX(-50%); max-width: min(560px, calc(100% - 32px));
+    background: rgba(60,10,18,.92); border: 1px solid var(--bad); color: #ffd9dd; padding: 8px 12px; border-radius: 8px;
+    font-size: 13px; display: none; text-align: center; }
+  #legend { position: absolute; left: 12px; bottom: 30px; font-size: 12px; color: var(--muted); display: none; gap: 4px; align-items: center; }
+  #legend span { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-left: 8px; }
+  table.stats button { padding: 2px 7px; font-size: 11px; margin-left: 6px; }
+  table.stats .bad { color: var(--bad); font-weight: 600; } table.stats .warn { color: var(--warn); font-weight: 600; } table.stats .ok { color: var(--ok); }
+  .tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; background: var(--panel2); border: 1px solid var(--line);
+    border-radius: 9px; padding: 3px; margin-bottom: 12px; }
+  .tabs button { border: 0; background: transparent; padding: 7px; font-weight: 600; color: var(--muted); }
+  .tabs button.on { background: var(--accent); color: #04121b; }
+  textarea { width: 100%; min-height: 76px; resize: vertical; background: var(--panel2); color: var(--text); border: 1px solid var(--line);
+    border-radius: 8px; padding: 8px 10px; font-size: 22px; line-height: 1.2; }
+  input[type=text] { width: 100%; background: var(--panel2); color: var(--text); border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; font: inherit; }
+  .small { color: var(--muted); font-size: 12px; }
+  .fontPicker { position: relative; margin-bottom: 8px; }
+  #fontBtn { width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 8px; text-align: left; font-size: 16px; padding: 8px 10px; }
+  #fontBtn #fontName { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  #fontBtn .caret { color: var(--muted); font-family: system-ui; }
+  .fontMenu { position: absolute; left: 0; right: 0; top: calc(100% + 4px); z-index: 20; background: var(--panel); border: 1px solid var(--accent);
+    border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,.5); padding: 6px; }
+  .fontMenu input { margin-bottom: 6px; }
+  #fontItems { max-height: 280px; overflow-y: auto; }
+  #fontItems div { padding: 6px 8px; border-radius: 5px; cursor: pointer; font-size: 17px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #fontItems div:hover, #fontItems div.active { background: var(--panel2); }
+  #fontItems div.sel { color: var(--accent); }
+  #fontItems .none { color: var(--muted); font-size: 13px; cursor: default; font-family: system-ui; }
+  #hud { position: absolute; left: 12px; top: 12px; background: rgba(18,24,41,.88); backdrop-filter: blur(6px); border: 1px solid var(--line);
+    border-radius: 10px; padding: 8px 12px; display: none; font-variant-numeric: tabular-nums; }
+  #hud .big { font-size: 22px; font-weight: 700; line-height: 1.1; }
+  #hud .big small { font-size: 13px; font-weight: 500; color: var(--muted); }
+  #hud .lbl { font-size: 11px; letter-spacing: .8px; text-transform: uppercase; color: var(--muted); }
+  #hud .row { font-size: 12px; color: #c5cbe0; margin-top: 3px; }
+  #hud { max-width: min(340px, calc(100% - 230px)); }
+  #hud .alertRow { margin-top: 6px; padding: 5px 7px; border-radius: 6px; background: rgba(255,93,108,.16); color: #ffd9dd; font-size: 12px; }
+  .hint { position: absolute; left: 12px; bottom: 10px; color: var(--muted); font-size: 12px; }
+  @media (max-width: 820px) {
+    .app { grid-template-columns: 1fr; grid-template-rows: auto 70vh; height: auto; }
+    aside { border-right: 0; border-bottom: 1px solid var(--line); }
+    main { height: 70vh; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside>
+    <h1>Drone Formation Studio</h1>
+    <div class="sub">Upload an image or type text, set the drone count, and preview it as a sky formation.</div>
+
+    <div class="tabs"><button id="tabImage" class="on">Image</button><button id="tabText">Text</button></div>
+
+    <div id="imagePane">
+      <div class="drop" id="drop">
+        <b>Upload image</b>
+        <small>Click or drop a PNG / JPG. Line art works best.</small>
+        <input type="file" id="file" accept="image/*" hidden>
+      </div>
+      <div style="margin-top:8px"><button id="sampleBtn" style="width:100%">Try the sample line-art image</button></div>
+    </div>
+
+    <div id="textPane" style="display:none">
+      <textarea id="text" spellcheck="false" placeholder="Type your text…">HAPPY DIWALI</textarea>
+      <div class="small" style="margin:2px 0 8px">Press Enter for a new line.</div>
+      <div class="small" style="margin-bottom:4px;color:#c5cbe0;font-size:14px">Font</div>
+      <div class="fontPicker" id="fontPicker">
+        <button type="button" id="fontBtn"><span id="fontName">Arial</span><span class="caret">▾</span></button>
+        <div class="fontMenu" id="fontMenu" hidden>
+          <input type="text" id="fontSearch" placeholder="Search fonts or type any font name…" autocomplete="off">
+          <div id="fontItems" role="listbox"></div>
+        </div>
+        <input type="hidden" id="font" value="Arial">
+      </div>
+      <button id="loadFontsBtn" style="width:100%;font-size:13px">Load all fonts installed on this computer</button>
+      <div class="small" id="fontNote" style="margin-top:4px">Click the Font box to pick a font, or search and type any installed font name.</div>
+      <div class="row2" style="margin-top:6px">
+        <label class="check"><input type="checkbox" id="bold" checked> Bold</label>
+        <label class="check"><input type="checkbox" id="italic"> Italic</label>
+      </div>
+      <label class="f"><span>Drones draw the letters as</span>
+        <select id="textStyle">
+          <option value="centre">Single line (centre of each stroke)</option>
+          <option value="outline">Outline of each letter</option>
+          <option value="filled">Filled letters</option>
+        </select></label>
+    </div>
+    <canvas id="preview" title="Detected paths the drones will follow"></canvas>
+
+    <div class="sec">Formation</div>
+    <label class="f"><span>Number of drones</span><input type="number" id="count" value="500" min="1" max="20000" step="1"></label>
+    <div class="row2">
+      <label class="f" style="grid-template-columns:1fr 70px"><span>Area width (m)</span><input type="number" id="areaW" value="80" min="2" max="2000" step="1"></label>
+      <label class="f" style="grid-template-columns:1fr 70px"><span>Area height (m)</span><input type="number" id="areaH" value="80" min="2" max="2000" step="1"></label>
+    </div>
+    <div class="row2">
+      <label class="f" style="grid-template-columns:1fr 70px"><span>Min spacing (m)</span><input type="number" id="minS" value="1.3" min="0.1" step="0.1"></label>
+      <label class="f" style="grid-template-columns:1fr 70px"><span>Max spacing (m)</span><input type="number" id="maxS" value="3" min="0.2" step="0.1"></label>
+    </div>
+
+    <div id="detectPane">
+    <div class="sec">Image detection</div>
+    <label class="f"><span>Mode</span>
+      <select id="mode">
+        <option value="lines">Line art (follow strokes)</option>
+        <option value="edges">Photo (outline edges)</option>
+        <option value="fill">Filled shape (fill area)</option>
+      </select></label>
+    <label class="f"><span>Lines / shape are</span>
+      <select id="polarity">
+        <option value="auto">Auto detect</option>
+        <option value="dark">Dark on light bg</option>
+        <option value="light">Light on dark bg</option>
+      </select></label>
+    <label class="f"><span>Join double lines closer than (m)</span><input type="number" id="merge" value="0.6" min="0" max="10" step="0.1"></label>
+    <div style="color:var(--muted);font-size:12px;margin:-2px 0 6px">Drones follow the centre of each line. Raise this (1–2 m) if your lines are drawn as two outlines and you still see doubled rows; lower it to 0 to keep very close lines apart.</div>
+    <label class="f"><span>Sensitivity <em id="sensVal" style="color:var(--muted);font-style:normal">50</em></span><input type="range" id="sens" min="0" max="100" value="50"></label>
+    </div>
+
+    <div class="sec">Look &amp; export</div>
+    <label class="f"><span>Drone colour</span>
+      <select id="colorMode"><option value="single">Single colour</option><option value="image">From image</option><option value="spacing">Spacing check (heat map)</option></select></label>
+    <label class="f"><span>Colour</span><input type="color" id="color" value="#7fe3ff"></label>
+    <label class="f"><span>Orientation</span>
+      <select id="orient"><option value="vertical">Vertical (faces audience)</option><option value="horizontal">Horizontal (seen from below)</option></select></label>
+    <label class="f"><span>Lowest altitude (m)</span><input type="number" id="alt" value="40" min="0" step="1"></label>
+    <label class="check"><input type="checkbox" id="fit" checked> Fit drawing to fill the area (ignore empty margins)</label>
+    <label class="check"><input type="checkbox" id="showGrid" checked> Show 10 m grid</label>
+    <label class="check"><input type="checkbox" id="showIssues" checked> Highlight spacing problems</label>
+    <label class="check"><input type="checkbox" id="showPairs" checked> Mark closest &amp; farthest pair</label>
+    <label class="check"><input type="checkbox" id="strict"> Never place drones closer than min spacing</label>
+
+    <button class="primary" id="genBtn" disabled>Generate formation</button>
+    <div id="status" class="status" style="display:none"></div>
+
+    <div class="sec">Result</div>
+    <table class="stats" id="stats"><tr><td style="color:var(--muted)">No formation yet</td><td></td></tr></table>
+
+    <div class="row2" style="margin-top:12px">
+      <button id="csvBtn" disabled>Export CSV</button>
+      <button id="pngBtn" disabled>Save PNG</button>
+    </div>
+    <div class="row2" style="margin-top:8px">
+      <button id="fbxBtn" disabled title="Binary FBX: one vertex per drone, opens in Blender, Maya, Unity…">Export FBX (3D)</button>
+      <button id="plyBtn" disabled title="Point cloud with each drone's colour — File › Import › Stanford PLY in Blender">Export PLY (colours)</button>
+    </div>
+    <div class="small" style="margin-top:6px">FBX/PLY: 1 vertex = 1 drone, in metres. Origin is on the ground under the centre of the area; height = real altitude.</div>
+  </aside>
+
+  <main>
+   <div class="stage">
+    <canvas id="sky"></canvas>
+    <div class="empty" id="empty"><div><strong>No image yet</strong>Upload an image on the left (or try the sample) to see it drawn with drones in the night sky.</div></div>
+    <div class="toolbar">
+      <button id="replayBtn" disabled>▶ Replay takeoff</button>
+      <button id="resetBtn">Reset view</button>
+    </div>
+    <div id="hud"></div>
+    <div id="busy">Computing formation…</div>
+    <div id="alert"></div>
+    <div id="legend"><span style="background:#ff4d5e"></span>too close <span style="background:#3ddc97"></span>OK <span style="background:#5ad1ff"></span>wide <span style="background:#ffb547"></span>too far</div>
+    <div class="hint">Scroll to zoom · drag to pan · hover a drone for details</div>
+    <div id="tip"></div>
+    <div id="playBadge"></div>
+   </div>
+
+   <div id="track" hidden>
+     <div class="trackBar">
+       <button id="trackToggle" title="Show / hide the scene cards">▾ Track</button>
+       <button id="playBtn" class="primary">▶ Play show</button>
+       <span id="playTime">0:00 / 0:00</span>
+       <input type="range" id="scrub" min="0" max="1000" value="0" step="1">
+       <label id="safeLbl" title="Closest two drones may get while flying between formations. With optimal pairing, straight flights keep at least ≈0.71 × the formation spacing; drones that would get closer are sent through separate depth lanes.">In-flight safety <input type="number" id="flightSafe" value="1" min="0.2" step="0.1" style="width:58px"> m</label>
+       <span id="fleetInfo"></span>
+       <button id="exitShowBtn" title="Back to editing the current formation">Editor view</button>
+       <button id="exportShowBtn">Export show CSV</button>
+       <button id="clearShowBtn" title="Remove all scenes">Clear</button>
+     </div>
+     <div id="sceneList"></div>
+   </div>
+  </main>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const RASTER = 800;          // raster resolution of the image across the show area
+const RK = RASTER / 400;     // scale for pixel-sized constants tuned at 400 px
+const MAX_CANDIDATES = 40000;
+const GROUND_GAP = 14;       // visual gap (m) between the formation's bottom and the launch line
+
+const state = {
+  show: { scenes: [] },   // the drone-show track: saved formations in play order
+  play: null,             // playback state while the show view is active
+  source: 'image',  // 'image' | 'text'
+  photo: null,      // last uploaded image
+  img: null,        // image being processed (photo, or the rendered text)
+  drones: [],      // {x, y, r, g, b, nn, sx, sy, delay}
+  stats: null,
+  params: null,
+  animStart: 0,
+  view: { zoom: 1, ox: 0, oy: 0 },
+  stars: [],
+  dirty: true,
+};
+
+// ---------- parameters ----------
+function params() {
+  const num = (id, d) => { const v = parseFloat($(id).value); return Number.isFinite(v) ? v : d; };
+  return {
+    n: Math.max(1, Math.min(20000, Math.round(num('count', 500)))),
+    areaW: Math.max(2, num('areaW', 80)),
+    areaH: Math.max(2, num('areaH', 80)),
+    get area() { return Math.max(this.areaW, this.areaH); },
+    strict: $('strict').checked,
+    minS: Math.max(0.05, num('minS', 1.3)),
+    maxS: Math.max(0.1, num('maxS', 3)),
+    // text is rendered black-on-white, so its detection settings are fixed
+    mode: state.source === 'text' ? { centre: 'lines', outline: 'lines', filled: 'fill' }[$('textStyle').value] : $('mode').value,
+    polarity: state.source === 'text' ? 'dark' : $('polarity').value,
+    colorMode: $('colorMode').value,
+    color: $('color').value,
+    orient: $('orient').value,
+    alt: Math.max(0, num('alt', 40)),
+    fit: $('fit').checked,
+    merge: state.source === 'text' ? 0 : Math.max(0, num('merge', 0.6)),
+    sens: state.source === 'text' ? 50 : +$('sens').value,
+  };
+}
+
+// ---------- image -> candidate points ----------
+function buildCandidates(img, p, crop = { x: 0, y: 0, w: img.naturalWidth, h: img.naturalHeight }) {
+  const s = Math.min(RASTER / crop.w, RASTER / crop.h);
+  const w = Math.max(2, Math.round(crop.w * s)), h = Math.max(2, Math.round(crop.h * s));
+  const c = document.createElement('canvas'); c.width = w; c.height = h;
+  const g = c.getContext('2d', { willReadFrequently: true });
+  g.fillStyle = '#fff'; g.fillRect(0, 0, w, h);           // transparent PNGs become white background
+  g.drawImage(img, crop.x, crop.y, crop.w, crop.h, 0, 0, w, h);
+  const d = g.getImageData(0, 0, w, h).data;
+
+  // Supersampled copy: plain downscaling averages thin lines into the paper and
+  // they fade away, so read the image at 3x and keep the darkest/lightest sub-pixel.
+  const F = 2, hw = w * F, hh = h * F;
+  const hc = document.createElement('canvas'); hc.width = hw; hc.height = hh;
+  const hg = hc.getContext('2d', { willReadFrequently: true });
+  hg.fillStyle = '#fff'; hg.fillRect(0, 0, hw, hh);
+  hg.drawImage(img, crop.x, crop.y, crop.w, crop.h, 0, 0, hw, hh);
+  const hd = hg.getImageData(0, 0, hw, hh).data;
+
+  const L = new Float32Array(w * h);     // plain average (for polarity + fill mode)
+  const Lmin = new Float32Array(w * h);  // darkest sub-pixel
+  const Lmax = new Float32Array(w * h);  // lightest sub-pixel
+  let mean = 0;
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    let lo = 255, hi = 0, sum = 0;
+    for (let sy = 0; sy < F; sy++) for (let sx = 0; sx < F; sx++) {
+      const j = ((y * F + sy) * hw + x * F + sx) * 4;
+      const v = 0.299 * hd[j] + 0.587 * hd[j + 1] + 0.114 * hd[j + 2];
+      if (v < lo) lo = v; if (v > hi) hi = v; sum += v;
+    }
+    const i = y * w + x;
+    L[i] = sum / (F * F); Lmin[i] = lo; Lmax[i] = hi; mean += L[i];
+  }
+  mean /= w * h;
+
+  const m = new Uint8Array(w * h);
+  let inkMask = null;  // pixels that are really ink, before any gap bridging
+  if (p.mode === 'edges') {
+    // light blur then Sobel magnitude
+    const B = new Float32Array(w * h);
+    for (let y = 1; y < h - 1; y++) for (let x = 1; x < w - 1; x++) {
+      const i = y * w + x;
+      B[i] = (4 * L[i] + 2 * (L[i - 1] + L[i + 1] + L[i - w] + L[i + w]) + L[i - w - 1] + L[i - w + 1] + L[i + w - 1] + L[i + w + 1]) / 16;
+    }
+    const thr = 260 - p.sens * 2.2;
+    for (let y = 2; y < h - 2; y++) for (let x = 2; x < w - 2; x++) {
+      const i = y * w + x;
+      const gx = B[i - w + 1] + 2 * B[i + 1] + B[i + w + 1] - B[i - w - 1] - 2 * B[i - 1] - B[i + w - 1];
+      const gy = B[i + w - 1] + 2 * B[i + w] + B[i + w + 1] - B[i - w - 1] - 2 * B[i - w] - B[i - w + 1];
+      if (Math.hypot(gx, gy) > thr) m[i] = 1;
+    }
+  } else if (p.mode === 'fill') {
+    // global threshold picked by Otsu, nudged by the sensitivity slider
+    const dark = p.polarity === 'dark' || (p.polarity === 'auto' && mean >= 110);
+    const thr = otsu(L) + (p.sens - 50) * (dark ? 1.2 : -1.2);
+    for (let y = 1; y < h - 1; y++) for (let x = 1; x < w - 1; x++) {
+      const i = y * w + x;
+      if (dark ? L[i] < thr : L[i] > thr) m[i] = 1;
+    }
+  } else {
+    // Line art: compare each pixel with the local paper brightness around it, so
+    // faint grey pencil lines, uneven lighting and off-white paper all work.
+    const dark = p.polarity === 'dark' || (p.polarity === 'auto' && mean >= 110);
+    const src = dark ? Lmin : Lmax;
+    // Paper brightness = brightest value nearby (darkest for light-on-dark), then smoothed.
+    // A plain local average sinks inside wide strokes, which used to leave only their two borders.
+    const bg = boxBlur(rankFilter(dark ? Lmax : Lmin, w, h, Math.round(16 * RK), dark), w, h, Math.round(8 * RK));
+    // Line detector ("top-hat"): how much darker a pixel is than a grey-level closing with a
+    // small window. Narrow strokes score high; broad shading / tone areas score ~0, so a
+    // grey-filled region is no longer mistaken for one huge stroke.
+    const r = Math.round(4 * RK);
+    const closed = rankFilter(rankFilter(src, w, h, r, dark), w, h, r, !dark);
+    const C = new Float32Array(w * h), T = new Float32Array(w * h);
+    for (let i = 0; i < w * h; i++) {
+      C[i] = dark ? bg[i] - src[i] : src[i] - bg[i];
+      T[i] = dark ? closed[i] - src[i] : src[i] - closed[i];
+    }
+    const sorted = Float32Array.from(C).sort();
+    // paper noise = median contrast (robust even when ink covers a big part of the
+    // image, e.g. tightly cropped bold text — a plain mean counted the ink as "noise")
+    const noise = Math.abs(sorted[Math.floor(sorted.length / 2)]);
+    // ink depth: contrast of the darkest 0.5% of pixels (the real ink colour)
+    const inkDepth = sorted[Math.floor(sorted.length * 0.995)];
+    const thr = Math.max(6, 50 - p.sens * 0.5, noise * 3);
+    // wide strokes still count when they are genuinely ink-dark, not just shaded
+    const strongThr = Math.max(thr, inkDepth * (0.6 - p.sens * 0.003));
+    for (let y = 1; y < h - 1; y++) for (let x = 1; x < w - 1; x++) {
+      const i = y * w + x;
+      if (T[i] > thr || C[i] > strongThr) m[i] = 1;
+    }
+    inkMask = m.slice();
+    dilate(m, w, h); // bridge 1-px breaks in broken / sketchy strokes before thinning
+  }
+
+  // metres per raster pixel (the image is fitted inside the width × height area)
+  const mppEarly = Math.min(p.areaW / w, p.areaH / h);
+  const joinPx = p.mode === 'fill' ? 0 : Math.round(p.merge / mppEarly / 2);
+  if (joinPx > 0) {
+    // morphological closing: two outlines of one stroke (or the two borders of a
+    // hollow line) melt into one solid band, whose centre line thinning then finds
+    for (let k = 0; k < joinPx; k++) dilate(m, w, h);
+    for (let k = 0; k < joinPx; k++) erode(m, w, h);
+  }
+  if (p.mode !== 'fill') {
+    thin(m, w, h);
+    pruneSpurs(m, w, h, Math.max(Math.round(3 * RK), joinPx * 2 + 2));
+    // accuracy guard: a centre line must lie on (or right next to) real ink; anything
+    // running across blank paper came from gap bridging and is dropped
+    if (inkMask) {
+      const near = inkMask.slice();
+      for (let k = 0; k < joinPx + 1; k++) dilate(near, w, h);
+      for (let i = 0; i < w * h; i++) if (m[i] && !near[i]) m[i] = 0;
+    }
+  }
+  removeSpecks(m, w, h, p.mode === 'fill' ? Math.round(12 * RK * RK) : Math.round(6 * RK));
+
+  // map pixels to metres, image centred inside the area
+  const mpp = Math.min(p.areaW / w, p.areaH / h);
+  const offX = (p.areaW - w * mpp) / 2, offY = (p.areaH - h * mpp) / 2;
+  let idx = [];
+  for (let i = 0; i < w * h; i++) if (m[i]) idx.push(i);
+  if (idx.length > MAX_CANDIDATES) {
+    const step = idx.length / MAX_CANDIDATES;
+    idx = Array.from({ length: MAX_CANDIDATES }, (_, k) => idx[Math.floor(k * step)]);
+  }
+  // per-pixel drone colour: image colour with brightness lifted so dark ink still glows
+  const pixCol = new Uint8Array(w * h * 3);
+  for (let i = 0; i < w * h; i++) {
+    const r = d[i * 4], gg = d[i * 4 + 1], b = d[i * 4 + 2], k2 = 255 / Math.max(r, gg, b, 1);
+    pixCol[i * 3] = Math.min(255, r * k2); pixCol[i * 3 + 1] = Math.min(255, gg * k2); pixCol[i * 3 + 2] = Math.min(255, b * k2);
+  }
+  const M = idx.length;
+  const cx = new Float32Array(M), cy = new Float32Array(M), pix = new Int32Array(M);
+  for (let k = 0; k < M; k++) {
+    const i = idx[k];
+    pix[k] = i;
+    cx[k] = offX + (i % w + 0.5) * mpp;
+    cy[k] = offY + (((i / w) | 0) + 0.5) * mpp;
+  }
+  // bounding box of the detected drawing, in source-image pixels
+  let bx0 = w, by0 = h, bx1 = -1, by1 = -1;
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (m[y * w + x]) {
+    if (x < bx0) bx0 = x; if (x > bx1) bx1 = x; if (y < by0) by0 = y; if (y > by1) by1 = y;
+  }
+  const bounds = bx1 < 0 ? null : {
+    x: crop.x + bx0 / s, y: crop.y + by0 / s, w: (bx1 - bx0 + 1) / s, h: (by1 - by0 + 1) / s,
+  };
+  const pathLen = p.mode === 'fill' ? 0 : skeletonLength(m, w, h) * mpp;
+  let inked = 0; for (let i = 0; i < w * h; i++) inked += m[i];
+  return { cx, cy, pix, pixCol, w, h, mask: m, mpp, offX, offY, pathLen, fillArea: inked * mpp * mpp, bounds, crop };
+}
+
+// Zhang–Suen thinning: reduce strokes to 1-pixel centre lines
+function thin(m, w, h) {
+  const del = [];
+  let changed = true;
+  while (changed) {
+    changed = false;
+    for (let pass = 0; pass < 2; pass++) {
+      del.length = 0;
+      for (let y = 1; y < h - 1; y++) for (let x = 1; x < w - 1; x++) {
+        const i = y * w + x;
+        if (!m[i]) continue;
+        const p2 = m[i - w], p3 = m[i - w + 1], p4 = m[i + 1], p5 = m[i + w + 1],
+              p6 = m[i + w], p7 = m[i + w - 1], p8 = m[i - 1], p9 = m[i - w - 1];
+        const B = p2 + p3 + p4 + p5 + p6 + p7 + p8 + p9;
+        if (B < 2 || B > 6) continue;
+        const A = (!p2 && p3) + (!p3 && p4) + (!p4 && p5) + (!p5 && p6) + (!p6 && p7) + (!p7 && p8) + (!p8 && p9) + (!p9 && p2);
+        if (A !== 1) continue;
+        if (pass === 0 ? (p2 && p4 && p6) || (p4 && p6 && p8) : (p2 && p4 && p8) || (p2 && p6 && p8)) continue;
+        del.push(i);
+      }
+      if (del.length) { changed = true; for (const i of del) m[i] = 0; }
+    }
+  }
+}
+
+function boxBlur(src, w, h, r) {
+  const I = new Float64Array((w + 1) * (h + 1));
+  for (let y = 0; y < h; y++) {
+    let row = 0;
+    for (let x = 0; x < w; x++) { row += src[y * w + x]; I[(y + 1) * (w + 1) + x + 1] = I[y * (w + 1) + x + 1] + row; }
+  }
+  const out = new Float32Array(w * h);
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    const x0 = Math.max(0, x - r), y0 = Math.max(0, y - r), x1 = Math.min(w, x + r + 1), y1 = Math.min(h, y + r + 1);
+    const sum = I[y1 * (w + 1) + x1] - I[y0 * (w + 1) + x1] - I[y1 * (w + 1) + x0] + I[y0 * (w + 1) + x0];
+    out[y * w + x] = sum / ((x1 - x0) * (y1 - y0));
+  }
+  return out;
+}
+
+// grey-level max (or min) filter over a (2r+1)² square, separable.
+// van Herk / Gil-Werman: cost per pixel doesn't grow with the window size.
+function rankFilter(src, w, h, r, takeMax) {
+  const k = 2 * r + 1, pad = takeMax ? -Infinity : Infinity;
+  const n = Math.max(w, h), len = n + 2 * r;
+  const buf = new Float32Array(len), g = new Float32Array(len), hh = new Float32Array(len);
+  const tmp = new Float32Array(w * h), out = new Float32Array(w * h);
+  const pass = (from, to, count, lines, step, lineStep) => {
+    const L = count + 2 * r;
+    for (let line = 0; line < lines; line++) {
+      const base = line * lineStep;
+      for (let i = 0; i < L; i++) { const j = i - r; buf[i] = j >= 0 && j < count ? from[base + j * step] : pad; }
+      for (let i = 0; i < L; i++) {
+        const v = buf[i];
+        g[i] = i % k === 0 ? v : (takeMax ? (g[i - 1] > v ? g[i - 1] : v) : (g[i - 1] < v ? g[i - 1] : v));
+      }
+      for (let i = L - 1; i >= 0; i--) {
+        const v = buf[i];
+        hh[i] = (i % k === k - 1 || i === L - 1) ? v : (takeMax ? (hh[i + 1] > v ? hh[i + 1] : v) : (hh[i + 1] < v ? hh[i + 1] : v));
+      }
+      for (let j = 0; j < count; j++) {
+        const a = hh[j], b = g[j + 2 * r];
+        to[base + j * step] = takeMax ? (a > b ? a : b) : (a < b ? a : b);
+      }
+    }
+  };
+  pass(src, tmp, w, h, 1, w);   // rows
+  pass(tmp, out, h, w, w, 1);   // columns
+  return out;
+}
+
+function erode(m, w, h) {
+  const src = m.slice();
+  for (let y = 1; y < h - 1; y++) for (let x = 1; x < w - 1; x++) {
+    const i = y * w + x;
+    if (src[i] && !(src[i - 1] && src[i + 1] && src[i - w] && src[i + w] && src[i - w - 1] && src[i - w + 1] && src[i + w - 1] && src[i + w + 1])) m[i] = 0;
+  }
+}
+
+// Thinning a thick band leaves short whiskers at its corners; cut side branches
+// shorter than maxLen pixels that end in a free tip.
+function pruneSpurs(m, w, h, maxLen) {
+  const nb = [-1, 1, -w, w, -w - 1, -w + 1, w - 1, w + 1];
+  const deg = i => { let c = 0; for (const o of nb) if (m[i + o]) c++; return c; };
+  // crossing number: how many separate branches leave this pixel (stair-steps count as 2, not 3)
+  const ring = [-w, -w + 1, 1, w + 1, w, w - 1, -1, -w - 1];
+  const branches = i => { let c = 0; for (let k = 0; k < 8; k++) if (!m[i + ring[k]] && m[i + ring[(k + 1) % 8]]) c++; return c; };
+  for (let pass = 0; pass < 2; pass++) {
+    for (let y = 1; y < h - 1; y++) for (let x = 1; x < w - 1; x++) {
+      const start = y * w + x;
+      if (!m[start] || deg(start) !== 1) continue;
+      const path = [start], seen = new Set(path);
+      let cur = start, hitJunction = false;
+      while (path.length <= maxLen) {
+        let next = -1;
+        for (const o of nb) { const j = cur + o; if (m[j] && !seen.has(j)) { next = j; break; } }
+        if (next < 0) break;                               // isolated short piece: leave it to removeSpecks
+        if (branches(next) >= 3) { hitJunction = true; break; }
+        path.push(next); seen.add(next); cur = next;
+      }
+      if (hitJunction && path.length <= maxLen) for (const i of path) m[i] = 0;
+    }
+  }
+}
+
+function dilate(m, w, h) {
+  const src = m.slice();
+  for (let y = 1; y < h - 1; y++) for (let x = 1; x < w - 1; x++) {
+    const i = y * w + x;
+    if (!src[i] && (src[i - 1] || src[i + 1] || src[i - w] || src[i + w] || src[i - w - 1] || src[i - w + 1] || src[i + w - 1] || src[i + w + 1])) m[i] = 1;
+  }
+}
+
+function otsu(L) {
+  const hist = new Float64Array(256);
+  for (const v of L) hist[Math.max(0, Math.min(255, v | 0))]++;
+  let total = L.length, sumAll = 0;
+  for (let t = 0; t < 256; t++) sumAll += t * hist[t];
+  let wB = 0, sumB = 0, best = 0, thr = 128;
+  for (let t = 0; t < 256; t++) {
+    wB += hist[t]; if (!wB) continue;
+    const wF = total - wB; if (!wF) break;
+    sumB += t * hist[t];
+    const between = wB * wF * (sumB / wB - (sumAll - sumB) / wF) ** 2;
+    if (between > best) { best = between; thr = t + 0.5; }
+  }
+  return thr;
+}
+
+// true length of a 1-px skeleton: straight steps count 1, diagonal steps √2
+function skeletonLength(m, w, h) {
+  let len = 0;
+  for (let y = 0; y < h - 1; y++) for (let x = 1; x < w - 1; x++) {
+    const i = y * w + x;
+    if (!m[i]) continue;
+    if (m[i + 1]) len += 1;
+    if (m[i + w]) len += 1;
+    if (m[i + w + 1] && !m[i + 1] && !m[i + w]) len += Math.SQRT2;
+    if (m[i + w - 1] && !m[i - 1] && !m[i + w]) len += Math.SQRT2;
+  }
+  return len;
+}
+
+// drop tiny isolated blobs (noise / JPEG artefacts)
+function removeSpecks(m, w, h, minSize) {
+  const seen = new Uint8Array(w * h), stack = [], comp = [];
+  for (let s = 0; s < w * h; s++) {
+    if (!m[s] || seen[s]) continue;
+    stack.push(s); seen[s] = 1; comp.length = 0;
+    while (stack.length) {
+      const i = stack.pop(); comp.push(i);
+      const x = i % w, y = (i / w) | 0;
+      for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+        const nx = x + dx, ny = y + dy;
+        if (nx < 0 || ny < 0 || nx >= w || ny >= h) continue;
+        const j = ny * w + nx;
+        if (m[j] && !seen[j]) { seen[j] = 1; stack.push(j); }
+      }
+    }
+    if (comp.length < minSize) for (const i of comp) m[i] = 0;
+  }
+}
+
+// ---------- drone placement: farthest-point sampling ----------
+// Each new drone goes to the candidate farthest from all placed drones, so the
+// first N picks are spread as evenly as possible along the drawing.
+// cover[k] = largest distance from any candidate to its nearest drone after k+1 picks,
+// which also equals the spacing of pick k+2 to everything before it.
+function farthestPoints(cx, cy, n, minS, maxS) {
+  const M = cx.length;
+  const dist = new Float32Array(M).fill(Infinity);
+  const order = [], cover = [];
+  const stopBelow = Math.min(minS, maxS / 2);
+  // start at the top-most candidate
+  let cur = 0;
+  for (let i = 1; i < M; i++) if (cy[i] < cy[cur] || (cy[i] === cy[cur] && cx[i] < cx[cur])) cur = i;
+  const limit = Math.min(M, 20000);
+  for (let k = 0; k < limit; k++) {
+    order.push(cur);
+    const x0 = cx[cur], y0 = cy[cur];
+    let best = -1, bestD = -1;
+    for (let i = 0; i < M; i++) {
+      const dx = cx[i] - x0, dy = cy[i] - y0, d2 = dx * dx + dy * dy;
+      if (d2 < dist[i]) dist[i] = d2;
+      if (dist[i] > bestD) { bestD = dist[i]; best = i; }
+    }
+    const r = Math.sqrt(bestD);
+    cover.push(r);
+    if (bestD <= 0) break;
+    if (k + 1 >= n && r < stopBelow) break;
+    cur = best;
+  }
+  // capacity: most drones whose pairwise spacing stays >= minS
+  let capacity = 1;
+  while (capacity < order.length && cover[capacity - 1] >= minS) capacity++;
+  // fewest drones so no candidate is farther than maxS/2 from a drone (gaps <= maxS)
+  let recommended = cover.findIndex(r => r <= maxS / 2);
+  recommended = recommended < 0 ? null : recommended + 1;
+  return { order, cover, capacity, recommended };
+}
+
+function placeFill(cand, p) {
+  const fp = farthestPoints(cand.cx, cand.cy, p.n, p.minS, p.maxS);
+  const n = Math.min(p.strict ? Math.min(p.n, fp.capacity) : p.n, fp.order.length);
+  const xs = new Float32Array(n), ys = new Float32Array(n), pix = new Int32Array(n);
+  for (let k = 0; k < n; k++) { const o = fp.order[k]; xs[k] = cand.cx[o]; ys[k] = cand.cy[o]; pix[k] = cand.pix[o]; }
+  return { xs, ys, pix, capacity: fp.capacity, recommended: fp.recommended };
+}
+
+// Follow the 1-px skeleton and split it into polylines (strokes), in metres.
+function traceStrokes(cand) {
+  const { mask: m, w, h, mpp, offX, offY } = cand;
+  const vis = new Uint8Array(w * h);
+  const nb = [-1, 1, -w, w, -w - 1, -w + 1, w - 1, w + 1];   // straight neighbours first
+  const inside = i => i >= 0 && i < w * h;
+  const degree = i => nb.reduce((a, o) => a + (inside(i + o) && m[i + o] ? 1 : 0), 0);
+  const strokes = [];
+  const run = start => {
+    const px = [];
+    // join to an already-traced pixel so branches stay connected at junctions
+    for (const o of nb) { const j = start + o; if (inside(j) && m[j] && vis[j]) { px.push(j); break; } }
+    let cur = start; vis[cur] = 1; px.push(cur);
+    for (;;) {
+      let next = -1;
+      for (const o of nb) { const j = cur + o; if (inside(j) && m[j] && !vis[j]) { next = j; break; } }
+      if (next < 0) break;
+      vis[next] = 1; px.push(next); cur = next;
+    }
+    for (const o of nb) { const j = cur + o; if (inside(j) && m[j] && vis[j] && j !== px[px.length - 2]) { px.push(j); break; } }
+    if (px.length < 2) return;
+    // pixel staircase -> metres, lightly smoothed (ends fixed)
+    const x = px.map(i => offX + (i % w + 0.5) * mpp), y = px.map(i => offY + (((i / w) | 0) + 0.5) * mpp);
+    const sx = x.slice(), sy = y.slice();
+    for (let k = 2; k < px.length - 2; k++) {
+      sx[k] = (x[k - 2] + x[k - 1] + x[k] + x[k + 1] + x[k + 2]) / 5;
+      sy[k] = (y[k - 2] + y[k - 1] + y[k] + y[k + 1] + y[k + 2]) / 5;
+    }
+    const cum = [0];
+    for (let k = 1; k < px.length; k++) cum.push(cum[k - 1] + Math.hypot(sx[k] - sx[k - 1], sy[k] - sy[k - 1]));
+    strokes.push({ x: sx, y: sy, px, cum, len: cum[cum.length - 1] });
+  };
+  for (let i = 0; i < w * h; i++) if (m[i] && !vis[i] && degree(i) === 1) run(i);  // open strokes from their ends
+  for (let i = 0; i < w * h; i++) if (m[i] && !vis[i]) run(i);                      // closed loops
+  return strokes.sort((a, b) => b.len - a.len);
+}
+
+// Put drones every `sp` metres along each stroke (evenly, ends included), skipping
+// any point closer than `rej` to a drone already placed (crossings, parallel lines).
+// The previous drone on the same stroke only has to be `prevMin` away (on a curve the
+// straight-line gap is a bit shorter than `sp`), so a tight bend just drops one drone.
+function placeAlong(strokes, sp, rej, prevMin = rej) {
+  const xs = [], ys = [], pix = [];
+  const cell = Math.max(rej, 0.05), grid = new Map();
+  const key = (a, b) => a * 100003 + b;
+  const free = (x, y, prev) => {
+    const gx = Math.floor(x / cell), gy = Math.floor(y / cell);
+    for (let dx = -1; dx <= 1; dx++) for (let dy = -1; dy <= 1; dy++) {
+      const b = grid.get(key(gx + dx, gy + dy));
+      if (b) for (const j of b) if (Math.hypot(xs[j] - x, ys[j] - y) < (j === prev ? prevMin : rej)) return false;
+    }
+    return true;
+  };
+  for (const st of strokes) {
+    let prev = -1;
+    const segs = Math.max(1, Math.round(st.len / sp));
+    let k = 0;
+    for (let i = 0; i <= segs; i++) {
+      const t = st.len * i / segs;
+      while (k < st.cum.length - 2 && st.cum[k + 1] < t) k++;
+      const span = st.cum[k + 1] - st.cum[k] || 1, f = Math.min(1, Math.max(0, (t - st.cum[k]) / span));
+      const x = st.x[k] + (st.x[k + 1] - st.x[k]) * f, y = st.y[k] + (st.y[k + 1] - st.y[k]) * f;
+      if (!free(x, y, prev)) continue;
+      const id = prev = xs.length;
+      xs.push(x); ys.push(y); pix.push(st.px[f < 0.5 ? k : k + 1]);
+      const gk = key(Math.floor(x / cell), Math.floor(y / cell));
+      (grid.get(gk) || grid.set(gk, []).get(gk)).push(id);
+    }
+  }
+  return { xs, ys, pix };
+}
+
+function placeOnStrokes(cand, p0) {
+  let p = p0;
+  const strokes = traceStrokes(cand);
+  // safe placement: every drone (incl. its stroke neighbour) stays >= minS from all others
+  const safe = sp => placeAlong(strokes, sp, Math.max(0.75 * sp, p.minS), p.minS);
+  const count = sp => safe(sp).xs.length;
+
+  // capacity: best count over spacings just above minS
+  let capacity = 0, safeSp = p.minS * 1.005;
+  for (let f = 1.005; f <= 1.3; f += 0.005) {
+    const c = count(p.minS * f);
+    if (c > capacity) { capacity = c; safeSp = p.minS * f; }
+  }
+  const recCount = count(Math.max(p.maxS, safeSp));
+  const recommended = recCount <= capacity ? recCount : null;
+
+  // binary-search the spacing that gives at least N drones; if N is more than
+  // fits at the minimum spacing, squeeze below it (those drones get flagged red)
+  const over = p.n > capacity && !p.strict;
+  if (p.n > capacity && p.strict) p = { ...p, n: capacity, area: p.area };
+  const place = sp => over ? placeAlong(strokes, sp, 0.75 * sp, 0) : safe(sp);
+  let lo = over ? 0.05 : safeSp, hi = over ? safeSp : Math.max(p.minS * 2, cand.pathLen);
+  for (let it = 0; it < 40; it++) {
+    const mid = (lo + hi) / 2;
+    if (place(mid).xs.length >= p.n) lo = mid; else hi = mid;
+  }
+  let res = place(lo);
+  // trim the few extra drones, always from the most crowded spot
+  let xs = res.xs, ys = res.ys, pix = res.pix;
+  while (xs.length > p.n) {
+    const extra = xs.length - p.n;
+    const nn = nearestNeighbours(Float32Array.from(xs), Float32Array.from(ys), p.area);
+    const order = Array.from(nn.keys()).sort((a, b) => nn[a] - nn[b]);
+    const drop = new Set();
+    for (const i of order) {
+      if (drop.size >= Math.max(1, Math.ceil(extra / 4))) break;
+      // don't remove both drones of the same close pair in one round
+      let pairTaken = false;
+      for (const j of drop) if (Math.abs(Math.hypot(xs[i] - xs[j], ys[i] - ys[j]) - nn[i]) < 1e-6) pairTaken = true;
+      if (!pairTaken) drop.add(i);
+    }
+    const keep = (_, i) => !drop.has(i);
+    xs = xs.filter(keep); ys = ys.filter(keep); pix = pix.filter(keep);
+  }
+  return { xs: Float32Array.from(xs), ys: Float32Array.from(ys), pix: Int32Array.from(pix), capacity, recommended };
+}
+
+function nearestNeighbours(xs, ys, area, outIds = null) {
+  const N = xs.length, nn = new Float32Array(N).fill(Infinity);
+  if (N < 2) return nn;
+  const cs = Math.max(0.5, area / Math.sqrt(N));
+  const gw = Math.ceil(area / cs) + 2;
+  const grid = new Map();
+  const key = (gx, gy) => gy * gw + gx;
+  const cell = v => Math.max(0, Math.min(gw - 1, Math.floor(v / cs)));
+  for (let i = 0; i < N; i++) {
+    const k = key(cell(xs[i]), cell(ys[i]));
+    (grid.get(k) || grid.set(k, []).get(k)).push(i);
+  }
+  for (let i = 0; i < N; i++) {
+    const gx = cell(xs[i]), gy = cell(ys[i]);
+    let best = Infinity, bestJ = -1;
+    for (let r = 0; r < gw; r++) {
+      for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) {
+        if (Math.max(Math.abs(dx), Math.abs(dy)) !== r) continue;
+        const nx = gx + dx, ny = gy + dy;
+        if (nx < 0 || ny < 0 || nx >= gw || ny >= gw) continue;
+        const b = grid.get(key(nx, ny));
+        if (!b) continue;
+        for (const j of b) if (j !== i) {
+          const d = Math.hypot(xs[j] - xs[i], ys[j] - ys[i]);
+          if (d < best) { best = d; bestJ = j; }
+        }
+      }
+      if (best <= r * cs) break;
+    }
+    nn[i] = best;
+    if (outIds) outIds[i] = bestJ;
+  }
+  return nn;
+}
+
+// ---------- generate ----------
+function generate() {
+  if (state.source === 'image' && !state.img) return;
+  $('busy').style.display = 'block';
+  setTimeout(async () => {
+    try {
+      if (state.source === 'text') state.img = await renderTextImage();
+      runGenerate();
+    } catch (e) { showStatus('bad', e.message); console.error(e); }
+    $('busy').style.display = 'none';
+  }, 30);
+}
+
+// ---------- text -> image ----------
+// Draw the typed text black-on-white with the chosen installed font; the normal
+// line-art pipeline then turns it into a formation.
+async function renderTextImage() {
+  const text = $('text').value.replace(/\s+$/, '');
+  if (!text.trim()) throw new Error('Type some text first.');
+  const family = $('font').value.trim() || 'Arial';
+  const style = ($('italic').checked ? 'italic ' : '') + ($('bold').checked ? '700 ' : '400 ');
+  const font = size => `${style}${size}px "${family}", sans-serif`;
+  try { await document.fonts.load(font(200), text); } catch {}
+  const lines = text.split('\n');
+  const c = document.createElement('canvas'), g = c.getContext('2d');
+  g.font = font(200);
+  const widest = Math.max(...lines.map(l => g.measureText(l || ' ').width));
+  const size = Math.max(40, Math.min(200, Math.floor(200 * 3600 / Math.max(1, widest))));
+  g.font = font(size);
+  const lh = size * 1.25, pad = size * 0.35;
+  c.width = Math.ceil(Math.max(...lines.map(l => g.measureText(l || ' ').width)) + pad * 2);
+  c.height = Math.ceil(lh * lines.length + pad * 2);
+  g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height);
+  g.font = font(size); g.textAlign = 'center'; g.textBaseline = 'middle';
+  g.fillStyle = g.strokeStyle = '#000'; g.lineWidth = Math.max(2, size * 0.025); g.lineJoin = 'round';
+  lines.forEach((l, i) => {
+    const y = pad + lh * (i + 0.5);
+    if ($('textStyle').value === 'outline') g.strokeText(l, c.width / 2, y); else g.fillText(l, c.width / 2, y);
+  });
+  const img = new Image();
+  await new Promise((res, rej) => { img.onload = res; img.onerror = () => rej(new Error('Could not draw the text.')); img.src = c.toDataURL(); });
+  return img;
+}
+
+// Fonts present on both Windows and macOS (plus Indian-script fonts); only the ones
+// actually installed here are listed. "Load all fonts" asks the browser for the full list.
+const COMMON_FONTS = ['Arial', 'Arial Black', 'Arial Rounded MT Bold', 'Helvetica', 'Helvetica Neue', 'Verdana', 'Tahoma', 'Trebuchet MS',
+  'Segoe UI', 'Calibri', 'Cambria', 'Candara', 'Corbel', 'Constantia', 'Century Gothic', 'Franklin Gothic Medium', 'Bahnschrift',
+  'Georgia', 'Times New Roman', 'Garamond', 'Palatino', 'Palatino Linotype', 'Book Antiqua', 'Baskerville', 'Didot', 'Optima',
+  'Futura', 'Avenir', 'Avenir Next', 'Gill Sans', 'Rockwell', 'Copperplate', 'American Typewriter', 'Courier New', 'Consolas',
+  'Lucida Console', 'Monaco', 'Menlo', 'Impact', 'Comic Sans MS', 'Papyrus', 'Brush Script MT', 'Snell Roundhand', 'Bradley Hand',
+  'Chalkboard', 'Marker Felt', 'Noteworthy', 'Lucida Handwriting', 'Segoe Script', 'Segoe Print', 'Ink Free', 'Gabriola',
+  'Nirmala UI', 'Mangal', 'Kohinoor Devanagari', 'Devanagari Sangam MN', 'ITF Devanagari', 'Gujarati Sangam MN', 'Tamil Sangam MN'];
+function fontInstalled(name) {
+  const g = document.createElement('canvas').getContext('2d'), probe = 'mmmmmmmmmmlli WW@#ąक';
+  return ['monospace', 'serif', 'sans-serif'].some(base => {
+    g.font = `72px ${base}`; const a = g.measureText(probe).width;
+    g.font = `72px "${name}", ${base}`; return g.measureText(probe).width !== a;
+  });
+}
+// ---- font picker: searchable list, every name drawn in its own font ----
+let fontNames = [];
+function setFontList(names) {
+  fontNames = [...new Set(names)].sort((a, b) => a.localeCompare(b));
+  renderFontItems();
+}
+const esc = t => t.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+function renderFontItems() {
+  const q = $('fontSearch').value.trim(), ql = q.toLowerCase(), cur = $('font').value;
+  const hits = fontNames.filter(n => n.toLowerCase().includes(ql));
+  const items = hits.slice(0, 500).map(n =>
+    `<div data-font="${esc(n)}" class="${n === cur ? 'sel' : ''}" style="font-family:&quot;${esc(n)}&quot;, system-ui">${esc(n)}</div>`);
+  // any installed font works, even if it is not in the list
+  // (listed last, so Enter picks the first real match)
+  if (q && !fontNames.some(n => n.toLowerCase() === ql))
+    items.push(`<div data-font="${esc(q)}" style="font-family:&quot;${esc(q)}&quot;, system-ui">Use “${esc(q)}”</div>`);
+  if (!items.length) items.push('<div class="none">No matching fonts</div>');
+  if (hits.length > 500) items.push(`<div class="none">${hits.length - 500} more — type to narrow down</div>`);
+  $('fontItems').innerHTML = items.join('');
+}
+function chooseFont(name) {
+  $('font').value = name;
+  $('fontName').textContent = name;
+  $('fontName').style.fontFamily = `"${name}", system-ui`;
+  closeFontMenu();
+  $('font').dispatchEvent(new Event('input'));
+}
+function openFontMenu() {
+  $('fontMenu').hidden = false; $('fontSearch').value = ''; renderFontItems(); $('fontSearch').focus();
+  const sel = $('fontItems').querySelector('.sel'); if (sel) sel.scrollIntoView({ block: 'center' });
+}
+function closeFontMenu() { $('fontMenu').hidden = true; }
+$('fontBtn').onclick = () => $('fontMenu').hidden ? openFontMenu() : closeFontMenu();
+$('fontSearch').oninput = renderFontItems;
+$('fontSearch').onkeydown = e => {
+  if (e.key === 'Escape') closeFontMenu();
+  if (e.key === 'Enter') { const first = $('fontItems').querySelector('[data-font]'); if (first) chooseFont(first.dataset.font); }
+};
+$('fontItems').onclick = e => { const it = e.target.closest('[data-font]'); if (it) chooseFont(it.dataset.font); };
+document.addEventListener('mousedown', e => { if (!$('fontPicker').contains(e.target)) closeFontMenu(); });
+setFontList(COMMON_FONTS.filter(fontInstalled));
+$('fontName').style.fontFamily = `"${$('font').value}", system-ui`;
+$('loadFontsBtn').onclick = async () => {
+  if (!('queryLocalFonts' in window)) {
+    $('fontNote').textContent = 'This browser cannot list installed fonts (use Chrome or Edge). You can still type any installed font name.';
+    return;
+  }
+  try {
+    const fonts = await window.queryLocalFonts();
+    const families = fonts.map(f => f.family);
+    setFontList(families);
+    $('fontNote').textContent = `${new Set(families).size} installed fonts loaded — click the Font box to choose.`;
+    openFontMenu();
+  } catch (e) {
+    $('fontNote').textContent = 'Font access was not allowed. You can still type any installed font name.';
+  }
+};
+
+function setSource(src) {
+  state.source = src;
+  $('tabImage').classList.toggle('on', src === 'image');
+  $('tabText').classList.toggle('on', src === 'text');
+  $('imagePane').style.display = src === 'image' ? '' : 'none';
+  $('textPane').style.display = src === 'text' ? '' : 'none';
+  $('detectPane').style.display = src === 'image' ? '' : 'none';
+  if (src === 'image') state.img = state.photo || null;
+  $('genBtn').disabled = src === 'image' && !state.photo;
+  state.view = { zoom: 1, ox: 0, oy: 0 };
+  if (src === 'text' || state.photo) { generate(); return; }
+  // image tab with nothing uploaded yet: clear the sky
+  state.drones = []; state.stats = null; state.params = null; state.dirty = true;
+  ['hud', 'status', 'preview'].forEach(id => $(id).style.display = 'none');
+  ['csvBtn', 'pngBtn', 'replayBtn', 'fbxBtn', 'plyBtn'].forEach(id => $(id).disabled = true);
+  $('empty').style.display = '';
+  renderStats();
+}
+$('tabImage').onclick = () => setSource('image');
+$('tabText').onclick = () => setSource('text');
+$('text').style.fontFamily = `"${$('font').value}", sans-serif`;
+const updateTextLook = () => {
+  $('text').style.fontFamily = `"${$('font').value}", sans-serif`;
+  $('text').style.fontWeight = $('bold').checked ? 700 : 400;
+  $('text').style.fontStyle = $('italic').checked ? 'italic' : 'normal';
+};
+updateTextLook();
+let textDebounce;
+['text', 'font', 'bold', 'italic', 'textStyle'].forEach(id => $(id).addEventListener(id === 'text' || id === 'font' ? 'input' : 'change', () => {
+  updateTextLook();
+  clearTimeout(textDebounce); textDebounce = setTimeout(generate, 600);
+}));
+
+function runGenerate() {
+  stopShow();
+  const p = params();
+  let cand = buildCandidates(state.img, p);
+  if (p.fit && cand.bounds) {
+    // second pass on just the drawing (plus a small margin), so it fills the area at full detail
+    const b = cand.bounds, pad = Math.max(b.w, b.h) * 0.02;
+    const x = Math.max(0, b.x - pad), y = Math.max(0, b.y - pad);
+    const crop = { x, y, w: Math.min(state.img.naturalWidth, b.x + b.w + pad) - x, h: Math.min(state.img.naturalHeight, b.y + b.h + pad) - y };
+    cand = buildCandidates(state.img, p, crop);
+  }
+  drawPreview(cand);
+  if (cand.cx.length === 0) {
+    state.drones = []; state.stats = null; state.dirty = true; $('hud').style.display = 'none'; $('alert').style.display = 'none';
+    renderStats(); showStatus('bad', 'No lines were detected. Try another <b>Mode</b>, flip <b>Lines / shape are</b>, or move the sensitivity slider.');
+    return;
+  }
+  // Line drawings: drones evenly spaced along each traced stroke.
+  // Filled shapes: farthest-point sampling spreads them evenly over the area.
+  const pl = p.mode === 'fill' ? placeFill(cand, p) : placeOnStrokes(cand, p);
+  const { xs, ys, pix, capacity, recommended } = pl;
+  const n = xs.length;
+  const nnId = new Int32Array(n);
+  const nn = nearestNeighbours(xs, ys, p.area, nnId);
+
+  // sort left-to-right for launch pads & numbering
+  const ids = Array.from({ length: n }, (_, i) => i).sort((a, b) => xs[a] - xs[b] || ys[a] - ys[b]);
+  const rankOf = new Int32Array(n);
+  ids.forEach((k, rank) => rankOf[k] = rank);
+  state.drones = ids.map((k, rank) => {
+    const ci = pix[k] * 3;
+    return {
+      x: xs[k], y: ys[k], nn: nn[k], nnIdx: nnId[k] >= 0 ? rankOf[nnId[k]] : -1,
+      r: cand.pixCol[ci], g: cand.pixCol[ci + 1], b: cand.pixCol[ci + 2],
+      heat: spacingColour(nn[k], p),
+      sx: n > 1 ? rank / (n - 1) * p.areaW : p.areaW / 2,
+      sy: p.areaH + GROUND_GAP + (rank % 3) * 0.8,
+      delay: (ys[k] / p.areaH) * 1.4 + (rank % 7) * 0.03,
+    };
+  });
+
+  let minNN = Infinity, maxNN = 0, sumNN = 0, tooClose = 0, tooFar = 0, minI = -1, maxI = -1;
+  state.drones.forEach((d, i) => {
+    if (!Number.isFinite(d.nn)) return;
+    if (d.nn < minNN) { minNN = d.nn; minI = i; }
+    if (d.nn > maxNN) { maxNN = d.nn; maxI = i; }
+    sumNN += d.nn;
+    if (d.nn < p.minS - 1e-6) tooClose++;
+    if (d.nn > p.maxS + 1e-6) tooFar++;
+  });
+  let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+  for (const d of state.drones) { minX = Math.min(minX, d.x); maxX = Math.max(maxX, d.x); minY = Math.min(minY, d.y); maxY = Math.max(maxY, d.y); }
+  state.stats = {
+    placed: n, requested: p.n, candidates: cand.cx.length,
+    pathLen: cand.pathLen, fillArea: cand.fillArea, fill: p.mode === 'fill',
+    minNN, maxNN, avgNN: n > 1 ? sumNN / n : 0, tooClose, tooFar,
+    capacity, recommended,
+    width: maxX - minX, height: maxY - minY,
+    minPair: minI >= 0 ? [minI, state.drones[minI].nnIdx] : null,
+    maxPair: maxI >= 0 ? [maxI, state.drones[maxI].nnIdx] : null,
+    // hard ceiling for ANY drawing: hexagonal packing of the whole area at min spacing
+    areaLimit: Math.floor(p.areaW / p.minS + 1) * Math.floor(p.areaH / (p.minS * Math.sqrt(3) / 2) + 1),
+  };
+  state.params = p;
+  state.animStart = performance.now();
+  state.dirty = true;
+  $('empty').style.display = 'none';
+  ['csvBtn', 'pngBtn', 'replayBtn', 'fbxBtn', 'plyBtn'].forEach(id => $(id).disabled = false);
+  renderStats();
+  renderStatus();
+}
+
+// ---------- UI output ----------
+const f1 = v => Number.isFinite(v) ? v.toFixed(2) + ' m' : '—';
+
+// red = closer than min spacing, green→blue = inside the allowed range, amber = wider than max
+function spacingColour(d, p) {
+  if (!Number.isFinite(d)) return [255, 181, 71];
+  if (d < p.minS - 1e-6) return [255, 77, 94];
+  if (d > p.maxS + 1e-6) return [255, 181, 71];
+  const t = Math.max(0, Math.min(1, (d - p.minS) / Math.max(1e-6, p.maxS - p.minS)));
+  return [Math.round(61 + (90 - 61) * t), Math.round(220 + (209 - 220) * t), Math.round(151 + (255 - 151) * t)];
+}
+
+function renderStats() {
+  const s = state.stats, p = state.params;
+  if (!s) { $('stats').innerHTML = '<tr><td style="color:var(--muted)">No formation yet</td><td></td></tr>'; return; }
+  const cls = (v, lo, hi) => v < lo - 1e-6 ? 'bad' : v > hi + 1e-6 ? 'warn' : 'ok';
+  const pairTxt = pr => pr && pr[1] >= 0 ? `#${pr[0] + 1} ↔ #${pr[1] + 1}` : '';
+  const rows = [
+    ['Drones placed', `${s.placed.toLocaleString()}${s.placed < s.requested ? ` of ${s.requested.toLocaleString()}` : ''}`],
+    ['Formation size', `${s.width.toFixed(1)} × ${s.height.toFixed(1)} m`],
+    s.fill ? ['Filled area', `≈ ${Math.round(s.fillArea).toLocaleString()} m²`]
+           : ['Drawn path length', `≈ ${Math.round(s.pathLen).toLocaleString()} m`],
+    [`<b>Minimum distance</b><br><small style="color:var(--muted)">${pairTxt(s.minPair)}</small>`,
+      `<span class="${cls(s.minNN, p.minS, Infinity)}">${f1(s.minNN)}</span><button data-focus="min">Show</button>`],
+    [`<b>Maximum distance</b><br><small style="color:var(--muted)">largest gap to nearest drone, ${pairTxt(s.maxPair)}</small>`,
+      `<span class="${cls(s.maxNN, -Infinity, p.maxS)}">${f1(s.maxNN)}</span><button data-focus="max">Show</button>`],
+    ['Average neighbour distance', f1(s.avgNN)],
+    [`Drones closer than ${p.minS} m`, `<span class="${s.tooClose ? 'bad' : 'ok'}">${s.tooClose}</span>`],
+    [`Drones farther than ${p.maxS} m`, `<span class="${s.tooFar ? 'warn' : 'ok'}">${s.tooFar}</span>`],
+    [`Max drones on this drawing at ≥ ${p.minS} m`, s.capacity.toLocaleString()],
+    [`Min drones for ≤ ${p.maxS} m gaps`, s.recommended ? s.recommended.toLocaleString() : 'more than max'],
+    [`Absolute limit for ${p.areaW} × ${p.areaH} m`, `${s.areaLimit.toLocaleString()} <small style="color:var(--muted)">(area packed solid)</small>`],
+  ];
+  $('stats').innerHTML = rows.map(([a, b]) => `<tr><td>${a}</td><td>${b}</td></tr>`).join('');
+  $('stats').querySelectorAll('button[data-focus]').forEach(b => b.onclick = () => focusPair(b.dataset.focus === 'min' ? s.minPair : s.maxPair));
+}
+
+// zoom the sky view onto a pair of drones and make them blink
+function focusPair(pair) {
+  if (!pair || pair[1] < 0) return;
+  const a = state.drones[pair[0]], b = state.drones[pair[1]];
+  state.animStart = -1e9;
+  const base = viewScale() / state.view.zoom;
+  const gap = Math.max(0.5, Math.hypot(a.x - b.x, a.y - b.y));
+  // pair spans ~70 px on screen, so its neighbours stay visible for context
+  state.view.zoom = Math.max(1, Math.min(40, 70 / (gap * base)));
+  const s = viewScale(), [cx, cy] = worldCenter();
+  state.view.ox = -(((a.x + b.x) / 2) - cx) * s; state.view.oy = -(((a.y + b.y) / 2) - cy) * s;
+  state.focus = { pair, until: performance.now() + 2500 };
+  state.dirty = true;
+}
+
+function showStatus(kind, html, actions = []) {
+  const el = $('status');
+  el.className = 'status ' + kind; el.style.display = 'block';
+  el.innerHTML = html + (actions.length ? `<div class="acts">${actions.map((a, i) => `<button data-i="${i}">${a[0]}</button>`).join('')}</div>` : '');
+  el.querySelectorAll('button').forEach(b => b.onclick = () => actions[+b.dataset.i][1]());
+}
+
+function renderStatus() {
+  const s = state.stats, p = state.params;
+  // the "not flyable" warning lives inside the drone counter box so the two never overlap
+  const alertHtml = s.tooClose > 0
+    ? `<div class="alertRow"><b>Not flyable:</b> ${s.tooClose} drones closer than ${p.minS} m (closest ${f1(s.minNN)}). Use at most <b>${s.capacity}</b>.</div>` : '';
+  $('alert').style.display = 'none';
+  const hud = $('hud');
+  const usedCls = s.tooClose ? 'bad' : s.placed < s.requested ? 'warn' : 'ok';
+  hud.innerHTML = `<div class="lbl">Drones used</div>
+    <div class="big"><span style="color:var(--${usedCls})">${s.placed.toLocaleString()}</span> <small>of ${s.requested.toLocaleString()} requested</small></div>
+    <div class="row">Max that fits: <b>${s.capacity.toLocaleString()}</b> · area ${p.areaW} × ${p.areaH} m</div>
+    <div class="row">Min distance <b style="color:var(--${s.tooClose ? 'bad' : 'ok'})">${f1(s.minNN)}</b> · Max distance <b style="color:var(--${s.tooFar ? 'warn' : 'ok'})">${f1(s.maxNN)}</b></div>${alertHtml}
+    <button class="addBtn" data-add="1">+ Add to show${state.show.scenes.length ? ` (scene ${state.show.scenes.length + 1})` : ''}</button>`;
+  hud.style.borderColor = s.tooClose > 0 ? 'var(--bad)' : '';
+  hud.style.display = 'block';
+  const setCount = v => () => { $('count').value = v; generate(); };
+  const acts = [];
+  if (s.capacity >= 2 && s.recommended && s.recommended <= s.capacity && (s.requested > s.capacity || s.requested < s.recommended))
+    acts.push([`Use ${Math.round((s.recommended + s.capacity) / 2)} (balanced)`, setCount(Math.round((s.recommended + s.capacity) / 2))]);
+
+  if (s.requested > s.capacity && s.tooClose > 0) {
+    acts.unshift([`Use max ${s.capacity}`, setCount(s.capacity)]);
+    showStatus('bad', `<b class="bad">Too many drones.</b> This drawing only fits <b>${s.capacity}</b> drones while keeping ${p.minS} m apart. ` +
+      `${s.tooClose} drones are closer than ${p.minS} m (shown red; closest ${f1(s.minNN)}). Reduce the count, enlarge the area, or tick <b>Never place drones closer than min spacing</b>.`, acts);
+  } else if (s.tooFar > 0) {
+    if (s.recommended) acts.unshift([`Use ${s.recommended}`, setCount(s.recommended)]);
+    const msg = s.recommended && s.recommended > s.capacity
+      ? `Keeping every gap ≤ ${p.maxS} m needs more drones than fit at ${p.minS} m spacing — the drawing is too detailed for this area.`
+      : `Some lines have gaps over ${p.maxS} m (shown amber). Around <b>${s.recommended ?? '?'}</b> drones will close them.`;
+    showStatus('warn', `<b class="warn">Sparse in places.</b> ${s.tooFar} drones have their nearest neighbour more than ${p.maxS} m away. ${msg}`, acts);
+  } else {
+    if (s.placed < s.requested) {
+      showStatus('warn', `<b class="warn">Only ${s.placed} of ${s.requested} drones placed</b> — that is all that fits ${p.minS} m apart. All of them are between ${f1(s.minNN)} and ${f1(s.maxNN)} from their nearest neighbour.`);
+      return;
+    }
+    showStatus('ok', `<b class="ok">Formation OK.</b> All ${s.placed} drones are between ${f1(s.minNN)} and ${f1(s.maxNN)} from their nearest neighbour.`);
+  }
+}
+
+function drawPreview(cand) {
+  const c = $('preview');
+  c.width = cand.w; c.height = cand.h; c.style.display = 'block';
+  const g = c.getContext('2d');
+  const cr = cand.crop;
+  g.drawImage(state.img, cr.x, cr.y, cr.w, cr.h, 0, 0, cand.w, cand.h);
+  g.fillStyle = 'rgba(0,0,0,.72)'; g.fillRect(0, 0, cand.w, cand.h);
+  const id = g.getImageData(0, 0, cand.w, cand.h);
+  // thicken the 1-px centre lines for display only, so they stay visible when the preview is scaled down
+  const show = cand.mask.slice();
+  for (let k = 0; k < Math.max(1, Math.round(cand.w / 300)); k++) dilate(show, cand.w, cand.h);
+  for (let i = 0; i < show.length; i++) if (show[i]) {
+    id.data[i * 4] = 90; id.data[i * 4 + 1] = 209; id.data[i * 4 + 2] = 255; id.data[i * 4 + 3] = 255;
+  }
+  g.putImageData(id, 0, 0);
+}
+
+// ---------- sky rendering ----------
+const sky = $('sky'), ctx = sky.getContext('2d');
+let W = 0, H = 0, DPR = 1;
+
+function resize() {
+  DPR = window.devicePixelRatio || 1;
+  W = sky.clientWidth; H = sky.clientHeight;
+  sky.width = Math.round(W * DPR); sky.height = Math.round(H * DPR);
+  state.stars = Array.from({ length: Math.round(W * H / 3500) }, () => ({
+    x: Math.random() * W, y: Math.random() * H * 0.9, r: Math.random() * 1.1 + 0.2, a: Math.random() * 0.6 + 0.15,
+  }));
+  state.dirty = true;
+}
+
+function areaWH() {
+  if (state.play) return [state.play.build.W, state.play.build.H];
+  return state.params ? [state.params.areaW, state.params.areaH] : [+$('areaW').value || 80, +$('areaH').value || 80];
+}
+function viewScale() { const [aw, ah] = areaWH(); return Math.min(W / (aw + 14), H / (ah + GROUND_GAP + 16)) * state.view.zoom; }
+function worldCenter() { const [aw, ah] = areaWH(); return [aw / 2, (ah + GROUND_GAP + 4) / 2]; }
+function toScreen(x, y) {
+  const s = viewScale(), [cx, cy] = worldCenter();
+  return [W / 2 + state.view.ox + (x - cx) * s, H / 2 + state.view.oy + (y - cy) * s];
+}
+function toWorld(sx, sy) {
+  const s = viewScale(), [cx, cy] = worldCenter();
+  return [(sx - W / 2 - state.view.ox) / s + cx, (sy - H / 2 - state.view.oy) / s + cy];
+}
+
+const ease = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+const FLIGHT = 2.4;
+
+function dronePos(d, t) {
+  const u = Math.max(0, Math.min(1, (t - d.delay) / FLIGHT));
+  const e = ease(u);
+  return [d.sx + (d.x - d.sx) * e, d.sy + (d.y - d.sy) * e, u];
+}
+
+function draw(now) {
+  const t = (now - state.animStart) / 1000;
+  const animating = !state.play && state.drones.length && t < FLIGHT + 1.8;
+  if (!state.dirty && !animating && !(state.play && state.play.running)) return;
+  state.dirty = false;
+
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  const bg = ctx.createLinearGradient(0, 0, 0, H);
+  bg.addColorStop(0, '#02040b'); bg.addColorStop(0.7, '#0a1330'); bg.addColorStop(1, '#16213f');
+  ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
+  for (const s of state.stars) { ctx.fillStyle = `rgba(255,255,255,${s.a})`; ctx.fillRect(s.x, s.y, s.r, s.r); }
+
+  const [aw, ah] = areaWH(), sc = viewScale();
+  const [x0, y0] = toScreen(0, 0), [x1, y1] = toScreen(aw, ah);
+  const step = Math.max(aw, ah) > 300 ? 50 : Math.max(aw, ah) > 120 ? 20 : Math.max(aw, ah) < 30 ? 5 : 10;
+
+  // grid + area boundary
+  if ($('showGrid').checked) {
+    ctx.strokeStyle = 'rgba(120,150,220,.12)'; ctx.lineWidth = 1; ctx.beginPath();
+    for (let m = step; m < aw; m += step) { const [gx] = toScreen(m, 0); ctx.moveTo(gx, y0); ctx.lineTo(gx, y1); }
+    for (let m = step; m < ah; m += step) { const [, gy] = toScreen(0, m); ctx.moveTo(x0, gy); ctx.lineTo(x1, gy); }
+    ctx.stroke();
+    ctx.fillStyle = 'rgba(160,175,215,.55)'; ctx.font = '11px system-ui'; ctx.textAlign = 'center';
+    for (let m = 0; m <= aw; m += step) { const [gx] = toScreen(m, 0); ctx.fillText(m + '', gx, y0 - 6); }
+    ctx.textAlign = 'right';
+    const baseAlt = state.params ? state.params.alt : 0, vertical = !state.params || state.params.orient === 'vertical';
+    for (let m = 0; m <= ah; m += step) {
+      const [, gy] = toScreen(0, m);
+      ctx.fillText(vertical ? `${Math.round(baseAlt + ah - m)} m` : `${ah - m}`, x0 - 6, gy + 4);
+    }
+  }
+  ctx.strokeStyle = 'rgba(90,209,255,.35)'; ctx.setLineDash([6, 5]); ctx.lineWidth = 1;
+  ctx.strokeRect(x0, y0, x1 - x0, y1 - y0); ctx.setLineDash([]);
+  ctx.fillStyle = 'rgba(90,209,255,.7)'; ctx.font = '12px system-ui'; ctx.textAlign = 'left';
+  ctx.fillText(`${aw} × ${ah} m show area (width × height)`, x0, y1 + 16);
+
+  // launch line
+  const [, gyL] = toScreen(0, ah + GROUND_GAP + 2.5);
+  ctx.fillStyle = 'rgba(5,8,18,.9)'; ctx.fillRect(0, gyL, W, H - gyL);
+  ctx.fillStyle = 'rgba(160,175,215,.5)'; ctx.fillText('launch pads (ground)', x0, gyL + 16);
+
+  if (state.play) { drawPlayback(now, sc); drawScaleBar(sc); return; }
+
+  // drones
+  const p = state.params, single = !p || p.colorMode === 'single';
+  $('legend').style.display = p && p.colorMode === 'spacing' ? 'flex' : 'none';
+  const core = Math.min(7, Math.max(1.1, 0.28 * sc)), glow = Math.min(16, Math.max(3, 0.85 * sc));
+  ctx.globalCompositeOperation = 'lighter';
+  if (single && state.drones.length) {
+    const hex = p ? p.color : '#7fe3ff';
+    ctx.fillStyle = hex; ctx.globalAlpha = 0.14; ctx.beginPath();
+    for (const d of state.drones) { const [wx, wy] = dronePos(d, t), [sx, sy] = toScreen(wx, wy); ctx.moveTo(sx + glow, sy); ctx.arc(sx, sy, glow, 0, 6.283); }
+    ctx.fill();
+    ctx.globalAlpha = 1; ctx.beginPath();
+    for (const d of state.drones) { const [wx, wy] = dronePos(d, t), [sx, sy] = toScreen(wx, wy); ctx.moveTo(sx + core, sy); ctx.arc(sx, sy, core, 0, 6.283); }
+    ctx.fill();
+    ctx.fillStyle = '#fff'; ctx.globalAlpha = 0.7; ctx.beginPath();
+    for (const d of state.drones) { const [wx, wy] = dronePos(d, t), [sx, sy] = toScreen(wx, wy); ctx.moveTo(sx + core * 0.45, sy); ctx.arc(sx, sy, core * 0.45, 0, 6.283); }
+    ctx.fill();
+  } else {
+    for (const d of state.drones) {
+      const [wx, wy] = dronePos(d, t), [sx, sy] = toScreen(wx, wy);
+      const c = p.colorMode === 'spacing' ? d.heat : [d.r, d.g, d.b];
+      ctx.fillStyle = `rgb(${c[0]},${c[1]},${c[2]})`;
+      ctx.globalAlpha = 0.16; ctx.beginPath(); ctx.arc(sx, sy, glow, 0, 6.283); ctx.fill();
+      ctx.globalAlpha = 1; ctx.beginPath(); ctx.arc(sx, sy, core, 0, 6.283); ctx.fill();
+    }
+  }
+  ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
+
+  // spacing problems (only once drones are in place)
+  if (p && $('showIssues').checked && !animating) {
+    ctx.lineWidth = 1.5;
+    for (const d of state.drones) {
+      const bad = d.nn < p.minS - 1e-6, far = d.nn > p.maxS + 1e-6;
+      if (!bad && !far) continue;
+      const [sx, sy] = toScreen(d.x, d.y);
+      ctx.strokeStyle = bad ? 'rgba(255,93,108,.95)' : 'rgba(255,181,71,.9)';
+      ctx.beginPath(); ctx.arc(sx, sy, glow + 2, 0, 6.283); ctx.stroke();
+    }
+  }
+
+  // closest / farthest pair markers
+  if (p && state.stats && !animating && ($('showPairs').checked || state.focus)) {
+    const blink = state.focus && performance.now() < state.focus.until;
+    const mark = (pair, colour, label) => {
+      if (!pair || pair[1] < 0) return;
+      const a = state.drones[pair[0]], b = state.drones[pair[1]];
+      const [ax, ay] = toScreen(a.x, a.y), [bx, by] = toScreen(b.x, b.y);
+      const on = !blink || state.focus.pair !== pair || Math.floor(performance.now() / 250) % 2 === 0;
+      if (!on) return;
+      ctx.strokeStyle = colour; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(bx, by); ctx.stroke();
+      for (const [x, y] of [[ax, ay], [bx, by]]) { ctx.beginPath(); ctx.arc(x, y, glow + 4, 0, 6.283); ctx.stroke(); }
+      ctx.font = '600 12px system-ui'; ctx.textAlign = 'left';
+      const tx = Math.max(ax, bx) + glow + 8, ty = Math.min(ay, by) - 6, tw = ctx.measureText(label).width;
+      ctx.fillStyle = 'rgba(8,12,24,.85)'; ctx.fillRect(tx - 4, ty - 13, tw + 8, 18);
+      ctx.fillStyle = colour; ctx.fillText(label, tx, ty);
+    };
+    const s = state.stats;
+    if ($('showPairs').checked || state.focus?.pair === s.maxPair)
+      mark(s.maxPair, s.maxNN > p.maxS + 1e-6 ? '#ffb547' : '#5ad1ff', `MAX ${f1(s.maxNN)}`);
+    if ($('showPairs').checked || state.focus?.pair === s.minPair)
+      mark(s.minPair, s.minNN < p.minS - 1e-6 ? '#ff4d5e' : '#3ddc97', `MIN ${f1(s.minNN)}`);
+    if (blink) state.dirty = true;
+  }
+
+  drawScaleBar(sc);
+}
+
+function drawScaleBar(sc) {
+  const barM = sc > 30 ? 1 : sc > 12 ? 5 : 10;
+  ctx.fillStyle = 'rgba(230,234,245,.85)'; ctx.fillRect(W - 24 - barM * sc, H - 26, barM * sc, 3);
+  ctx.textAlign = 'right'; ctx.font = '11px system-ui'; ctx.fillText(`${barM} m`, W - 24, H - 32);
+}
+
+function loop(now) { draw(now); requestAnimationFrame(loop); }
+
+// ---------- interaction ----------
+let drag = null;
+sky.addEventListener('mousedown', e => { drag = { x: e.clientX, y: e.clientY, ox: state.view.ox, oy: state.view.oy }; sky.classList.add('drag'); });
+window.addEventListener('mouseup', () => { drag = null; sky.classList.remove('drag'); });
+window.addEventListener('mousemove', e => {
+  if (drag) {
+    state.view.ox = drag.ox + e.clientX - drag.x; state.view.oy = drag.oy + e.clientY - drag.y; state.dirty = true;
+  }
+  hover(e);
+});
+sky.addEventListener('wheel', e => {
+  e.preventDefault();
+  const r = sky.getBoundingClientRect(), mx = e.clientX - r.left, my = e.clientY - r.top;
+  const [wx, wy] = toWorld(mx, my);
+  state.view.zoom = Math.max(0.3, Math.min(40, state.view.zoom * Math.exp(-e.deltaY * 0.0015)));
+  const s = viewScale(), [cx, cy] = worldCenter();
+  state.view.ox = mx - W / 2 - (wx - cx) * s; state.view.oy = my - H / 2 - (wy - cy) * s;
+  state.dirty = true;
+}, { passive: false });
+
+function hover(e) {
+  const tip = $('tip');
+  const r = sky.getBoundingClientRect(), mx = e.clientX - r.left, my = e.clientY - r.top;
+  if (drag || state.play || !state.drones.length || mx < 0 || my < 0 || mx > W || my > H) { tip.style.display = 'none'; return; }
+  let best = null, bd = 12 * 12;
+  state.drones.forEach((d, i) => {
+    const [sx, sy] = toScreen(d.x, d.y), dd = (sx - mx) ** 2 + (sy - my) ** 2;
+    if (dd < bd) { bd = dd; best = i; }
+  });
+  if (best === null) { tip.style.display = 'none'; return; }
+  const d = state.drones[best], [x, y, z] = worldCoords(d);
+  tip.innerHTML = `<b>Drone #${best + 1}</b><br>x ${x.toFixed(2)} m · y ${y.toFixed(2)} m · alt ${z.toFixed(2)} m<br>nearest drone: ${d.nnIdx >= 0 ? '#' + (d.nnIdx + 1) + ' at ' : ''}<span style="color:rgb(${d.heat})">${f1(d.nn)}</span>`;
+  tip.style.display = 'block';
+  tip.style.left = Math.min(mx + 14, W - tip.offsetWidth - 8) + 'px';
+  tip.style.top = Math.min(my + 14, H - tip.offsetHeight - 8) + 'px';
+}
+
+// x = east along the area, y = north (depth), z = altitude
+function worldCoords(d) {
+  const p = state.params;
+  return p.orient === 'vertical' ? [d.x, 0, p.alt + (p.areaH - d.y)] : [d.x, p.areaH - d.y, p.alt];
+}
+
+// ---------- inputs ----------
+function loadImageFromSrc(src) {
+  const img = new Image();
+  img.onload = () => { state.photo = state.img = img; $('genBtn').disabled = false; state.view = { zoom: 1, ox: 0, oy: 0 }; generate(); };
+  img.onerror = () => showStatus('bad', 'That file could not be read as an image.');
+  img.src = src;
+}
+function loadFile(file) {
+  if (!file || !file.type.startsWith('image/')) return showStatus('bad', 'Please choose an image file (PNG, JPG, WebP, SVG).');
+  const fr = new FileReader();
+  state.photoName = file.name.replace(/\.[^.]+$/, '');
+  fr.onload = () => loadImageFromSrc(fr.result);
+  fr.readAsDataURL(file);
+}
+$('drop').onclick = () => $('file').click();
+$('file').onchange = e => loadFile(e.target.files[0]);
+['dragover', 'dragenter'].forEach(ev => $('drop').addEventListener(ev, e => { e.preventDefault(); $('drop').classList.add('over'); }));
+['dragleave', 'drop'].forEach(ev => $('drop').addEventListener(ev, e => { e.preventDefault(); $('drop').classList.remove('over'); }));
+$('drop').addEventListener('drop', e => loadFile(e.dataTransfer.files[0]));
+$('sampleBtn').onclick = async () => {
+  try {
+    const blob = await (await fetch('/formation-studio/sample')).blob();
+    loadFile(new File([blob], 'sample.png', { type: blob.type || 'image/png' }));
+  } catch { showStatus('warn', 'The sample loads only when the page is served over http (e.g. <code>python3 -m http.server</code>). Uploading your own image works everywhere.'); }
+};
+$('genBtn').onclick = generate;
+$('replayBtn').onclick = () => { state.animStart = performance.now(); };
+$('resetBtn').onclick = () => { state.view = { zoom: 1, ox: 0, oy: 0 }; state.dirty = true; };
+$('sens').oninput = () => $('sensVal').textContent = $('sens').value;
+
+let debounce;
+['count', 'areaW', 'areaH', 'strict', 'minS', 'maxS', 'mode', 'polarity', 'sens', 'orient', 'alt', 'fit', 'merge'].forEach(id =>
+  $(id).addEventListener('change', () => { clearTimeout(debounce); debounce = setTimeout(generate, 150); }));
+['colorMode', 'color'].forEach(id => $(id).addEventListener('input', () => {
+  if (state.params) { state.params.colorMode = $('colorMode').value; state.params.color = $('color').value; }
+  state.dirty = true;
+}));
+['showGrid', 'showIssues', 'showPairs'].forEach(id => $(id).addEventListener('change', () => state.dirty = true));
+
+// ---------- export ----------
+function download(name, href) { const a = document.createElement('a'); a.href = href; a.download = name; a.click(); }
+$('csvBtn').onclick = () => {
+  const p = state.params;
+  const lines = [`# ${state.drones.length} drones, ${p.areaW}x${p.areaH} m area (WxH), ${p.orient}, min spacing ${p.minS} m, max ${p.maxS} m`,
+    'id,x_m,y_m,z_m,r,g,b,nearest_m'];
+  state.drones.forEach((d, i) => {
+    const [x, y, z] = worldCoords(d);
+    const [r, g, b] = p.colorMode !== 'image' ? hexRgb(p.color) : [d.r, d.g, d.b];
+    lines.push([i + 1, x.toFixed(3), y.toFixed(3), z.toFixed(3), r, g, b, d.nn.toFixed(3)].join(','));
+  });
+  download('drone-formation.csv', URL.createObjectURL(new Blob([lines.join('\n')], { type: 'text/csv' })));
+};
+$('pngBtn').onclick = () => { state.animStart = -1e9; state.dirty = true; draw(performance.now()); download('drone-formation.png', sky.toDataURL('image/png')); };
+function hexRgb(h) { const v = parseInt(h.slice(1), 16); return [v >> 16, (v >> 8) & 255, v & 255]; }
+
+
+// =====================================================================
+// Drone show track: saved formations played one after another
+// =====================================================================
+const SHOW_KEY = 'droneShow.v1';
+const MAX_SPEED = 4;        // m/s — typical show-drone cruise speed, sets "auto" move times
+const TAKEOFF_MIN = 6, MOVE_MIN = 3;
+
+function saveShow() {
+  try { localStorage.setItem(SHOW_KEY, JSON.stringify(state.show.scenes)); } catch {}
+}
+function loadShow() {
+  try { const v = JSON.parse(localStorage.getItem(SHOW_KEY) || '[]'); if (Array.isArray(v)) state.show.scenes = v; } catch {}
+}
+
+function makeThumb(pts, aw, ah) {
+  const c = document.createElement('canvas'); c.width = 144; c.height = 80;
+  const g = c.getContext('2d'); g.fillStyle = '#050a18'; g.fillRect(0, 0, 144, 80);
+  let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+  for (const q of pts) { x0 = Math.min(x0, q[0]); x1 = Math.max(x1, q[0]); y0 = Math.min(y0, q[1]); y1 = Math.max(y1, q[1]); }
+  const sc = Math.min(132 / Math.max(1, x1 - x0), 70 / Math.max(1, y1 - y0));
+  const ox = (144 - (x1 - x0) * sc) / 2, oy = (80 - (y1 - y0) * sc) / 2;
+  for (const q of pts) { g.fillStyle = `rgb(${q[2]},${q[3]},${q[4]})`; g.fillRect(ox + (q[0] - x0) * sc - 1, oy + (q[1] - y0) * sc - 1, 2, 2); }
+  return c.toDataURL('image/png');
+}
+
+function addScene() {
+  const p = state.params, st = state.stats;
+  if (!p || !state.drones.length) return;
+  const fixed = hexRgb(p.color);
+  const pts = state.drones.map(d => {
+    const c = p.colorMode === 'image' ? [d.r, d.g, d.b] : fixed;
+    return [Math.round(d.x * 100) / 100, Math.round(d.y * 100) / 100, c[0], c[1], c[2]];
+  });
+  const name = state.source === 'text' ? $('text').value.replace(/\s+/g, ' ').trim().slice(0, 40) : (state.photoName || 'Image');
+  state.show.scenes.push({
+    id: Date.now() + Math.random(), name, pts, areaW: p.areaW, areaH: p.areaH, minS: p.minS,
+    hold: 4, trans: null, minNN: st.minNN, tooClose: st.tooClose, thumb: makeThumb(pts, p.areaW, p.areaH),
+  });
+  saveShow();
+  stopShow();
+  renderTrack();
+  const list = $('sceneList'); list.scrollLeft = list.scrollWidth;
+}
+$('hud').addEventListener('click', e => { if (e.target.closest('[data-add]')) addScene(); });
+
+// Pair every target spot with a drone: shortest candidate links first (each target
+// looks at its nearest sources), so drones fly to nearby spots and paths stay short.
+function matchDrones(fx, fy, tx, ty) {
+  const nF = fx.length, nT = tx.length, K = Math.min(nF, 16);
+  let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+  for (let i = 0; i < nF; i++) { minX = Math.min(minX, fx[i]); maxX = Math.max(maxX, fx[i]); minY = Math.min(minY, fy[i]); maxY = Math.max(maxY, fy[i]); }
+  const cs = Math.max(0.5, Math.sqrt(Math.max(1, (maxX - minX) * (maxY - minY)) / nF) * 2);
+  const gx = v => Math.floor((v - minX) / cs), gy = v => Math.floor((v - minY) / cs);
+  const grid = new Map(), key = (a, b) => a * 65537 + b;
+  for (let i = 0; i < nF; i++) { const k = key(gx(fx[i]), gy(fy[i])); (grid.get(k) || grid.set(k, []).get(k)).push(i); }
+  const gw = Math.ceil((maxX - minX) / cs) + 2, gh = Math.ceil((maxY - minY) / cs) + 2;
+  const eT = [], eF = [], eD = [];
+  for (let t = 0; t < nT; t++) {
+    const cx = Math.max(-1, Math.min(gw, gx(tx[t]))), cy = Math.max(-1, Math.min(gh, gy(ty[t])));
+    const found = [];
+    for (let r = 0; r <= Math.max(gw, gh) + 1; r++) {
+      for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) {
+        if (Math.max(Math.abs(dx), Math.abs(dy)) !== r) continue;
+        const b = grid.get(key(cx + dx, cy + dy)); if (!b) continue;
+        for (const f of b) found.push([Math.hypot(fx[f] - tx[t], fy[f] - ty[t]), f]);
+      }
+      if (found.length >= K && r >= 1) break;
+    }
+    found.sort((a, b) => a[0] - b[0]);
+    for (let k = 0; k < Math.min(K, found.length); k++) { eT.push(t); eF.push(found[k][1]); eD.push(found[k][0]); }
+  }
+  const order = Array.from(eD.keys()).sort((a, b) => eD[a] - eD[b]);
+  const fromOf = new Int32Array(nT).fill(-1), used = new Uint8Array(nF);
+  for (const e of order) if (fromOf[eT[e]] < 0 && !used[eF[e]]) { fromOf[eT[e]] = eF[e]; used[eF[e]] = 1; }
+  for (let t = 0; t < nT; t++) if (fromOf[t] < 0) {           // rare leftovers: nearest free drone
+    let best = -1, bd = Infinity;
+    for (let f = 0; f < nF; f++) if (!used[f]) { const d = Math.hypot(fx[f] - tx[t], fy[f] - ty[t]); if (d < bd) { bd = d; best = f; } }
+    fromOf[t] = best; used[best] = 1;
+  }
+  // tidy-up pass: swap two drones' targets when that shortens both flights in total
+  for (let pass = 0; pass < 2; pass++) for (let a = 0; a < nT; a++) for (let j = 1; j <= 6; j++) {
+    const b = (a + j) % nT; if (a === b) continue;
+    const fa = fromOf[a], fb = fromOf[b];
+    const now = (fx[fa] - tx[a]) ** 2 + (fy[fa] - ty[a]) ** 2 + (fx[fb] - tx[b]) ** 2 + (fy[fb] - ty[b]) ** 2;
+    const sw = (fx[fb] - tx[a]) ** 2 + (fy[fb] - ty[a]) ** 2 + (fx[fa] - tx[b]) ** 2 + (fy[fa] - ty[b]) ** 2;
+    if (sw < now) { fromOf[a] = fb; fromOf[b] = fa; }
+  }
+  return fromOf;
+}
+
+// Optimal assignment (Hungarian algorithm): minimises the summed squared flight
+// distance. With all drones moving together in straight lines this is what keeps
+// paths from crossing (Turpin, Michael & Kumar, "CAPT").
+function hungarian(n, m, cost) {           // n targets ≤ m drones, cost is n×m row-major
+  const INF = 1e18, u = new Float64Array(n + 1), v = new Float64Array(m + 1);
+  const p = new Int32Array(m + 1), way = new Int32Array(m + 1), minv = new Float64Array(m + 1), used = new Uint8Array(m + 1);
+  for (let i = 1; i <= n; i++) {
+    p[0] = i; let j0 = 0; minv.fill(INF); used.fill(0);
+    do {
+      used[j0] = 1; const i0 = p[j0], row = (i0 - 1) * m; let delta = INF, j1 = 0;
+      for (let j = 1; j <= m; j++) if (!used[j]) {
+        const cur = cost[row + j - 1] - u[i0] - v[j];
+        if (cur < minv[j]) { minv[j] = cur; way[j] = j0; }
+        if (minv[j] < delta) { delta = minv[j]; j1 = j; }
+      }
+      for (let j = 0; j <= m; j++) if (used[j]) { u[p[j]] += delta; v[j] -= delta; } else minv[j] -= delta;
+      j0 = j1;
+    } while (p[j0] !== 0);
+    do { const j1 = way[j0]; p[j0] = p[j1]; j0 = j1; } while (j0);
+  }
+  const res = new Int32Array(n);
+  for (let j = 1; j <= m; j++) if (p[j]) res[p[j] - 1] = j - 1;
+  return res;
+}
+// Where does every drone go next? Each of the n lit spots (tx, ty, depth 0) must get a
+// drone; every other drone goes to whichever launch pad is cheapest. Spots and pads are
+// solved together, so spare drones don't cut through the formation on their way down.
+// Returns goal index per drone: < n = lit spot, ≥ n = pad (goal - n).
+function assignGoals(f, tx, ty, pad) {
+  const N = f.x.length, n = tx.length, m = n + N;
+  if (N * N * m > 2.5e8) {                                    // very large fleets: fast greedy
+    const fromOf = matchDrones(f.x, f.y, tx, ty), goal = new Int32Array(N);
+    for (let i = 0; i < N; i++) goal[i] = n + i;
+    fromOf.forEach((i, t) => goal[i] = t);
+    return goal;
+  }
+  const BIG = 1e9, cost = new Float64Array(N * m);           // -BIG makes every lit spot mandatory
+  for (let i = 0; i < N; i++) {
+    const row = i * m;
+    for (let t = 0; t < n; t++) cost[row + t] = (f.x[i] - tx[t]) ** 2 + (f.y[i] - ty[t]) ** 2 + f.d[i] ** 2 - BIG;
+    for (let k = 0; k < N; k++) cost[row + n + k] = (f.x[i] - pad.x[k]) ** 2 + (f.y[i] - pad.y[k]) ** 2 + (f.d[i] - pad.d[k]) ** 2;
+  }
+  return hungarian(N, m, cost);
+}
+
+// Position of drone i at progress e (0…1) of a move; layered drones bow out in depth.
+function movePos(a, b, layer, dz, i, e, out) {
+  out[0] = a.x[i] + (b.x[i] - a.x[i]) * e;
+  out[1] = a.y[i] + (b.y[i] - a.y[i]) * e;
+  out[2] = a.d[i] + (b.d[i] - a.d[i]) * e + (layer ? layer[i] * dz * Math.sin(Math.PI * e) : 0);
+  return out;
+}
+// Sample a move and return the closest approach plus every pair that gets too close.
+function scanMove(a, b, layer, dz, minS) {
+  const N = a.x.length, cell = minS * 2, X = new Float32Array(N), Y = new Float32Array(N), Z = new Float32Array(N), q = [0, 0, 0];
+  let min = Infinity; const bad = new Set();
+  for (let s = 1; s <= 20; s++) {
+    const e = s / 20, grid = new Map();
+    for (let i = 0; i < N; i++) {
+      movePos(a, b, layer, dz, i, e, q); X[i] = q[0]; Y[i] = q[1]; Z[i] = q[2];
+      const k = `${Math.floor(q[0] / cell)},${Math.floor(q[1] / cell)},${Math.floor(q[2] / cell)}`;
+      (grid.get(k) || grid.set(k, []).get(k)).push(i);
+    }
+    for (const [k, list] of grid) {
+      const [cx, cy, cz] = k.split(',').map(Number);
+      for (let dx = -1; dx <= 1; dx++) for (let dy = -1; dy <= 1; dy++) for (let dzc = -1; dzc <= 1; dzc++) {
+        const other = grid.get(`${cx + dx},${cy + dy},${cz + dzc}`); if (!other) continue;
+        for (const i of list) for (const j of other) if (j > i) {
+          const d = Math.hypot(X[i] - X[j], Y[i] - Y[j], Z[i] - Z[j]);
+          if (d < min) min = d;
+          if (d < minS - 1e-6) bad.add(i * N + j);
+        }
+      }
+    }
+  }
+  return { min, bad };
+}
+// Give conflicting drones different depth layers (0, +1, −1, +2, …) so they pass
+// in front of / behind each other mid-flight, like real show transitions.
+function planMove(a, b, minS) {
+  const N = a.x.length, dz = minS * 1.6, layer = new Int8Array(N), adj = new Map();
+  const order = [0, 1, -1, 2, -2, 3, -3, 4, -4];
+  let r = scanMove(a, b, null, dz, minS);
+  let best = { layer: new Int8Array(N), gap: r.min, conflicts: r.bad.size };
+  for (let it = 0; it < 5 && r.bad.size; it++) {
+    for (const key of r.bad) {
+      const i = Math.floor(key / N), j = key % N;
+      (adj.get(i) || adj.set(i, new Set()).get(i)).add(j);
+      (adj.get(j) || adj.set(j, new Set()).get(j)).add(i);
+    }
+    layer.fill(0);
+    const nodes = [...adj.keys()].sort((x, y) => adj.get(y).size - adj.get(x).size);
+    const done = new Uint8Array(N);
+    for (const i of nodes) {
+      const taken = new Set(); for (const j of adj.get(i)) if (done[j]) taken.add(layer[j]);
+      layer[i] = order.find(l => !taken.has(l)) ?? 0; done[i] = 1;
+    }
+    r = scanMove(a, b, layer, dz, minS);
+    // safety first: keep the plan whose closest pass is largest (fewer close passes breaks ties)
+    if (r.min > best.gap + 1e-6 || (Math.abs(r.min - best.gap) <= 1e-6 && r.bad.size < best.conflicts))
+      best = { layer: layer.slice(), gap: r.min, conflicts: r.bad.size };
+  }
+  let layers = 0; for (const l of best.layer) layers = Math.max(layers, Math.abs(l));
+  return { layer: layers ? best.layer : null, dz, gap: best.gap, conflicts: best.conflicts, layers };
+}
+
+// Turn the scene list into keyframes for the whole fleet: pads → scene 1 → … → pads.
+// Drones not needed in a scene switch their lights off and go back to their launch pad.
+// Coordinates: x across, y down from the top of the area, d = depth (0 = show plane).
+function buildShow() {
+  const scenes = state.show.scenes;
+  if (!scenes.length) return null;
+  const Wd = Math.max(...scenes.map(s => s.areaW)), Hd = Math.max(...scenes.map(s => s.areaH));
+  const N = Math.max(...scenes.map(s => s.pts.length));
+  const minS = Math.max(...scenes.map(s => s.minS || 1.3));        // formation spacing
+  const safe = Math.max(0.2, +$('flightSafe').value || 1);          // in-flight clearance
+  const PADS = Math.max(1.5, minS);
+  const frame = () => ({ x: new Float32Array(N), y: new Float32Array(N), d: new Float32Array(N), r: new Uint8Array(N), g: new Uint8Array(N), b: new Uint8Array(N), lit: new Uint8Array(N) });
+  // launch pads: a ground grid PADS m apart, rows going back away from the audience
+  const pad = frame(), cols = Math.max(1, Math.min(N, Math.floor(Wd / PADS) + 1)), rows = Math.ceil(N / cols);
+  for (let i = 0; i < N; i++) {
+    const c = i % cols, rw = Math.floor(i / cols);
+    pad.x[i] = (Wd - (cols - 1) * PADS) / 2 + c * PADS; pad.y[i] = Hd + GROUND_GAP; pad.d[i] = 4 + rw * PADS;
+    pad.r[i] = pad.g[i] = pad.b[i] = 200;
+  }
+  state.showCache = state.showCache || new Map();
+  const frames = [pad], info = [], plans = [];
+  let prev = pad, chain = `N${N}W${Wd}H${Hd}S${safe}`;
+  scenes.forEach((sc, k) => {
+    const ox = (Wd - sc.areaW) / 2, oy = Hd - sc.areaH;     // centre horizontally, share the bottom edge
+    const tx = sc.pts.map(q => q[0] + ox), ty = sc.pts.map(q => q[1] + oy);
+    chain += `>${sc.id}`;
+    let cached = state.showCache.get(chain);
+    if (!cached) {
+      const goal = assignGoals(prev, tx, ty, pad), n = tx.length;
+      const f = frame();
+      f.r.set(prev.r); f.g.set(prev.g); f.b.set(prev.b);
+      goal.forEach((gi, i) => {
+        if (gi < n) { f.x[i] = tx[gi]; f.y[i] = ty[gi]; f.d[i] = 0; f.r[i] = sc.pts[gi][2]; f.g[i] = sc.pts[gi][3]; f.b[i] = sc.pts[gi][4]; f.lit[i] = 1; }
+        else { const k = gi - n; f.x[i] = pad.x[k]; f.y[i] = pad.y[k]; f.d[i] = pad.d[k]; }
+      });
+      cached = { f, plan: planMove(prev, f, safe) };
+      state.showCache.set(chain, cached);
+    }
+    const { f, plan } = cached;
+    let maxD = 0;
+    for (let i = 0; i < N; i++) maxD = Math.max(maxD, Math.hypot(f.x[i] - prev.x[i], f.y[i] - prev.y[i], f.d[i] - prev.d[i]));
+    const auto = Math.max(k === 0 ? TAKEOFF_MIN : MOVE_MIN, Math.ceil(maxD / MAX_SPEED * 2) / 2);
+    const dur = sc.trans > 0 ? sc.trans : auto;
+    info.push({ dur, auto, speed: maxD / dur, gap: plan.gap, layers: plan.layers, conflicts: plan.conflicts, used: sc.pts.length, minS: safe });
+    plans.push(plan); frames.push(f); prev = f;
+  });
+  chain += '>land';
+  let landing = state.showCache.get(chain);
+  if (!landing) {
+    // every drone lands on the free pad that keeps total movement smallest
+    const goal = assignGoals(prev, [], [], pad), l = frame();
+    l.r.set(prev.r); l.g.set(prev.g); l.b.set(prev.b);
+    goal.forEach((k, i) => { l.x[i] = pad.x[k]; l.y[i] = pad.y[k]; l.d[i] = pad.d[k]; });
+    landing = { land: l, plan: planMove(prev, l, safe) };
+    state.showCache.set(chain, landing);
+  }
+  const land = landing.land, landPlan = landing.plan;
+  let landD = 0;
+  for (let i = 0; i < N; i++) landD = Math.max(landD, Math.hypot(land.x[i] - prev.x[i], land.y[i] - prev.y[i], land.d[i] - prev.d[i]));
+  frames.push(land); plans.push(landPlan);
+  // timeline: move into scene k, hold it, …, land
+  const segs = []; let t = 0;
+  scenes.forEach((sc, k) => {
+    segs.push({ kind: 'move', a: k, b: k + 1, start: t, dur: info[k].dur, scene: k, plan: plans[k] }); t += info[k].dur;
+    const hold = Math.max(0.5, +sc.hold || 4);
+    segs.push({ kind: 'hold', a: k + 1, b: k + 1, start: t, dur: hold, scene: k }); t += hold;
+  });
+  const landDur = Math.max(TAKEOFF_MIN, Math.ceil(landD / MAX_SPEED * 2) / 2);
+  segs.push({ kind: 'move', a: scenes.length, b: scenes.length + 1, start: t, dur: landDur, scene: -1, plan: landPlan }); t += landDur;
+  return { W: Wd, H: Hd, N, frames, segs, total: t, info, landPlan, minS: safe, formMin: minS };
+}
+
+const fmtT = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+
+function renderTrack() {
+  const scenes = state.show.scenes;
+  $('track').hidden = !scenes.length;
+  if (!scenes.length) { stopShow(); return; }
+  const build = buildShow();
+  state.showBuild = build;
+  const lg = build.landPlan.gap, unsafe = build.info.some(i => i.gap < build.minS - 1e-6) || lg < build.minS - 1e-6;
+  $('fleetInfo').innerHTML = `Fleet: ${build.N} drones · ${scenes.length} scene${scenes.length > 1 ? 's' : ''} · ${fmtT(build.total)} · landing ${lg < build.minS - 1e-6 ? `<span style="color:var(--bad)">⚠ ${lg.toFixed(2)} m</span>` : '✓'}`
+    + (unsafe ? ` · <span style="color:var(--warn)">for guaranteed ${build.minS} m clearance use formation spacing ≥ ${(build.minS * Math.SQRT2).toFixed(1)} m</span>` : '');
+  $('playTime').textContent = `${fmtT(state.play ? state.play.offset : 0)} / ${fmtT(build.total)}`;
+  $('sceneList').innerHTML = scenes.map((sc, i) => {
+    const inf = build.info[i];
+    const g = Number.isFinite(inf.gap) ? inf.gap : Infinity;
+    const gapTxt = (g < inf.minS - 1e-6 ? `⚠ ${g.toFixed(2)} m in flight (${inf.conflicts} close passes)` : `✓ flight clearance ${Math.min(g, 99).toFixed(2)} m`)
+      + (inf.layers ? ` · uses ${inf.layers * 2 + 1} depth lanes` : '');
+    const gapCls = g < inf.minS - 1e-6 ? 'bad' : 'ok';
+    const spd = inf.speed > MAX_SPEED + 0.01 ? `<div class="chk warn">⚠ ${inf.speed.toFixed(1)} m/s — too fast</div>` : '';
+    return `<div class="scene" data-i="${i}">
+      <span class="num">${i + 1}</span>
+      <img src="${sc.thumb}" alt="">
+      <div class="nm" title="${esc(sc.name)}">${esc(sc.name) || 'Scene ' + (i + 1)}</div>
+      <div class="meta">${sc.pts.length} drones · ${sc.areaW}×${sc.areaH} m${sc.tooClose ? ' · <span style="color:var(--bad)">spacing ⚠</span>' : ''}</div>
+      <div class="times">
+        <label>Move in (s)<input type="number" min="0.5" step="0.5" data-k="trans" value="${sc.trans > 0 ? sc.trans : ''}" placeholder="auto ${inf.auto}"></label>
+        <label>Hold (s)<input type="number" min="0.5" step="0.5" data-k="hold" value="${sc.hold}"></label>
+      </div>
+      <div class="chk ${gapCls}">${gapTxt}</div>${spd}
+      <div class="btns"><button data-act="left" title="Move earlier">◀</button><button data-act="play" title="Play from this scene">▶</button><button data-act="right" title="Move later">▶▶</button><button data-act="del" title="Remove">✕</button></div>
+    </div>`;
+  }).join('');
+}
+
+$('sceneList').addEventListener('change', e => {
+  const card = e.target.closest('.scene'); if (!card) return;
+  const sc = state.show.scenes[+card.dataset.i], k = e.target.dataset.k;
+  if (!k) return;
+  const v = parseFloat(e.target.value);
+  sc[k] = Number.isFinite(v) && v > 0 ? v : (k === 'hold' ? 4 : null);
+  saveShow(); stopShow(); renderTrack();
+});
+$('sceneList').addEventListener('click', e => {
+  const btn = e.target.closest('button[data-act]'); if (!btn) return;
+  const i = +btn.closest('.scene').dataset.i, list = state.show.scenes;
+  const act = btn.dataset.act;
+  if (act === 'play') { renderTrack(); startShow(state.showBuild.segs.find(s => s.scene === i).start); return; }
+  if (act === 'del') list.splice(i, 1);
+  if (act === 'left' && i > 0) [list[i - 1], list[i]] = [list[i], list[i - 1]];
+  if (act === 'right' && i < list.length - 1) [list[i + 1], list[i]] = [list[i], list[i + 1]];
+  saveShow(); stopShow(); renderTrack();
+});
+
+function startShow(from = 0) {
+  const build = state.showBuild || buildShow(); if (!build) return;
+  if (from >= build.total - 0.05) from = 0;
+  state.play = { build, t0: performance.now(), offset: from, running: true };
+  $('playBtn').textContent = '❚❚ Pause';
+  ['hud', 'alert', 'tip', 'empty'].forEach(id => $(id).style.display = 'none');
+  $('legend').style.display = 'none';
+  state.view = { zoom: 1, ox: 0, oy: 0 };
+  state.dirty = true;
+}
+function pauseShow() {
+  const pl = state.play; if (!pl || !pl.running) return;
+  pl.offset = Math.min(pl.build.total, pl.offset + (performance.now() - pl.t0) / 1000); pl.running = false;
+  $('playBtn').textContent = '▶ Play show';
+}
+// leave the show view and go back to the formation being edited
+function stopShow() {
+  if (!state.play) return;
+  state.play = null;
+  $('playBtn').textContent = '▶ Play show';
+  $('playBadge').style.display = 'none';
+  if (state.stats) $('hud').style.display = 'block';
+  else if (!state.drones.length) $('empty').style.display = '';
+  state.view = { zoom: 1, ox: 0, oy: 0 };
+  state.dirty = true;
+}
+$('playBtn').onclick = () => {
+  if (state.play && state.play.running) pauseShow();
+  else startShow(state.play ? state.play.offset : 0);
+};
+$('exitShowBtn').onclick = stopShow;
+$('trackToggle').onclick = () => {
+  const c = $('track').classList.toggle('collapsed');
+  $('trackToggle').textContent = c ? '▸ Track' : '▾ Track';
+};
+$('flightSafe').addEventListener('change', () => {
+  try { localStorage.setItem('droneShow.safe', $('flightSafe').value); } catch {}
+  stopShow(); renderTrack();
+});
+try { const v = localStorage.getItem('droneShow.safe'); if (v) $('flightSafe').value = v; } catch {}
+$('scrub').addEventListener('input', () => {
+  const build = state.showBuild || buildShow(); if (!build) return;
+  if (!state.play) { startShow(0); pauseShow(); }
+  state.play.offset = +$('scrub').value / 1000 * build.total;
+  if (state.play.running) state.play.t0 = performance.now();
+  state.dirty = true;
+});
+$('clearShowBtn').onclick = () => {
+  if (!confirm('Remove all scenes from the show?')) return;
+  state.show.scenes = []; saveShow(); stopShow(); renderTrack();
+};
+
+const PB = { x: null };
+function drawPlayback(now, sc) {
+  const pl = state.play, b = pl.build;
+  let t = pl.running ? pl.offset + (now - pl.t0) / 1000 : pl.offset;
+  if (t >= b.total) { t = b.total; if (pl.running) { pl.running = false; pl.offset = b.total; $('playBtn').textContent = '▶ Play show'; } }
+  const seg = b.segs.find(s => t < s.start + s.dur) || b.segs[b.segs.length - 1];
+  const fa = b.frames[seg.a], fb = b.frames[seg.b];
+  const e = seg.kind === 'hold' ? 1 : ease(Math.max(0, Math.min(1, (t - seg.start) / seg.dur)));
+  const core0 = Math.min(7, Math.max(1.1, 0.28 * sc)), glow0 = Math.min(16, Math.max(3, 0.85 * sc));
+  const plan = seg.kind === 'move' ? seg.plan : null, q = [0, 0, 0];
+
+  ctx.globalCompositeOperation = 'lighter';
+  for (let i = 0; i < b.N; i++) {
+    movePos(fa, fb, plan && plan.layer, plan ? plan.dz : 0, i, e, q);
+    const x = q[0], y = q[1];
+    const persp = 1 / (1 + Math.max(-20, q[2]) / 60);            // farther back = slightly smaller
+    const core = core0 * persp, glow = glow0 * persp;
+    const light = fa.lit[i] + (fb.lit[i] - fa.lit[i]) * e;     // LEDs fade in / out
+    const [sx, sy] = toScreen(x, y);
+    if (light < 0.03) {                                         // lights off: faint marker only
+      ctx.globalAlpha = 0.18; ctx.fillStyle = '#8a93ad';
+      ctx.fillRect(sx - 0.75, sy - 0.75, 1.5, 1.5); continue;
+    }
+    const r = fa.r[i] + (fb.r[i] - fa.r[i]) * e, g = fa.g[i] + (fb.g[i] - fa.g[i]) * e, bl = fa.b[i] + (fb.b[i] - fa.b[i]) * e;
+    ctx.fillStyle = `rgb(${r | 0},${g | 0},${bl | 0})`;
+    ctx.globalAlpha = 0.16 * light; ctx.beginPath(); ctx.arc(sx, sy, glow, 0, 6.283); ctx.fill();
+    ctx.globalAlpha = light; ctx.beginPath(); ctx.arc(sx, sy, core, 0, 6.283); ctx.fill();
+  }
+  ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
+
+  // UI: time, scrubber, current scene
+  $('playTime').textContent = `${fmtT(t)} / ${fmtT(b.total)}`;
+  if (document.activeElement !== $('scrub')) $('scrub').value = Math.round(t / b.total * 1000);
+  const scenes = state.show.scenes, k = seg.scene;
+  const label = k < 0 ? 'Landing' : (seg.kind === 'move' ? (k === 0 ? 'Take-off → ' : 'Flying to ') : 'Showing ') + `scene ${k + 1}: ${esc(scenes[k]?.name || '')}`;
+  const lit = k < 0 ? 0 : b.info[k].used;
+  $('playBadge').innerHTML = `<div class="lbl" style="font-size:11px;letter-spacing:.8px;color:var(--muted)">DRONE SHOW ${pl.running ? '● LIVE' : '❚❚ PAUSED'}</div>
+    <b>${label}</b><div style="color:#c5cbe0;font-size:12px;margin-top:2px">Drones lit: ${lit} of ${b.N}</div>`;
+  $('playBadge').style.display = 'block';
+  document.querySelectorAll('#sceneList .scene').forEach(el => el.classList.toggle('now', +el.dataset.i === k));
+}
+
+// CSV of every keyframe: one row per drone per scene, with arrive / leave times
+$('exportShowBtn').onclick = () => {
+  const b = state.showBuild || buildShow(); if (!b) return;
+  const alt = +$('alt').value || 0;
+  const rows = [`# drone show: ${b.N} drones, ${state.show.scenes.length} scenes, ${b.W}x${b.H} m, total ${b.total.toFixed(1)} s, altitude = lowest altitude + height in area`,
+    'keyframe,scene,arrive_s,leave_s,drone,x_m,y_m,z_m,r,g,b,lights_on',
+    '# x = across the show, y = depth (0 = show plane, + = away from audience), z = altitude; "mid" rows are mid-flight waypoints'];
+  b.frames.forEach((f, k) => {
+    const into = b.segs.find(s => s.kind === 'move' && s.b === k), hold = b.segs.find(s => s.kind === 'hold' && s.a === k);
+    const arrive = k === 0 ? 0 : into.start + into.dur, leave = hold ? hold.start + hold.dur : (k === 0 ? 0 : arrive);
+    const name = k === 0 ? 'ground' : k > state.show.scenes.length ? 'landed' : state.show.scenes[k - 1].name.replace(/[",\n]/g, ' ');
+    for (let i = 0; i < b.N; i++) {
+      const onGround = f.y[i] > b.H;
+      const z = onGround ? 0 : alt + (b.H - f.y[i]);
+      rows.push([k, `"${name}"`, arrive.toFixed(2), leave.toFixed(2), i + 1, f.x[i].toFixed(3), f.d[i].toFixed(3), z.toFixed(3), f.r[i], f.g[i], f.b[i], f.lit[i]].join(','));
+    }
+    // waypoint halfway through the move that leaves this keyframe (carries the depth detour)
+    const out = b.segs.find(sg => sg.kind === 'move' && sg.a === k);
+    if (out && out.plan && out.plan.layers) {
+      const tm = out.start + out.dur / 2, q = [0, 0, 0], fb = b.frames[out.b];
+      for (let i = 0; i < b.N; i++) {
+        movePos(f, fb, out.plan.layer, out.plan.dz, i, 0.5, q);
+        const z = q[1] > b.H ? 0 : alt + (b.H - q[1]);
+        rows.push([`${k}-mid`, '"in flight"', tm.toFixed(2), tm.toFixed(2), i + 1, q[0].toFixed(3), q[2].toFixed(3), z.toFixed(3), f.r[i], f.g[i], f.b[i], f.lit[i] || fb.lit[i] ? 1 : 0].join(','));
+      }
+    }
+  });
+  download('drone-show.csv', URL.createObjectURL(new Blob([rows.join('\n')], { type: 'text/csv' })));
+};
+
+loadShow();
+renderTrack();
+
+// =====================================================================
+// 3D export of the current formation: one vertex per drone
+// =====================================================================
+// Drone position in Blender-style axes (metres, Z up): origin on the ground under the
+// centre of the area, X across, Y = depth/north, Z = altitude.
+function exportPoints() {
+  const p = state.params;
+  return state.drones.map(d => {
+    const [x, y, z] = worldCoords(d);
+    const c = p.colorMode === 'image' ? [d.r, d.g, d.b] : hexRgb(p.color);
+    return { x: x - p.areaW / 2, y: p.orient === 'vertical' ? 0 : y - p.areaH / 2, z, c };
+  });
+}
+const exportName = () => (state.source === 'text' ? $('text').value : state.photoName || 'formation')
+  .replace(/\s+/g, '-').replace(/[^\wऀ-ॿ-]/g, '').slice(0, 40) || 'formation';
+
+// ---- minimal binary FBX 7.4 writer (same layout as Blender's own exporter) ----
+class ByteWriter {
+  constructor() { this.buf = new Uint8Array(1 << 16); this.dv = new DataView(this.buf.buffer); this.pos = 0; }
+  ensure(n) {
+    if (this.pos + n <= this.buf.length) return;
+    let c = this.buf.length; while (c < this.pos + n) c *= 2;
+    const nb = new Uint8Array(c); nb.set(this.buf); this.buf = nb; this.dv = new DataView(nb.buffer);
+  }
+  u8(v) { this.ensure(1); this.dv.setUint8(this.pos, v); this.pos += 1; }
+  u32(v) { this.ensure(4); this.dv.setUint32(this.pos, v, true); this.pos += 4; }
+  i32(v) { this.ensure(4); this.dv.setInt32(this.pos, v, true); this.pos += 4; }
+  i64(v) { this.ensure(8); this.dv.setBigInt64(this.pos, BigInt(v), true); this.pos += 8; }
+  f64(v) { this.ensure(8); this.dv.setFloat64(this.pos, v, true); this.pos += 8; }
+  bytes(a) { this.ensure(a.length); this.buf.set(a, this.pos); this.pos += a.length; }
+}
+const utf8 = t => new TextEncoder().encode(t);
+// property helpers: [typeCode, value]
+const fI = v => ['I', v], fL = v => ['L', v], fD = v => ['D', v], fS = v => ['S', v], fC = v => ['C', v], fR = v => ['R', v];
+const fd = v => ['d', v], fi = v => ['i', v];
+const node = (name, props = [], children = []) => ({ name, props, children });
+// Properties70 "P" entry
+const P70 = (name, type, label, flags, ...vals) => node('P', [fS(name), fS(type), fS(label), fS(flags), ...vals]);
+
+function writeProp(w, [t, v]) {
+  w.u8(t.charCodeAt(0));
+  switch (t) {
+    case 'C': w.u8(v ? 1 : 0); break;
+    case 'I': w.i32(v); break;
+    case 'L': w.i64(v); break;
+    case 'D': w.f64(v); break;
+    case 'S': case 'R': { const b = typeof v === 'string' ? utf8(v) : v; w.u32(b.length); w.bytes(b); break; }
+    case 'd': w.u32(v.length); w.u32(0); w.u32(v.length * 8); for (const x of v) w.f64(x); break;
+    case 'i': w.u32(v.length); w.u32(0); w.u32(v.length * 4); for (const x of v) w.i32(x); break;
+  }
+}
+function writeNode(w, n, isLast) {
+  const start = w.pos;
+  w.u32(0); w.u32(n.props.length); w.u32(0);              // end offset / count / prop bytes: patched below
+  const nm = utf8(n.name); w.u8(nm.length); w.bytes(nm);
+  const ps = w.pos; for (const pr of n.props) writeProp(w, pr);
+  const propLen = w.pos - ps;
+  if (n.children.length) {
+    n.children.forEach((c, i) => writeNode(w, c, i === n.children.length - 1));
+    w.bytes(new Uint8Array(13));                          // end-of-children sentinel
+  } else if (!n.props.length && !isLast) w.bytes(new Uint8Array(13));
+  w.dv.setUint32(start, w.pos, true); w.dv.setUint32(start + 8, propLen, true);
+}
+
+function buildFBX(points, name) {
+  // FBX scene is Y-up: (X, Y, Z)_fbx = (x, z, -y) of our Z-up points
+  const verts = [];
+  for (const q of points) verts.push(q.x, q.z, -q.y);
+  const geomId = 2000000001, modelId = 2000000002;
+  const now = new Date();
+  const root = [
+    node('FBXHeaderExtension', [], [
+      node('FBXHeaderVersion', [fI(1003)]), node('FBXVersion', [fI(7400)]), node('EncryptionType', [fI(0)]),
+      node('CreationTimeStamp', [], [node('Version', [fI(1000)]), node('Year', [fI(now.getFullYear())]), node('Month', [fI(now.getMonth() + 1)]),
+        node('Day', [fI(now.getDate())]), node('Hour', [fI(now.getHours())]), node('Minute', [fI(now.getMinutes())]),
+        node('Second', [fI(now.getSeconds())]), node('Millisecond', [fI(0)])]),
+      node('Creator', [fS('Drone Formation Studio')]),
+    ]),
+    node('FileId', [fR(new Uint8Array([0x28, 0xb3, 0x2a, 0xeb, 0xb6, 0x24, 0xcc, 0xc2, 0xbf, 0xc8, 0xb0, 0x2a, 0xa9, 0x2b, 0xfc, 0xf1]))]),
+    node('CreationTime', [fS('1970-01-01 10:00:00:000')]),
+    node('Creator', [fS('Drone Formation Studio')]),
+    node('GlobalSettings', [], [
+      node('Version', [fI(1000)]),
+      node('Properties70', [], [
+        P70('UpAxis', 'int', 'Integer', '', fI(1)), P70('UpAxisSign', 'int', 'Integer', '', fI(1)),
+        P70('FrontAxis', 'int', 'Integer', '', fI(2)), P70('FrontAxisSign', 'int', 'Integer', '', fI(1)),
+        P70('CoordAxis', 'int', 'Integer', '', fI(0)), P70('CoordAxisSign', 'int', 'Integer', '', fI(1)),
+        P70('OriginalUpAxis', 'int', 'Integer', '', fI(-1)), P70('OriginalUpAxisSign', 'int', 'Integer', '', fI(1)),
+        P70('UnitScaleFactor', 'double', 'Number', '', fD(100)),          // 1 unit = 1 metre
+        P70('OriginalUnitScaleFactor', 'double', 'Number', '', fD(100)),
+      ]),
+    ]),
+    node('Documents', [], [node('Count', [fI(0)])]),
+    node('References'),
+    node('Definitions', [], [
+      node('Version', [fI(100)]), node('Count', [fI(3)]),
+      node('ObjectType', [fS('GlobalSettings')], [node('Count', [fI(1)])]),
+      node('ObjectType', [fS('Model')], [node('Count', [fI(1)])]),
+      node('ObjectType', [fS('Geometry')], [node('Count', [fI(1)])]),
+    ]),
+    node('Objects', [], [
+      node('Geometry', [fL(geomId), fS(`${name}\u0000\u0001Geometry`), fS('Mesh')], [
+        node('Properties70'),
+        node('GeometryVersion', [fI(124)]),
+        node('Vertices', [fd(verts)]),
+        node('PolygonVertexIndex', [fi([])]),               // no faces: a pure point cloud
+      ]),
+      node('Model', [fL(modelId), fS(`${name}\u0000\u0001Model`), fS('Mesh')], [
+        node('Version', [fI(232)]),
+        node('Properties70', [], [
+          P70('Lcl Translation', 'Lcl Translation', '', 'A', fD(0), fD(0), fD(0)),
+          P70('DefaultAttributeIndex', 'int', 'Integer', '', fI(0)),
+        ]),
+        node('Shading', [fC(true)]),
+        node('Culling', [fS('CullingOff')]),
+      ]),
+    ]),
+    node('Connections', [], [
+      node('C', [fS('OO'), fL(geomId), fL(modelId)]),
+      node('C', [fS('OO'), fL(modelId), fL(0)]),
+    ]),
+  ];
+  const w = new ByteWriter();
+  w.bytes(utf8('Kaydara FBX Binary  ')); w.bytes(new Uint8Array([0x00, 0x1a, 0x00]));
+  w.u32(7400);
+  root.forEach((n, i) => writeNode(w, n, false));
+  w.bytes(new Uint8Array(13));                              // end of top-level nodes
+  w.bytes(new Uint8Array([0xfa, 0xbc, 0xab, 0x09, 0xd0, 0xc8, 0xd4, 0x66, 0xb1, 0x76, 0xfb, 0x83, 0x1c, 0xf7, 0x26, 0x7e]));
+  w.bytes(new Uint8Array(4));
+  let pad = ((w.pos + 15) & ~15) - w.pos; if (pad === 0) pad = 16;
+  w.bytes(new Uint8Array(pad));
+  w.u32(7400);
+  w.bytes(new Uint8Array(120));
+  w.bytes(new Uint8Array([0xf8, 0x5a, 0x8c, 0x6a, 0xde, 0xf5, 0xd9, 0x7e, 0xec, 0xe9, 0x0c, 0xe3, 0x75, 0x8f, 0x29, 0x0b]));
+  return w.buf.slice(0, w.pos);
+}
+
+function buildPLY(points) {
+  const lines = ['ply', 'format ascii 1.0', 'comment Drone Formation Studio: 1 vertex = 1 drone, metres, Z up',
+    `element vertex ${points.length}`, 'property float x', 'property float y', 'property float z',
+    'property uchar red', 'property uchar green', 'property uchar blue', 'end_header'];
+  for (const q of points) lines.push(`${q.x.toFixed(4)} ${q.y.toFixed(4)} ${q.z.toFixed(4)} ${q.c[0]} ${q.c[1]} ${q.c[2]}`);
+  return lines.join('\n') + '\n';
+}
+
+$('fbxBtn').onclick = () => {
+  if (!state.drones.length) return;
+  const name = exportName();
+  const bytes = buildFBX(exportPoints(), name);
+  download(`${name}-${state.drones.length}-drones.fbx`, URL.createObjectURL(new Blob([bytes], { type: 'application/octet-stream' })));
+};
+$('plyBtn').onclick = () => {
+  if (!state.drones.length) return;
+  download(`${exportName()}-${state.drones.length}-drones.ply`, URL.createObjectURL(new Blob([buildPLY(exportPoints())], { type: 'text/plain' })));
+};
+
+window.addEventListener('resize', resize);
+new ResizeObserver(resize).observe(sky);   // stage height changes when the track appears
+resize();
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
