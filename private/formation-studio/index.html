@@ -141,7 +141,7 @@
     <div id="imagePane">
       <div class="drop" id="drop">
         <b>Upload image</b>
-        <small>Click or drop a PNG / JPG. Line art works best.</small>
+        <small>Click or drop a PNG / JPG — line art, or a dotted picture (1 drone per dot).</small>
         <input type="file" id="file" accept="image/*" hidden>
       </div>
       <div style="margin-top:8px"><button id="sampleBtn" style="width:100%">Try the sample line-art image</button></div>
@@ -192,6 +192,7 @@
         <option value="lines">Line art (follow strokes)</option>
         <option value="edges">Photo (outline edges)</option>
         <option value="fill">Filled shape (fill area)</option>
+        <option value="dots">Dotted image (1 drone per dot)</option>
       </select></label>
     <label class="f"><span>Lines / shape are</span>
       <select id="polarity">
@@ -199,8 +200,11 @@
         <option value="dark">Dark on light bg</option>
         <option value="light">Light on dark bg</option>
       </select></label>
+    <label class="check" id="dotsMainRow" style="display:none"><input type="checkbox" id="dotsMain" checked> Ignore dots outside the main group (ground lights, glare, phones)</label>
+    <div id="mergeRow">
     <label class="f"><span>Join double lines closer than (m)</span><input type="number" id="merge" value="0.6" min="0" max="10" step="0.1"></label>
     <div style="color:var(--muted);font-size:12px;margin:-2px 0 6px">Drones follow the centre of each line. Raise this (1–2 m) if your lines are drawn as two outlines and you still see doubled rows; lower it to 0 to keep very close lines apart.</div>
+    </div>
     <label class="f"><span>Sensitivity <em id="sensVal" style="color:var(--muted);font-style:normal">50</em></span><input type="range" id="sens" min="0" max="100" value="50"></label>
     </div>
 
@@ -309,6 +313,7 @@ function params() {
     orient: $('orient').value,
     alt: Math.max(0, num('alt', 40)),
     fit: $('fit').checked,
+    dotsMain: $('dotsMain').checked,
     merge: state.source === 'text' ? 0 : Math.max(0, num('merge', 0.6)),
     sens: state.source === 'text' ? 50 : +$('sens').value,
   };
@@ -667,6 +672,152 @@ function farthestPoints(cx, cy, n, minS, maxS) {
   return { order, cover, capacity, recommended };
 }
 
+// =====================================================================
+// Dotted images: every bright (or dark) dot in the picture becomes one drone
+// =====================================================================
+function detectDots(img, p) {
+  const sc = Math.min(1, 1400 / Math.max(img.naturalWidth, img.naturalHeight));
+  const w = Math.max(8, Math.round(img.naturalWidth * sc)), h = Math.max(8, Math.round(img.naturalHeight * sc));
+  const c = document.createElement('canvas'); c.width = w; c.height = h;
+  const g = c.getContext('2d', { willReadFrequently: true });
+  g.fillStyle = '#000'; g.fillRect(0, 0, w, h); g.drawImage(img, 0, 0, w, h);
+  const d = g.getImageData(0, 0, w, h).data;
+  // dot "intensity": brightest channel for light dots on a dark sky; inverted darkest
+  // channel for dark (or coloured) dots printed on white
+  const raw = new Float32Array(w * h), lum = new Float32Array(w * h);
+  for (let i = 0; i < w * h; i++) lum[i] = 0.299 * d[i * 4] + 0.587 * d[i * 4 + 1] + 0.114 * d[i * 4 + 2];
+  const median = Float32Array.from(lum).sort()[Math.floor(w * h / 2)];
+  const lightDots = p.polarity === 'light' || (p.polarity === 'auto' && median < 128);
+  for (let i = 0; i < w * h; i++) {
+    const r = d[i * 4], gg = d[i * 4 + 1], b = d[i * 4 + 2];
+    raw[i] = lightDots ? Math.max(r, gg, b) : 255 - Math.min(r, gg, b);
+  }
+  const V = boxBlur(raw, w, h, 1);                           // tame JPEG noise
+  const bg = boxBlur(V, w, h, Math.max(6, Math.round(Math.max(w, h) / 40)));
+  const T = Math.max(12, 90 - p.sens * 0.8);                 // contrast needed to count as a dot
+  const mask = new Uint8Array(w * h);
+  for (let i = 0; i < w * h; i++) if (V[i] - bg[i] > T && V[i] > 50) mask[i] = 1;
+
+  // connected blobs
+  const label = new Int32Array(w * h).fill(-1), blobs = [], stack = [];
+  for (let s0 = 0; s0 < w * h; s0++) {
+    if (!mask[s0] || label[s0] >= 0) continue;
+    const px = []; stack.push(s0); label[s0] = blobs.length;
+    while (stack.length) {
+      const i = stack.pop(); px.push(i);
+      const x = i % w, y = (i / w) | 0;
+      for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+        const nx = x + dx, ny = y + dy; if (nx < 0 || ny < 0 || nx >= w || ny >= h) continue;
+        const j = ny * w + nx; if (mask[j] && label[j] < 0) { label[j] = blobs.length; stack.push(j); }
+      }
+    }
+    blobs.push(px);
+  }
+  if (!blobs.length) return { dots: [], removed: [], w, h, lightDots, canvas: c };
+  const areas = blobs.map(b => b.length).sort((a, b) => a - b);
+  const A = areas[Math.floor(areas.length / 2)];             // typical dot size
+  const rDot = Math.max(1.5, Math.sqrt(A / Math.PI));
+
+  const colourAt = pxs => {                                  // colour of the brightest part of a dot
+    let mx = 0; for (const i of pxs) mx = Math.max(mx, V[i]);
+    let r = 0, gg = 0, b = 0, n = 0;
+    for (const i of pxs) if (V[i] >= mx * 0.75) { r += d[i * 4]; gg += d[i * 4 + 1]; b += d[i * 4 + 2]; n++; }
+    r /= n; gg /= n; b /= n;
+    const k = 255 / Math.max(r, gg, b, 1);
+    return [Math.min(255, Math.round(r * k)), Math.min(255, Math.round(gg * k)), Math.min(255, Math.round(b * k))];
+  };
+  let dots = [];
+  for (const px of blobs) {
+    if (px.length < Math.max(2, A * 0.15)) continue;         // specks / noise
+    if (px.length <= A * 2.6) {
+      let sx = 0, sy = 0, sw = 0;
+      for (const i of px) { const wt = V[i] - bg[i]; sx += (i % w) * wt; sy += ((i / w) | 0) * wt; sw += wt; }
+      dots.push({ x: sx / sw, y: sy / sw, c: colourAt(px), area: px.length });
+      continue;
+    }
+    // big blob = several dots whose glows touch: split at local brightness peaks
+    const R = Math.max(1, Math.round(rDot * 0.9)), peaks = [];
+    for (const i of px) {
+      const x = i % w, y = (i / w) | 0; let isMax = true;
+      for (let dy = -R; dy <= R && isMax; dy++) for (let dx = -R; dx <= R; dx++) {
+        const nx = x + dx, ny = y + dy; if (nx < 0 || ny < 0 || nx >= w || ny >= h) continue;
+        if (V[ny * w + nx] > V[i]) { isMax = false; break; }
+      }
+      if (isMax) peaks.push(i);
+    }
+    peaks.sort((a, b) => V[b] - V[a]);
+    const kept = [];
+    for (const i of peaks) {
+      const x = i % w, y = (i / w) | 0;
+      if (kept.every(k => Math.hypot(k.x - x, k.y - y) >= rDot * 1.6)) kept.push({ x, y });
+    }
+    // a huge blob with almost no peaks is glare / a lamp, not dots
+    if (kept.length === 1 && px.length > A * 8) { dots.push({ x: kept[0].x, y: kept[0].y, c: colourAt(px), area: px.length, glare: true }); continue; }
+    for (const k of kept) {
+      const near = px.filter(i => Math.hypot((i % w) - k.x, ((i / w) | 0) - k.y) <= rDot * 1.2);
+      dots.push({ x: k.x, y: k.y, c: colourAt(near.length ? near : px), area: near.length });
+    }
+  }
+
+  // keep the main group: dots linked to a neighbour within a few typical spacings
+  let removed = dots.filter(q => q.glare);
+  dots = dots.filter(q => !q.glare);
+  if (p.dotsMain && dots.length > 3) {
+    const xs = Float32Array.from(dots, q => q.x), ys = Float32Array.from(dots, q => q.y);
+    const nn = nearestNeighbours(xs, ys, Math.max(w, h));
+    const sorted = Float32Array.from(nn).sort(), medNN = sorted[Math.floor(sorted.length / 2)];
+    const link = Math.max(medNN * 3, rDot * 4);
+    const parent = dots.map((_, i) => i), find = i => parent[i] === i ? i : (parent[i] = find(parent[i]));
+    const cell = link, grid = new Map(), key = (a, b) => a * 100003 + b;
+    dots.forEach((q, i) => { const k = key(Math.floor(q.x / cell), Math.floor(q.y / cell)); (grid.get(k) || grid.set(k, []).get(k)).push(i); });
+    dots.forEach((q, i) => {
+      const gx = Math.floor(q.x / cell), gy = Math.floor(q.y / cell);
+      for (let dx = -1; dx <= 1; dx++) for (let dy = -1; dy <= 1; dy++) for (const j of grid.get(key(gx + dx, gy + dy)) || [])
+        if (j > i && Math.hypot(dots[j].x - q.x, dots[j].y - q.y) <= link) parent[find(i)] = find(j);
+    });
+    const size = new Map(); dots.forEach((_, i) => size.set(find(i), (size.get(find(i)) || 0) + 1));
+    let best = -1, bestN = 0; for (const [r, n] of size) if (n > bestN) { bestN = n; best = r; }
+    removed = removed.concat(dots.filter((_, i) => find(i) !== best));
+    dots = dots.filter((_, i) => find(i) === best);
+  }
+  return { dots, removed, w, h, lightDots, canvas: c, median };
+}
+
+// a picture "looks dotted" when it is mostly plain background with many similar small blobs
+function looksDotted(img) {
+  const det = detectDots(img, { polarity: 'auto', sens: 50, dotsMain: true });
+  const area = det.dots.reduce((a, q) => a + q.area, 0);
+  return det.dots.length >= 12 && area < det.w * det.h * 0.06 && (det.median < 70 || det.median > 200);
+}
+
+function placeDots(det, p) {
+  const ds = det.dots;
+  let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+  for (const q of ds) { x0 = Math.min(x0, q.x); x1 = Math.max(x1, q.x); y0 = Math.min(y0, q.y); y1 = Math.max(y1, q.y); }
+  const bw = Math.max(1e-6, x1 - x0), bh = Math.max(1e-6, y1 - y0);
+  // keep the picture's proportions and fill the area (centred)
+  const m = Math.min(p.areaW / (bw || 1), p.areaH / (bh || 1));
+  const scale = Number.isFinite(m) && m > 0 ? m : 1;
+  const ox = (p.areaW - bw * scale) / 2, oy = (p.areaH - bh * scale) / 2;
+  const xs = new Float32Array(ds.length), ys = new Float32Array(ds.length), cols = new Uint8Array(ds.length * 3);
+  ds.forEach((q, i) => {
+    xs[i] = ox + (q.x - x0) * scale; ys[i] = oy + (q.y - y0) * scale;
+    cols[i * 3] = q.c[0]; cols[i * 3 + 1] = q.c[1]; cols[i * 3 + 2] = q.c[2];
+  });
+  return { xs, ys, cols, pix: null, capacity: ds.length, recommended: ds.length };
+}
+
+function drawDotsPreview(det) {
+  const c = $('preview'); c.width = det.w; c.height = det.h; c.style.display = 'block';
+  const g = c.getContext('2d');
+  g.drawImage(det.canvas, 0, 0);
+  g.fillStyle = 'rgba(0,0,0,.45)'; g.fillRect(0, 0, det.w, det.h);
+  const r = Math.max(4, det.w / 120);
+  g.lineWidth = Math.max(1.5, det.w / 500);
+  g.strokeStyle = '#5ad1ff'; for (const q of det.dots) { g.beginPath(); g.arc(q.x, q.y, r, 0, 6.283); g.stroke(); }
+  g.strokeStyle = '#ff5d6c'; for (const q of det.removed) { g.beginPath(); g.moveTo(q.x - r, q.y - r); g.lineTo(q.x + r, q.y + r); g.moveTo(q.x + r, q.y - r); g.lineTo(q.x - r, q.y + r); g.stroke(); }
+}
+
 function placeFill(cand, p) {
   const fp = farthestPoints(cand.cx, cand.cy, p.n, p.minS, p.maxS);
   const n = Math.min(p.strict ? Math.min(p.n, fp.capacity) : p.n, fp.order.length);
@@ -983,6 +1134,7 @@ let textDebounce;
 function runGenerate() {
   stopShow();
   const p = params();
+  if (p.mode === 'dots') return runGenerateDots(p);
   let cand = buildCandidates(state.img, p);
   if (p.fit && cand.bounds) {
     // second pass on just the drawing (plus a small margin), so it fills the area at full detail
@@ -1000,6 +1152,23 @@ function runGenerate() {
   // Line drawings: drones evenly spaced along each traced stroke.
   // Filled shapes: farthest-point sampling spreads them evenly over the area.
   const pl = p.mode === 'fill' ? placeFill(cand, p) : placeOnStrokes(cand, p);
+  finishFormation(p, pl, cand, { pathLen: cand.pathLen, fillArea: cand.fillArea, fill: p.mode === 'fill' });
+}
+
+function runGenerateDots(p) {
+  const det = detectDots(state.img, p);
+  drawDotsPreview(det);
+  if (!det.dots.length) {
+    state.drones = []; state.stats = null; state.dirty = true; $('hud').style.display = 'none'; $('alert').style.display = 'none';
+    renderStats(); showStatus('bad', 'No dots were found. Move the <b>Sensitivity</b> slider up, or set <b>Lines / shape are</b> to match your picture (light dots on dark, or dark dots on light).');
+    return;
+  }
+  // the drone count is fixed by the picture: one drone per dot
+  const pd = { ...p, n: det.dots.length, area: p.area };
+  finishFormation(pd, placeDots(det, pd), null, { dots: det.dots.length, dotsRemoved: det.removed.length, requestedBox: p.n });
+}
+
+function finishFormation(p, pl, cand, extra) {
   const { xs, ys, pix, capacity, recommended } = pl;
   const n = xs.length;
   const nnId = new Int32Array(n);
@@ -1010,10 +1179,11 @@ function runGenerate() {
   const rankOf = new Int32Array(n);
   ids.forEach((k, rank) => rankOf[k] = rank);
   state.drones = ids.map((k, rank) => {
-    const ci = pix[k] * 3;
+    const col = pl.cols ? [pl.cols[k * 3], pl.cols[k * 3 + 1], pl.cols[k * 3 + 2]]
+      : [cand.pixCol[pix[k] * 3], cand.pixCol[pix[k] * 3 + 1], cand.pixCol[pix[k] * 3 + 2]];
     return {
       x: xs[k], y: ys[k], nn: nn[k], nnIdx: nnId[k] >= 0 ? rankOf[nnId[k]] : -1,
-      r: cand.pixCol[ci], g: cand.pixCol[ci + 1], b: cand.pixCol[ci + 2],
+      r: col[0], g: col[1], b: col[2],
       heat: spacingColour(nn[k], p),
       sx: n > 1 ? rank / (n - 1) * p.areaW : p.areaW / 2,
       sy: p.areaH + GROUND_GAP + (rank % 3) * 0.8,
@@ -1033,8 +1203,7 @@ function runGenerate() {
   let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
   for (const d of state.drones) { minX = Math.min(minX, d.x); maxX = Math.max(maxX, d.x); minY = Math.min(minY, d.y); maxY = Math.max(maxY, d.y); }
   state.stats = {
-    placed: n, requested: p.n, candidates: cand.cx.length,
-    pathLen: cand.pathLen, fillArea: cand.fillArea, fill: p.mode === 'fill',
+    placed: n, requested: p.n, ...extra,
     minNN, maxNN, avgNN: n > 1 ? sumNN / n : 0, tooClose, tooFar,
     capacity, recommended,
     width: maxX - minX, height: maxY - minY,
@@ -1072,8 +1241,9 @@ function renderStats() {
   const rows = [
     ['Drones placed', `${s.placed.toLocaleString()}${s.placed < s.requested ? ` of ${s.requested.toLocaleString()}` : ''}`],
     ['Formation size', `${s.width.toFixed(1)} × ${s.height.toFixed(1)} m`],
-    s.fill ? ['Filled area', `≈ ${Math.round(s.fillArea).toLocaleString()} m²`]
-           : ['Drawn path length', `≈ ${Math.round(s.pathLen).toLocaleString()} m`],
+    s.dots ? ['Dots detected', `${s.dots}${s.dotsRemoved ? ` <small style="color:var(--muted)">(${s.dotsRemoved} ignored)</small>` : ''}`]
+      : s.fill ? ['Filled area', `≈ ${Math.round(s.fillArea).toLocaleString()} m²`]
+      : ['Drawn path length', `≈ ${Math.round(s.pathLen).toLocaleString()} m`],
     [`<b>Minimum distance</b><br><small style="color:var(--muted)">${pairTxt(s.minPair)}</small>`,
       `<span class="${cls(s.minNN, p.minS, Infinity)}">${f1(s.minNN)}</span><button data-focus="min">Show</button>`],
     [`<b>Maximum distance</b><br><small style="color:var(--muted)">largest gap to nearest drone, ${pairTxt(s.maxPair)}</small>`,
@@ -1131,6 +1301,25 @@ function renderStatus() {
   if (s.capacity >= 2 && s.recommended && s.recommended <= s.capacity && (s.requested > s.capacity || s.requested < s.recommended))
     acts.push([`Use ${Math.round((s.recommended + s.capacity) / 2)} (balanced)`, setCount(Math.round((s.recommended + s.capacity) / 2))]);
 
+  if (s.dots) {
+    // dotted picture: the count is fixed, only the size of the formation can change
+    const setArea = f => () => { $('areaW').value = Math.ceil(p.areaW * f); $('areaH').value = Math.ceil(p.areaH * f); generate(); };
+    const ign = s.dotsRemoved ? ` ${s.dotsRemoved} lights outside the main group were ignored (red ✕ in the preview).` : '';
+    if (s.tooClose > 0) {
+      const f = p.minS / s.minNN * 1.02;
+      showStatus('bad', `<b class="bad">${s.dots} dots → ${s.dots} drones, but too tight.</b> At ${p.areaW} × ${p.areaH} m the closest dots are only ${f1(s.minNN)} apart. ` +
+        `Enlarge the area to about <b>${Math.ceil(p.areaW * f)} × ${Math.ceil(p.areaH * f)} m</b> to keep ${p.minS} m.${ign}`,
+        [[`Use ${Math.ceil(p.areaW * f)} × ${Math.ceil(p.areaH * f)} m`, setArea(f)]]);
+    } else {
+      // shrinking the whole picture closes the gaps; the closest pair limits how far
+      const f = Math.max(p.maxS / s.maxNN, p.minS / s.minNN * 1.02);
+      const acts = s.tooFar && f < 0.98 ? [[`Shrink to ${Math.ceil(p.areaW * f)} × ${Math.ceil(p.areaH * f)} m${p.minS / s.minNN * 1.02 > p.maxS / s.maxNN ? ' (smallest safe size)' : ''}`, setArea(f)]] : [];
+      showStatus(s.tooFar ? 'warn' : 'ok', `<b class="${s.tooFar ? 'warn' : 'ok'}">${s.dots} dots → ${s.dots} drones.</b> Neighbours are ${f1(s.minNN)}–${f1(s.maxNN)} apart.` +
+        `${s.tooFar ? ` ${s.tooFar} dots are more than ${p.maxS} m from their neighbour at this size.` : ''}${ign}` +
+        (s.requestedBox !== s.dots ? ` <span style="color:var(--muted)">(The Number of drones box is ignored for dotted pictures.)</span>` : ''), acts);
+    }
+    return;
+  }
   if (s.requested > s.capacity && s.tooClose > 0) {
     acts.unshift([`Use max ${s.capacity}`, setCount(s.capacity)]);
     showStatus('bad', `<b class="bad">Too many drones.</b> This drawing only fits <b>${s.capacity}</b> drones while keeping ${p.minS} m apart. ` +
@@ -1369,7 +1558,14 @@ function worldCoords(d) {
 // ---------- inputs ----------
 function loadImageFromSrc(src) {
   const img = new Image();
-  img.onload = () => { state.photo = state.img = img; $('genBtn').disabled = false; state.view = { zoom: 1, ox: 0, oy: 0 }; generate(); };
+  img.onload = () => {
+    state.photo = state.img = img; $('genBtn').disabled = false; state.view = { zoom: 1, ox: 0, oy: 0 };
+    // dotted picture (e.g. a drone-show photo) → one drone per dot, in the dots' own colours
+    if (looksDotted(img)) { $('mode').value = 'dots'; $('colorMode').value = 'image'; }
+    else if ($('mode').value === 'dots') $('mode').value = 'lines';
+    syncModeControls();
+    generate();
+  };
   img.onerror = () => showStatus('bad', 'That file could not be read as an image.');
   img.src = src;
 }
@@ -1396,8 +1592,15 @@ $('replayBtn').onclick = () => { state.animStart = performance.now(); };
 $('resetBtn').onclick = () => { state.view = { zoom: 1, ox: 0, oy: 0 }; state.dirty = true; };
 $('sens').oninput = () => $('sensVal').textContent = $('sens').value;
 
+function syncModeControls() {
+  const dots = $('mode').value === 'dots';
+  $('dotsMainRow').style.display = dots ? '' : 'none';
+  $('mergeRow').style.display = dots ? 'none' : '';
+}
+$('mode').addEventListener('change', syncModeControls);
+
 let debounce;
-['count', 'areaW', 'areaH', 'strict', 'minS', 'maxS', 'mode', 'polarity', 'sens', 'orient', 'alt', 'fit', 'merge'].forEach(id =>
+['count', 'areaW', 'areaH', 'strict', 'dotsMain', 'minS', 'maxS', 'mode', 'polarity', 'sens', 'orient', 'alt', 'fit', 'merge'].forEach(id =>
   $(id).addEventListener('change', () => { clearTimeout(debounce); debounce = setTimeout(generate, 150); }));
 ['colorMode', 'color'].forEach(id => $(id).addEventListener('input', () => {
   if (state.params) { state.params.colorMode = $('colorMode').value; state.params.color = $('color').value; }
