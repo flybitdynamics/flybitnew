@@ -77,9 +77,30 @@
     padding: 8px 12px; display: none; font-size: 13px; }
   #playBadge b { font-size: 16px; }
   #sky { width: 100%; height: 100%; display: block; cursor: grab; }
+  #sky.editing { cursor: default; }
+  #sky.placing { cursor: crosshair; }
   #sky.drag { cursor: grabbing; }
-  .toolbar { position: absolute; top: 12px; right: 12px; display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+  .seg { display: flex; background: rgba(18,24,41,.85); border: 1px solid var(--line); border-radius: 7px; overflow: hidden; backdrop-filter: blur(6px); }
+  .seg button { border: 0; border-radius: 0; background: transparent; padding: 6px 10px; }
+  .seg button.on { background: var(--accent); color: #04121b; font-weight: 700; }
+  .seg button:hover { border-color: transparent; }
+  .toolbar button.on { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+  .camDist { display: flex; align-items: center; gap: 6px; background: rgba(18,24,41,.85); border: 1px solid var(--line);
+    border-radius: 7px; padding: 4px 8px; font-size: 12px; color: #c5cbe0; backdrop-filter: blur(6px); }
+  .camDist[hidden], .toolbar button[hidden], .insets[hidden] { display: none !important; }
+  .camDist input[type=range] { width: 92px; }
+  .insets { position: absolute; right: 12px; bottom: 34px; display: flex; flex-direction: column; gap: 8px; z-index: 3; }
+  .insets[hidden] { display: none; }
+  .inset { width: 220px; height: 132px; border: 1px solid var(--line); border-radius: 10px; overflow: hidden;
+    background: #050a18; cursor: pointer; position: relative; box-shadow: 0 10px 28px rgba(0,0,0,.4); }
+  .inset:hover { border-color: var(--accent); }
+  .inset canvas { width: 100%; height: 100%; display: block; }
+  .inset span { position: absolute; left: 7px; top: 6px; font-size: 10px; letter-spacing: .7px; text-transform: uppercase;
+    color: var(--text); background: rgba(8,12,24,.78); border-radius: 4px; padding: 2px 6px; pointer-events: none; }
+  .toolbar { position: absolute; top: 12px; right: 12px; z-index: 5; max-width: min(520px, calc(100% - 24px));
+    display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
   .toolbar button { background: rgba(18,24,41,.85); backdrop-filter: blur(6px); font-size: 13px; }
+  .toolbar #editBtn.on { background: var(--accent); color: #04121b; border-color: var(--accent); font-weight: 700; }
   .empty { position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted); text-align: center; pointer-events: none; }
   .empty div { max-width: 360px; }
   .empty strong { color: var(--text); font-size: 16px; display: block; margin-bottom: 6px; }
@@ -127,6 +148,8 @@
     .app { grid-template-columns: 1fr; grid-template-rows: auto 70vh; height: auto; }
     aside { border-right: 0; border-bottom: 1px solid var(--line); }
     main { height: 70vh; }
+    .insets { flex-direction: row; right: 8px; left: 8px; bottom: 28px; }
+    .inset { width: auto; flex: 1; height: 92px; }
   }
 </style>
 </head>
@@ -134,7 +157,7 @@
 <div class="app">
   <aside>
     <h1>Drone Formation Studio</h1>
-    <div class="sub">Upload an image or type text, set the drone count, and preview it as a sky formation.</div>
+    <div class="sub">Upload an image or type text, set the drone count, and preview it as a sky formation. Drag drones to adjust, then check the view from the crowd.</div>
 
     <div class="tabs"><button id="tabImage" class="on">Image</button><button id="tabText">Text</button><button id="tabDots">Dotted</button></div>
 
@@ -263,14 +286,30 @@
     <canvas id="sky"></canvas>
     <div class="empty" id="empty"><div><strong>No image yet</strong>Upload an image on the left (or try the sample) to see it drawn with drones in the night sky.</div></div>
     <div class="toolbar">
+      <div class="seg" id="viewSeg" title="Switch the main view. The other two stay in the corner.">
+        <button type="button" data-view="flat" class="on">Flat</button>
+        <button type="button" data-view="audience">Audience</button>
+        <button type="button" data-view="top">Top-down</button>
+      </div>
+      <label class="camDist" id="camDistLbl" hidden title="How far the audience stands from the formation">
+        Audience <input type="range" id="camDist" min="15" max="600" step="1" value="80"> <em id="camDistVal">80 m</em>
+      </label>
       <button id="replayBtn" disabled>▶ Replay takeoff</button>
       <button id="resetBtn">Reset view</button>
+      <button id="editBtn" disabled title="Drag a drone to move it, double-click a gap to add one, Delete to remove it">Edit drones</button>
+      <button id="placeBtn" hidden title="Click inside the show area to add a drone">Place</button>
+      <button id="delBtn" hidden title="Delete the selected drone">Delete</button>
+      <button id="undoBtn" hidden title="Undo the last move, add, or delete">Undo</button>
     </div>
     <div id="hud"></div>
     <div id="busy">Computing formation…</div>
     <div id="alert"></div>
     <div id="legend"><span style="background:#ff4d5e"></span>too close <span style="background:#3ddc97"></span>OK <span style="background:#5ad1ff"></span>wide <span style="background:#ffb547"></span>too far</div>
-    <div class="hint">Scroll to zoom · drag to pan · hover a drone for details</div>
+    <div class="insets" id="insets" hidden>
+      <div class="inset" title="Open this view"><canvas id="insetCv0"></canvas><span id="insetLb0"></span></div>
+      <div class="inset" title="Open this view"><canvas id="insetCv1"></canvas><span id="insetLb1"></span></div>
+    </div>
+    <div class="hint" id="hint">Scroll to zoom · drag to pan · hover a drone for details</div>
     <div id="tip"></div>
     <div id="playBadge"></div>
    </div>
@@ -310,6 +349,16 @@ const state = {
   params: null,
   animStart: 0,
   view: { zoom: 1, ox: 0, oy: 0 },
+  viewMode: 'flat',          // 'flat' | 'audience' | 'top'
+  cam: { dist: 80, yaw: 0, userDist: false },
+  topView: { zoom: 1, ox: 0, oy: 0 },
+  edit: false,
+  place: false,
+  selected: -1,
+  undo: [],
+  handEdited: false,
+  ghost: null,
+  dragGap: null,
   stars: [],
   dirty: true,
 };
@@ -1005,7 +1054,8 @@ function prepareDots(p) {
   state.dotsInfo = { dots: det.dots.length, removed: det.removed.length };
   if (!det.dots.length) {
     state.drones = []; state.stats = null; state.dirty = true; $('hud').style.display = 'none'; $('alert').style.display = 'none';
-    renderStats(); showStatus('bad', 'No dots were found. Move the <b>Dot sensitivity</b> slider up, or set <b>Dots are</b> to match your picture.');
+    state.edit = false; state.handEdited = false; state.undo = []; state.selected = -1;
+    renderStats(); syncEditChrome(); showStatus('bad', 'No dots were found. Move the <b>Dot sensitivity</b> slider up, or set <b>Dots are</b> to match your picture.');
     return null;
   }
   const pl = placeDots(det, p);
@@ -1315,10 +1365,12 @@ function setSource(src) {
   if (src === 'text' || (src === 'image' && state.photo) || (src === 'dots' && state.dotPhoto)) { generate(); return; }
   // image tab with nothing uploaded yet: clear the sky
   state.drones = []; state.stats = null; state.params = null; state.dirty = true;
+  state.edit = false; state.handEdited = false; state.undo = []; state.selected = -1;
   ['hud', 'status', 'preview'].forEach(id => $(id).style.display = 'none');
   ['csvBtn', 'pngBtn', 'replayBtn', 'fbxBtn', 'plyBtn'].forEach(id => $(id).disabled = true);
   $('empty').style.display = '';
   renderStats();
+  syncEditChrome();
 }
 $('tabImage').onclick = () => setSource('image');
 $('tabText').onclick = () => setSource('text');
@@ -1353,7 +1405,8 @@ function runGenerate() {
   if (!special) drawPreview(cand);
   if (cand.cx.length === 0) {
     state.drones = []; state.stats = null; state.dirty = true; $('hud').style.display = 'none'; $('alert').style.display = 'none';
-    renderStats(); showStatus('bad', 'No lines were detected. Try another <b>Mode</b>, flip <b>Lines / shape are</b>, or move the sensitivity slider.');
+    state.edit = false; state.handEdited = false; state.undo = []; state.selected = -1;
+    renderStats(); syncEditChrome(); showStatus('bad', 'No lines were detected. Try another <b>Mode</b>, flip <b>Lines / shape are</b>, or move the sensitivity slider.');
     return;
   }
   // Line drawings: drones evenly spaced along each traced stroke.
@@ -1368,6 +1421,7 @@ function runGenerate() {
   const ids = Array.from({ length: n }, (_, i) => i).sort((a, b) => xs[a] - xs[b] || ys[a] - ys[b]);
   const rankOf = new Int32Array(n);
   ids.forEach((k, rank) => rankOf[k] = rank);
+  const editedSnap = state.handEdited && state.drones.length ? [{ drones: cloneDrones(state.drones), selected: -1, hand: true }] : [];
   state.drones = ids.map((k, rank) => {
     const ci = pix[k] * 3;
     return {
@@ -1403,12 +1457,22 @@ function runGenerate() {
     areaLimit: Math.floor(p.areaW / p.minS + 1) * Math.floor(p.areaH / (p.minS * Math.sqrt(3) / 2) + 1),
   };
   state.params = p;
+  state.handEdited = false;
+  state.undo = editedSnap;
+  state.selected = -1;
+  state.ghost = null;
+  state.edit = false;
+  state.place = false;
   state.animStart = performance.now();
   state.dirty = true;
   $('empty').style.display = 'none';
   ['csvBtn', 'pngBtn', 'replayBtn', 'fbxBtn', 'plyBtn'].forEach(id => $(id).disabled = false);
+  // Enable Edit before the heavier status/UI work so a later throw can't leave it stuck disabled.
+  syncEditChrome();
   renderStats();
   renderStatus();
+  applyDistLabel();
+  syncEditChrome();
 }
 
 // ---------- UI output ----------
@@ -1429,7 +1493,9 @@ function renderStats() {
   const cls = (v, lo, hi) => v < lo - 1e-6 ? 'bad' : v > hi + 1e-6 ? 'warn' : 'ok';
   const pairTxt = pr => pr && pr[1] >= 0 ? `#${pr[0] + 1} ↔ #${pr[1] + 1}` : '';
   const rows = [
-    ['Drones placed', `${s.placed.toLocaleString()}${s.placed < s.requested ? ` of ${s.requested.toLocaleString()}` : ''}`],
+    ['Drones placed', state.handEdited
+      ? `${s.placed.toLocaleString()} <small style="color:var(--muted)">(hand-edited)</small>`
+      : `${s.placed.toLocaleString()}${s.placed < s.requested ? ` of ${s.requested.toLocaleString()}` : ''}`],
     ['Formation size', `${s.width.toFixed(1)} × ${s.height.toFixed(1)} m`],
     p.source === 'dots' ? ['Dots detected', `${state.dotsInfo.dots}${state.dotsInfo.removed ? ` <small style="color:var(--muted)">(${state.dotsInfo.removed} ignored)</small>` : ''}`]
       : s.fill ? ['Filled area', `≈ ${Math.round(s.fillArea).toLocaleString()} m²`]
@@ -1452,6 +1518,7 @@ function renderStats() {
 // zoom the sky view onto a pair of drones and make them blink
 function focusPair(pair) {
   if (!pair || pair[1] < 0) return;
+  setViewMode('flat');
   const a = state.drones[pair[0]], b = state.drones[pair[1]];
   state.animStart = -1e9;
   const base = viewScale() / state.view.zoom;
@@ -1475,17 +1542,29 @@ function renderStatus() {
   const s = state.stats, p = state.params;
   // the "not flyable" warning lives inside the drone counter box so the two never overlap
   const alertHtml = s.tooClose > 0
-    ? `<div class="alertRow"><b>Not flyable:</b> ${s.tooClose} drones closer than ${p.minS} m (closest ${f1(s.minNN)}). Use at most <b>${s.capacity}</b>.</div>` : '';
+    ? (state.handEdited
+      ? `<div class="alertRow"><b>Too close:</b> ${s.tooClose} drones are under ${p.minS} m (closest ${f1(s.minNN)}).</div>`
+      : `<div class="alertRow"><b>Not flyable:</b> ${s.tooClose} drones closer than ${p.minS} m (closest ${f1(s.minNN)}). Use at most <b>${s.capacity}</b>.</div>`) : '';
   $('alert').style.display = 'none';
   const hud = $('hud');
-  const usedCls = s.tooClose ? 'bad' : s.placed < s.requested ? 'warn' : 'ok';
+  const usedCls = s.tooClose ? 'bad' : !state.handEdited && s.placed < s.requested ? 'warn' : 'ok';
+  const countNote = state.handEdited ? ' <small>hand-edited</small>' : ` <small>of ${s.requested.toLocaleString()} requested</small>`;
   hud.innerHTML = `<div class="lbl">Drones used</div>
-    <div class="big"><span style="color:var(--${usedCls})">${s.placed.toLocaleString()}</span> <small>of ${s.requested.toLocaleString()} requested</small></div>
+    <div class="big"><span style="color:var(--${usedCls})">${s.placed.toLocaleString()}</span>${countNote}</div>
     <div class="row">Max that fits: <b>${s.capacity.toLocaleString()}</b> · area ${p.areaW} × ${p.areaH} m</div>
     <div class="row">Min distance <b style="color:var(--${s.tooClose ? 'bad' : 'ok'})">${f1(s.minNN)}</b> · Max distance <b style="color:var(--${s.tooFar ? 'warn' : 'ok'})">${f1(s.maxNN)}</b></div>${alertHtml}
     <button class="addBtn" data-add="1">+ Add to show${state.show.scenes.length ? ` (scene ${state.show.scenes.length + 1})` : ''}</button>`;
   hud.style.borderColor = s.tooClose > 0 ? 'var(--bad)' : '';
   hud.style.display = 'block';
+  if (state.handEdited) {
+    const note = ' Hand-edited. Generate again to discard these moves.';
+    if (!state.drones.length) showStatus('warn', `<b class="warn">No drones left.</b>${note}`);
+    else if (state.drones.length < 2) showStatus('ok', `<b class="ok">${state.drones.length} drone.</b>${note}`);
+    else if (s.tooClose > 0) showStatus('bad', `<b class="bad">Too tight.</b> ${s.tooClose} drones are closer than ${p.minS} m (closest ${f1(s.minNN)}).${note}`);
+    else if (s.tooFar > 0) showStatus('warn', `<b class="warn">Sparse in places.</b> ${s.tooFar} drones are more than ${p.maxS} m from their neighbour.${note}`);
+    else showStatus('ok', `<b class="ok">${s.placed} drones, hand-edited.</b> Neighbours are ${f1(s.minNN)}–${f1(s.maxNN)} apart.${note}`);
+    return;
+  }
   const setCount = v => () => { $('count').value = v; generate(); };
   const acts = [];
   if (s.capacity >= 2 && s.recommended && s.recommended <= s.capacity && (s.requested > s.capacity || s.requested < s.recommended))
@@ -1585,13 +1664,469 @@ function dronePos(d, t) {
   return [d.sx + (d.x - d.sx) * e, d.sy + (d.y - d.sy) * e, u];
 }
 
+// ---------- hand edits and cameras ----------
+let pointer = null;
+let frameNow = 0, cachedWorld = null, cachedPlane = null, cachedShow = null, showReady = false;
+
+function beginFrame(now) {
+  frameNow = now; cachedWorld = null; cachedPlane = null; cachedShow = null; showReady = false;
+}
+function cloneDrones(list) {
+  return list.map(d => ({ ...d, heat: d.heat ? d.heat.slice() : d.heat }));
+}
+function pushUndo() {
+  state.undo.push({ drones: cloneDrones(state.drones), selected: state.selected, hand: state.handEdited });
+  if (state.undo.length > 40) state.undo.shift();
+}
+function gapToOthers(i) {
+  const d = state.drones[i];
+  let best = Infinity;
+  for (let j = 0; j < state.drones.length; j++) if (j !== i) best = Math.min(best, Math.hypot(state.drones[j].x - d.x, state.drones[j].y - d.y));
+  return best;
+}
+function recomputeNeighbours(hand = true) {
+  const p = state.params, s0 = state.stats;
+  if (!p || !s0) return;
+  const n = state.drones.length;
+  const nn = new Float32Array(n).fill(Infinity), nnId = new Int32Array(n).fill(-1);
+  if (n >= 2) {
+    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    for (const d of state.drones) { minX = Math.min(minX, d.x); minY = Math.min(minY, d.y); maxX = Math.max(maxX, d.x); maxY = Math.max(maxY, d.y); }
+    const xs = new Float32Array(n), ys = new Float32Array(n);
+    for (let i = 0; i < n; i++) { xs[i] = state.drones[i].x - minX; ys[i] = state.drones[i].y - minY; }
+    const got = nearestNeighbours(xs, ys, Math.max(1, maxX - minX, maxY - minY), nnId);
+    nn.set(got);
+  }
+  let minNN = Infinity, maxNN = 0, sumNN = 0, tooClose = 0, tooFar = 0, minI = -1, maxI = -1;
+  for (let i = 0; i < n; i++) {
+    const d = state.drones[i];
+    d.nn = nn[i]; d.nnIdx = n >= 2 ? nnId[i] : -1; d.heat = spacingColour(nn[i], p);
+    if (!Number.isFinite(d.nn)) continue;
+    if (d.nn < minNN) { minNN = d.nn; minI = i; }
+    if (d.nn > maxNN) { maxNN = d.nn; maxI = i; }
+    sumNN += d.nn;
+    if (d.nn < p.minS - 1e-6) tooClose++;
+    if (d.nn > p.maxS + 1e-6) tooFar++;
+  }
+  let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+  for (const d of state.drones) { x0 = Math.min(x0, d.x); x1 = Math.max(x1, d.x); y0 = Math.min(y0, d.y); y1 = Math.max(y1, d.y); }
+  state.stats = {
+    ...s0, placed: n, minNN, maxNN, avgNN: n > 1 ? sumNN / n : 0, tooClose, tooFar,
+    width: n ? x1 - x0 : 0, height: n ? y1 - y0 : 0,
+    minPair: minI >= 0 ? [minI, state.drones[minI].nnIdx] : null,
+    maxPair: maxI >= 0 ? [maxI, state.drones[maxI].nnIdx] : null,
+  };
+  state.handEdited = hand;
+  state.animStart = -1e9;
+  state.dirty = true;
+  renderStats();
+  renderStatus();
+  syncEditChrome();
+}
+function undoEdit() {
+  const snap = state.undo.pop();
+  if (!snap) return;
+  state.drones = snap.drones;
+  state.selected = snap.selected >= 0 && snap.selected < state.drones.length ? snap.selected : -1;
+  state.ghost = null;
+  recomputeNeighbours(snap.hand);
+}
+function dropDrone(mx, my) {
+  const p = state.params;
+  if (!p || state.drones.length >= 20000) return;
+  const [x, y] = toWorld(mx, my);
+  if (x < 0 || y < 0 || x > p.areaW || y > p.areaH) return;
+  pushUndo();
+  let r = 127, g = 227, b = 255, best = Infinity;
+  for (const d of state.drones) {
+    const dist = Math.hypot(d.x - x, d.y - y);
+    if (dist < best) { best = dist; r = d.r; g = d.g; b = d.b; }
+  }
+  state.drones.push({
+    x, y, r, g, b, nn: Infinity, nnIdx: -1, heat: [61, 220, 151],
+    sx: x, sy: p.areaH + GROUND_GAP, delay: 0,
+  });
+  state.selected = state.drones.length - 1;
+  recomputeNeighbours(true);
+}
+function deleteSelected() {
+  if (state.selected < 0 || !state.drones[state.selected]) return;
+  pushUndo();
+  state.drones.splice(state.selected, 1);
+  state.selected = state.drones.length ? Math.min(state.selected, state.drones.length - 1) : -1;
+  recomputeNeighbours(true);
+}
+function pickDrone(mx, my) {
+  const t = (performance.now() - state.animStart) / 1000;
+  const moving = t >= 0 && t < FLIGHT + 1.8;
+  const sc = viewScale();
+  const reach = Math.max(state.edit ? 22 : 14, Math.min(36, 0.9 * sc + (state.edit ? 10 : 0)));
+  let best = -1, bd = reach * reach;
+  for (let i = 0; i < state.drones.length; i++) {
+    const d = state.drones[i];
+    const x = moving ? dronePos(d, t)[0] : d.x, y = moving ? dronePos(d, t)[1] : d.y;
+    const [sx, sy] = toScreen(x, y);
+    const dd = (sx - mx) ** 2 + (sy - my) ** 2;
+    if (dd < bd) { bd = dd; best = i; }
+  }
+  return best;
+}
+function eventPos(e) {
+  const r = sky.getBoundingClientRect();
+  return [e.clientX - r.left, e.clientY - r.top];
+}
+function syncEditChrome() {
+  if (!state.drones.length) { state.edit = false; state.place = false; }
+  $('editBtn').disabled = !state.drones.length;
+  $('editBtn').classList.toggle('on', state.edit);
+  $('editBtn').textContent = state.edit ? 'Done editing' : 'Edit drones';
+  $('placeBtn').hidden = !state.edit;
+  $('delBtn').hidden = !state.edit;
+  $('undoBtn').hidden = !state.edit;
+  $('placeBtn').classList.toggle('on', state.place);
+  $('placeBtn').textContent = state.place ? 'Placing…' : 'Place';
+  $('delBtn').disabled = state.selected < 0;
+  $('undoBtn').disabled = !state.undo.length;
+  sky.classList.toggle('editing', state.edit && state.viewMode === 'flat');
+  sky.classList.toggle('placing', state.edit && state.place && state.viewMode === 'flat');
+  $('camDistLbl').hidden = state.viewMode !== 'audience' || (!state.drones.length && !state.play);
+  const hint = $('hint');
+  const vertical = !state.params || state.params.orient === 'vertical';
+  if (state.viewMode === 'audience') hint.textContent = 'Drag to look from the side · scroll to step closer or further';
+  else if (state.viewMode === 'top') hint.textContent = vertical
+    ? 'Scroll to zoom · drag to pan · the triangle is the audience, the line is the picture'
+    : 'Scroll to zoom · drag to pan · the triangle is the audience';
+  else if (state.edit && state.place) hint.textContent = 'Click to place · drag to move · Delete removes · Shift-drag pans · Esc done';
+  else if (state.edit) hint.textContent = 'Drag a drone · double-click a gap to add · Delete removes · Shift-drag pans · Esc done';
+  else hint.textContent = 'Scroll to zoom · drag to pan · hover a drone for details';
+  document.querySelectorAll('#viewSeg button').forEach(b => b.classList.toggle('on', b.dataset.view === state.viewMode));
+}
+function setViewMode(mode) {
+  state.viewMode = mode;
+  if (mode !== 'flat') { state.place = false; state.ghost = null; }
+  $('tip').style.display = 'none';
+  state.dirty = true;
+  syncEditChrome();
+}
+
+function autoStandoff() {
+  const [aw, ah] = areaWH();
+  const p = state.params;
+  const alt = p ? p.alt : 40;
+  const vertical = !p || p.orient === 'vertical';
+  const tz = vertical ? alt + ah / 2 : alt;
+  const half = Math.max(aw / 2, vertical ? ah / 2 : Math.max(ah / 2, Math.abs(tz - 1.7)));
+  const need = half / (Math.tan(21 * Math.PI / 180) * 0.72);
+  const dz = Math.abs(tz - 1.7);
+  return Math.round(Math.max(15, Math.min(600, Math.sqrt(Math.max(need * need - dz * dz, 400)))));
+}
+function currentDist() { return state.cam.userDist ? state.cam.dist : autoStandoff(); }
+function applyDistLabel() {
+  const d = Math.round(currentDist());
+  state.cam.dist = d;
+  $('camDist').value = d;
+  $('camDistVal').textContent = d + ' m';
+}
+function audienceStand() {
+  const [aw, ah] = areaWH();
+  const p = state.params;
+  const alt = p ? p.alt : (+$('alt').value || 0);
+  const vertical = !p || p.orient === 'vertical';
+  const tx = aw / 2, ty = vertical ? 0 : ah / 2, tz = vertical ? alt + ah / 2 : alt;
+  const dist = currentDist(), yaw = state.cam.yaw || 0;
+  return { aw, ah, alt, vertical, dist, yaw, tx, ty, tz, cz: 1.7, cx: tx + Math.sin(yaw) * dist, cy: ty - Math.cos(yaw) * dist };
+}
+function cameraBasis(h) {
+  const s = audienceStand();
+  let fx = s.tx - s.cx, fy = s.ty - s.cy, fz = s.tz - s.cz;
+  const fl = Math.hypot(fx, fy, fz) || 1;
+  fx /= fl; fy /= fl; fz /= fl;
+  let rx = fy, ry = -fx, rz = 0;
+  const rl = Math.hypot(rx, ry) || 1;
+  rx /= rl; ry /= rl;
+  const ux = ry * fz - rz * fy, uy = rz * fx - rx * fz, uz = rx * fy - ry * fx;
+  const focal = (h / 2) / Math.tan(21 * Math.PI / 180);
+  const project = (x, y, z) => {
+    const dx = x - s.cx, dy = y - s.cy, dz = z - s.cz;
+    const vz = dx * fx + dy * fy + dz * fz;
+    if (vz < 0.4) return null;
+    const vx = dx * rx + dy * ry + dz * rz;
+    const vy = dx * ux + dy * uy + dz * uz;
+    return [null, null, vz, vx / vz * focal, vy / vz * focal]; // filled with width later
+  };
+  return { ...s, project, focal };
+}
+
+function planeToWorld(x, yDown, depth, ah) {
+  const alt = state.params ? state.params.alt : (+$('alt').value || 0);
+  const vertical = !state.params || state.params.orient === 'vertical';
+  if (yDown > ah + 0.5) return [x, depth, 0];
+  if (vertical) return [x, depth, alt + (ah - yDown)];
+  return [x, (ah - yDown) + depth, alt];
+}
+function editorWorld(d) {
+  if (!state.params) return [d.x, 0, 0];
+  const [fx, fy, fz] = worldCoords(d);
+  const u = Math.max(0, Math.min(1, ((frameNow - state.animStart) / 1000 - d.delay) / FLIGHT));
+  const e = ease(u);
+  return [d.sx + (fx - d.sx) * e, -3 + (fy + 3) * e, fz * e];
+}
+function currentShow(now) {
+  if (!state.play) return null;
+  if (!showReady) { cachedShow = showFrame(now); showReady = true; }
+  return cachedShow;
+}
+function collectWorld() {
+  if (cachedWorld) return cachedWorld;
+  if (state.play) {
+    const fr = currentShow(frameNow);
+    const { fa, fb, e, plan, b } = fr, ah = b.H, bow = Math.sin(Math.PI * e);
+    const pts = new Array(b.N);
+    for (let i = 0; i < b.N; i++) {
+      const A = planeToWorld(fa.x[i], fa.y[i], fa.d[i], ah);
+      const B = planeToWorld(fb.x[i], fb.y[i], fb.d[i], ah);
+      const extra = plan && plan.layer ? plan.layer[i] * plan.dz * bow : 0;
+      pts[i] = {
+        x: A[0] + (B[0] - A[0]) * e, y: A[1] + (B[1] - A[1]) * e + extra, z: A[2] + (B[2] - A[2]) * e,
+        r: fa.r[i] + (fb.r[i] - fa.r[i]) * e, g: fa.g[i] + (fb.g[i] - fa.g[i]) * e, b: fa.b[i] + (fb.b[i] - fa.b[i]) * e,
+        light: fa.lit[i] + (fb.lit[i] - fa.lit[i]) * e,
+      };
+    }
+    return cachedWorld = pts;
+  }
+  const p = state.params, single = !p || p.colorMode === 'single';
+  const hex = single && p ? hexRgb(p.color) : [127, 227, 255];
+  return cachedWorld = state.drones.map(d => {
+    const [x, y, z] = editorWorld(d);
+    const c = !p ? hex : p.colorMode === 'spacing' ? (d.heat || hex) : single ? hex : [d.r, d.g, d.b];
+    return { x, y, z, r: c[0], g: c[1], b: c[2], light: 1 };
+  });
+}
+function collectPlane() {
+  if (cachedPlane) return cachedPlane;
+  if (state.play) {
+    const fr = currentShow(frameNow);
+    const { fa, fb, e, plan, b } = fr, q = [0, 0, 0];
+    const pts = new Array(b.N);
+    for (let i = 0; i < b.N; i++) {
+      movePos(fa, fb, plan && plan.layer, plan ? plan.dz : 0, i, e, q);
+      pts[i] = {
+        x: q[0], y: q[1],
+        r: fa.r[i] + (fb.r[i] - fa.r[i]) * e, g: fa.g[i] + (fb.g[i] - fa.g[i]) * e, b: fa.b[i] + (fb.b[i] - fa.b[i]) * e,
+        light: fa.lit[i] + (fb.lit[i] - fa.lit[i]) * e,
+      };
+    }
+    return cachedPlane = pts;
+  }
+  const t = (frameNow - state.animStart) / 1000;
+  const p = state.params, single = !p || p.colorMode === 'single';
+  const hex = single && p ? hexRgb(p.color) : [127, 227, 255];
+  return cachedPlane = state.drones.map(d => {
+    const [x, y] = dronePos(d, t);
+    const c = !p ? hex : p.colorMode === 'spacing' ? (d.heat || hex) : single ? hex : [d.r, d.g, d.b];
+    return { x, y, r: c[0], g: c[1], b: c[2], light: 1 };
+  });
+}
+function worldDots() { return collectWorld(); }
+
+function paintAudience(g, w, h, main) {
+  if (w < 2 || h < 2) return;
+  const cam = cameraBasis(h), stand = cam;
+  const project = (x, y, z) => {
+    const p = cam.project(x, y, z);
+    return p ? [w / 2 + p[3], h / 2 - p[4], p[2]] : null;
+  };
+  const skyG = g.createLinearGradient(0, 0, 0, h);
+  skyG.addColorStop(0, '#02040c'); skyG.addColorStop(0.55, '#0a1430'); skyG.addColorStop(1, '#1a2748');
+  g.fillStyle = skyG; g.fillRect(0, 0, w, h);
+  g.fillStyle = 'rgba(255,255,255,.5)';
+  for (let i = 0; i < (main ? 70 : 24); i++) g.fillRect(((i * 97 + 13) % 1000) / 1000 * w, ((i * 57 + 3) % 620) / 1000 * h, 1.3, 1.3);
+  const step = Math.max(stand.aw, stand.ah) > 300 ? 50 : Math.max(stand.aw, stand.ah) > 120 ? 20 : 10;
+  g.strokeStyle = 'rgba(130,160,220,.22)'; g.lineWidth = 1; g.beginPath();
+  const yFar = -Math.min(stand.dist, 90), x0 = -step, x1 = stand.aw + step;
+  for (let x = Math.floor(x0 / step) * step; x <= x1; x += step) {
+    const a = project(x, 4, 0), b = project(x, yFar, 0);
+    if (a && b) { g.moveTo(a[0], a[1]); g.lineTo(b[0], b[1]); }
+  }
+  for (let y = 0; y >= yFar; y -= step) {
+    const a = project(x0, y, 0), b = project(x1, y, 0);
+    if (a && b) { g.moveTo(a[0], a[1]); g.lineTo(b[0], b[1]); }
+  }
+  g.stroke();
+  if (stand.vertical) {
+    g.strokeStyle = 'rgba(90,209,255,.28)'; g.beginPath();
+    for (const x of [0, stand.aw]) {
+      const a = project(x, 0, 0), b = project(x, 0, stand.alt);
+      if (a && b) { g.moveTo(a[0], a[1]); g.lineTo(b[0], b[1]); }
+    }
+    g.stroke();
+  }
+  const corners = stand.vertical
+    ? [[0, 0, stand.alt], [stand.aw, 0, stand.alt], [stand.aw, 0, stand.alt + stand.ah], [0, 0, stand.alt + stand.ah]]
+    : [[0, 0, stand.alt], [stand.aw, 0, stand.alt], [stand.aw, stand.ah, stand.alt], [0, stand.ah, stand.alt]];
+  g.strokeStyle = 'rgba(90,209,255,.6)'; g.setLineDash([5, 4]); g.beginPath();
+  for (let i = 0; i < 4; i++) {
+    const a = project(...corners[i]), b = project(...corners[(i + 1) % 4]);
+    if (a && b) { g.moveTo(a[0], a[1]); g.lineTo(b[0], b[1]); }
+  }
+  g.stroke(); g.setLineDash([]);
+  const drawn = [];
+  for (const p of worldDots()) {
+    const s = project(p.x, p.y, p.z);
+    if (s) drawn.push({ p, s });
+  }
+  drawn.sort((a, b) => b.s[2] - a.s[2]);
+  g.globalCompositeOperation = 'lighter';
+  for (const { p, s } of drawn) {
+    if (p.light < 0.04) continue;
+    const core = Math.min(main ? 8 : 3.5, Math.max(main ? 1.5 : 1, (main ? 26 : 12) / s[2]));
+    g.fillStyle = `rgb(${p.r | 0},${p.g | 0},${p.b | 0})`;
+    g.globalAlpha = 0.16 * p.light;
+    if (main) { g.beginPath(); g.arc(s[0], s[1], core * 2.5, 0, 6.283); g.fill(); }
+    g.globalAlpha = p.light;
+    g.beginPath(); g.arc(s[0], s[1], core, 0, 6.283); g.fill();
+  }
+  g.globalAlpha = 1; g.globalCompositeOperation = 'source-over';
+  if (main) {
+    g.fillStyle = 'rgba(230,234,245,.88)'; g.font = '12px system-ui'; g.textAlign = 'center';
+    g.fillText(`From the crowd · ${Math.round(stand.dist)} m away`, w / 2, h - 18);
+  }
+}
+function drawStand(g, project, stand) {
+  const tip = project(stand.cx, stand.cy), tgt = project(stand.tx, stand.ty);
+  if (!tip || !tgt) return;
+  const dx = tgt[0] - tip[0], dy = tgt[1] - tip[1], len = Math.hypot(dx, dy) || 1;
+  const ux = dx / len, uy = dy / len, px = -uy, py = ux, s = 8;
+  g.fillStyle = '#5ad1ff';
+  g.beginPath();
+  g.moveTo(tip[0] + ux * s, tip[1] + uy * s);
+  g.lineTo(tip[0] - ux * s * 0.75 + px * s * 0.6, tip[1] - uy * s * 0.75 + py * s * 0.6);
+  g.lineTo(tip[0] - ux * s * 0.75 - px * s * 0.6, tip[1] - uy * s * 0.75 - py * s * 0.6);
+  g.fill();
+}
+function paintTop(g, w, h, main) {
+  if (w < 2 || h < 2) return;
+  const stand = audienceStand(), pts = worldDots();
+  let minX = Math.min(0, stand.cx) - 4, maxX = Math.max(stand.aw, stand.cx) + 4;
+  let minY = Math.min(stand.vertical ? 0 : 0, stand.cy) - 4, maxY = Math.max(stand.vertical ? 8 : stand.ah, stand.cy, stand.ty) + 4;
+  for (const p of pts) { minX = Math.min(minX, p.x); maxX = Math.max(maxX, p.x); minY = Math.min(minY, p.y); maxY = Math.max(maxY, p.y); }
+  const padX = (maxX - minX) * 0.08 + 4, padY = (maxY - minY) * 0.08 + 4;
+  minX -= padX; maxX += padX; minY -= padY; maxY += padY;
+  const zoom = main ? state.topView.zoom : 1;
+  const sc = Math.min((w - 20) / Math.max(1, maxX - minX), (h - 20) / Math.max(1, maxY - minY)) * zoom;
+  const cxw = (minX + maxX) / 2, cyw = (minY + maxY) / 2;
+  const panX = main ? state.topView.ox : 0, panY = main ? state.topView.oy : 0;
+  const project = (x, y) => [w / 2 + (x - cxw) * sc + panX, h / 2 - (y - cyw) * sc + panY];
+  g.fillStyle = '#070b16'; g.fillRect(0, 0, w, h);
+  g.strokeStyle = stand.vertical ? 'rgba(90,209,255,.85)' : 'rgba(90,209,255,.55)';
+  g.lineWidth = stand.vertical ? 3 : 1.25;
+  if (stand.vertical) {
+    const a = project(0, 0), b = project(stand.aw, 0);
+    g.beginPath(); g.moveTo(a[0], a[1]); g.lineTo(b[0], b[1]); g.stroke();
+  } else {
+    const c = [[0, 0], [stand.aw, 0], [stand.aw, stand.ah], [0, stand.ah]].map(q => project(q[0], q[1]));
+    g.beginPath(); g.moveTo(c[0][0], c[0][1]);
+    for (let i = 1; i < 4; i++) g.lineTo(c[i][0], c[i][1]);
+    g.closePath(); g.stroke();
+  }
+  const cam = project(stand.cx, stand.cy), tgt = project(stand.tx, stand.ty);
+  g.strokeStyle = 'rgba(90,209,255,.4)'; g.setLineDash([4, 4]); g.lineWidth = 1;
+  g.beginPath(); g.moveTo(cam[0], cam[1]); g.lineTo(tgt[0], tgt[1]); g.stroke(); g.setLineDash([]);
+  for (const p of pts) {
+    if (p.light < 0.04) continue;
+    const [sx, sy] = project(p.x, p.y);
+    g.globalAlpha = p.light; g.fillStyle = `rgb(${p.r | 0},${p.g | 0},${p.b | 0})`;
+    const rad = main ? 2.4 : 1.5;
+    g.fillRect(sx - rad / 2, sy - rad / 2, rad, rad);
+  }
+  g.globalAlpha = 1;
+  drawStand(g, project, stand);
+  if (main) {
+    g.font = '11px system-ui'; g.textAlign = 'center'; g.fillStyle = 'rgba(230,234,245,.88)';
+    g.fillText(`${Math.round(stand.dist)} m`, (cam[0] + tgt[0]) / 2, (cam[1] + tgt[1]) / 2 - 6);
+  }
+}
+function paintFlatThumb(g, w, h) {
+  if (w < 2 || h < 2) return;
+  g.fillStyle = '#070b16'; g.fillRect(0, 0, w, h);
+  const [aw, ah] = areaWH(), pts = collectPlane();
+  let maxY = ah;
+  for (const p of pts) if (p.y > maxY) maxY = p.y;
+  const sc = Math.min((w - 16) / Math.max(aw, 1), (h - 16) / Math.max(maxY, 1));
+  const ox = (w - aw * sc) / 2, oy = (h - maxY * sc) / 2;
+  g.strokeStyle = 'rgba(90,209,255,.55)'; g.strokeRect(ox, oy, aw * sc, ah * sc);
+  for (const p of pts) {
+    if (p.light < 0.05) continue;
+    g.globalAlpha = p.light; g.fillStyle = `rgb(${p.r | 0},${p.g | 0},${p.b | 0})`;
+    g.fillRect(ox + p.x * sc - 1, oy + p.y * sc - 1, 2, 2);
+  }
+  g.globalAlpha = 1;
+}
+function paintInsets() {
+  const el = $('insets');
+  if (!state.drones.length && !state.play) { el.hidden = true; return; }
+  if (el.hidden) { el.hidden = false; requestAnimationFrame(() => { state.dirty = true; }); return; }
+  ['flat', 'audience', 'top'].filter(m => m !== state.viewMode).forEach((mode, i) => {
+    const c = $('insetCv' + i), box = c.parentElement, w = c.clientWidth, h = c.clientHeight;
+    if (w < 2 || h < 2) return;
+    const bw = Math.round(w * DPR), bh = Math.round(h * DPR);
+    if (c.width !== bw || c.height !== bh) { c.width = bw; c.height = bh; }
+    const gc = c.getContext('2d');
+    gc.setTransform(DPR, 0, 0, DPR, 0, 0);
+    if (mode === 'flat') paintFlatThumb(gc, w, h);
+    else if (mode === 'audience') paintAudience(gc, w, h, false);
+    else paintTop(gc, w, h, false);
+    c.dataset.view = mode;
+    if (box) box.dataset.view = mode;
+    $('insetLb' + i).textContent = mode === 'flat' ? 'Flat' : mode === 'audience' ? 'Audience' : 'Top-down';
+  });
+}
+function drawEditGuides(glow, sc) {
+  if (!state.edit || state.play || !state.params) return;
+  const p = state.params;
+  const ring = (x, y, gap) => {
+    const [sx, sy] = toScreen(x, y);
+    const rad = Math.max(8, p.minS * sc);
+    const bad = Number.isFinite(gap) && gap < p.minS - 1e-6;
+    ctx.save();
+    ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1;
+    ctx.strokeStyle = bad ? 'rgba(255,93,108,.9)' : 'rgba(61,220,151,.75)';
+    ctx.lineWidth = 1.5; ctx.setLineDash([4, 3]);
+    ctx.beginPath(); ctx.arc(sx, sy, rad, 0, 6.283); ctx.stroke(); ctx.setLineDash([]);
+    if (Number.isFinite(gap)) {
+      ctx.font = '600 11px system-ui'; ctx.textAlign = 'center';
+      ctx.fillStyle = bad ? '#ff5d6c' : '#3ddc97';
+      ctx.fillText(`${gap.toFixed(2)} m`, sx, sy - rad - 6);
+    }
+    ctx.restore();
+  };
+  if (state.ghost) ring(state.ghost.x, state.ghost.y, state.ghost.gap);
+  if (pointer && pointer.kind === 'drone' && state.drones[pointer.i]) ring(state.drones[pointer.i].x, state.drones[pointer.i].y, state.dragGap);
+  else if (state.selected >= 0 && state.drones[state.selected]) {
+    const d = state.drones[state.selected];
+    const [sx, sy] = toScreen(d.x, d.y);
+    ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.arc(sx, sy, glow + 5, 0, 6.283); ctx.stroke();
+  }
+}
+
 function draw(now) {
   const t = (now - state.animStart) / 1000;
   const animating = !state.play && state.drones.length && t < FLIGHT + 1.8;
   if (!state.dirty && !animating && !(state.play && state.play.running)) return;
   state.dirty = false;
+  beginFrame(now);
 
   ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  if (state.viewMode !== 'flat') {
+    if (state.viewMode === 'audience') paintAudience(ctx, W, H, true);
+    else paintTop(ctx, W, H, true);
+    if (state.play) updatePlayChrome(currentShow(now));
+    const pv = state.params;
+    $('legend').style.display = pv && pv.colorMode === 'spacing' && !state.play ? 'flex' : 'none';
+    paintInsets();
+    return;
+  }
   const bg = ctx.createLinearGradient(0, 0, 0, H);
   bg.addColorStop(0, '#02040b'); bg.addColorStop(0.7, '#0a1330'); bg.addColorStop(1, '#16213f');
   ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
@@ -1626,7 +2161,7 @@ function draw(now) {
   ctx.fillStyle = 'rgba(5,8,18,.9)'; ctx.fillRect(0, gyL, W, H - gyL);
   ctx.fillStyle = 'rgba(160,175,215,.5)'; ctx.fillText('launch pads (ground)', x0, gyL + 16);
 
-  if (state.play) { drawPlayback(now, sc); drawScaleBar(sc); return; }
+  if (state.play) { drawPlayback(now, sc); drawScaleBar(sc); paintInsets(); return; }
 
   // drones
   const p = state.params, single = !p || p.colorMode === 'single';
@@ -1692,7 +2227,9 @@ function draw(now) {
     if (blink) state.dirty = true;
   }
 
+  drawEditGuides(glow, sc);
   drawScaleBar(sc);
+  paintInsets();
 }
 
 function drawScaleBar(sc) {
@@ -1704,17 +2241,125 @@ function drawScaleBar(sc) {
 function loop(now) { draw(now); requestAnimationFrame(loop); }
 
 // ---------- interaction ----------
-let drag = null;
-sky.addEventListener('mousedown', e => { drag = { x: e.clientX, y: e.clientY, ox: state.view.ox, oy: state.view.oy }; sky.classList.add('drag'); });
-window.addEventListener('mouseup', () => { drag = null; sky.classList.remove('drag'); });
+function updateGhost(e) {
+  const clear = () => { if (state.ghost) { state.ghost = null; state.dirty = true; } };
+  if (!state.edit || !state.place || state.viewMode !== 'flat' || state.play || pointer) { clear(); return; }
+  const [mx, my] = eventPos(e);
+  if (mx < 0 || my < 0 || mx > W || my > H) { clear(); return; }
+  const [x, y] = toWorld(mx, my);
+  const p = state.params;
+  if (!p || x < 0 || y < 0 || x > p.areaW || y > p.areaH) { clear(); return; }
+  let gap = Infinity;
+  for (const d of state.drones) gap = Math.min(gap, Math.hypot(d.x - x, d.y - y));
+  state.ghost = { x, y, gap };
+  state.dirty = true;
+}
+sky.addEventListener('mousedown', e => {
+  if (e.button !== 0) return;
+  const [mx, my] = eventPos(e);
+  if (state.edit && state.viewMode === 'flat' && !state.play && state.drones.length) {
+    const hit = pickDrone(mx, my);
+    if ((state.place || e.altKey) && hit < 0) { dropDrone(mx, my); return; }
+    if (hit >= 0) {
+      const d = state.drones[hit];
+      pointer = { kind: 'drone', i: hit, x: e.clientX, y: e.clientY, ox: d.x, oy: d.y, moved: false };
+      state.selected = hit;
+      state.animStart = -1e9;
+      sky.style.cursor = 'grabbing';
+      sky.classList.add('drag');
+      state.dirty = true;
+      syncEditChrome();
+      return;
+    }
+    // In edit mode, empty clicks select nothing (don't pan) so a near-miss doesn't feel broken.
+    // Hold Space or use middle/right drag… Space+drag pans; Shift+drag also pans.
+    if (!e.shiftKey) {
+      state.selected = -1;
+      state.dirty = true;
+      syncEditChrome();
+      return;
+    }
+  }
+  if (state.viewMode === 'audience') pointer = { kind: 'orbit', x: e.clientX, yaw: state.cam.yaw };
+  else if (state.viewMode === 'top') pointer = { kind: 'top', x: e.clientX, y: e.clientY, ox: state.topView.ox, oy: state.topView.oy };
+  else pointer = { kind: 'pan', x: e.clientX, y: e.clientY, ox: state.view.ox, oy: state.view.oy };
+  sky.classList.add('drag');
+});
+window.addEventListener('mouseup', () => {
+  if (pointer && pointer.kind === 'drone' && pointer.moved) recomputeNeighbours(true);
+  pointer = null;
+  state.dragGap = null;
+  sky.classList.remove('drag');
+});
 window.addEventListener('mousemove', e => {
-  if (drag) {
-    state.view.ox = drag.ox + e.clientX - drag.x; state.view.oy = drag.oy + e.clientY - drag.y; state.dirty = true;
+  if (pointer && pointer.kind === 'drone') {
+    const sc = viewScale() || 1;
+    const dx = (e.clientX - pointer.x) / sc, dy = (e.clientY - pointer.y) / sc;
+    if (!pointer.moved && Math.hypot(e.clientX - pointer.x, e.clientY - pointer.y) >= 3) { pushUndo(); pointer.moved = true; }
+    if (pointer.moved) {
+      const d = state.drones[pointer.i], p = state.params;
+      d.x = pointer.ox + dx; d.y = pointer.oy + dy;
+      if (p) {
+        d.x = Math.max(0, Math.min(p.areaW, d.x));
+        d.y = Math.max(0, Math.min(p.areaH, d.y));
+      }
+      state.dragGap = gapToOthers(pointer.i);
+      state.dirty = true;
+    }
+    return;
+  }
+  if (pointer && pointer.kind === 'orbit') {
+    state.cam.yaw = pointer.yaw + (e.clientX - pointer.x) * 0.005;
+    state.dirty = true;
+    return;
+  }
+  if (pointer && pointer.kind === 'top') {
+    state.topView.ox = pointer.ox + e.clientX - pointer.x;
+    state.topView.oy = pointer.oy + e.clientY - pointer.y;
+    state.dirty = true;
+    return;
+  }
+  if (pointer && pointer.kind === 'pan') {
+    state.view.ox = pointer.ox + e.clientX - pointer.x;
+    state.view.oy = pointer.oy + e.clientY - pointer.y;
+    state.dirty = true;
   }
   hover(e);
+  updateGhost(e);
+});
+sky.addEventListener('mouseleave', () => {
+  if (state.ghost) { state.ghost = null; state.dirty = true; }
+  $('tip').style.display = 'none';
+});
+sky.addEventListener('dblclick', e => {
+  if (!state.edit || state.place || state.viewMode !== 'flat' || state.play) return;
+  const [mx, my] = eventPos(e);
+  if (pickDrone(mx, my) >= 0) return;
+  dropDrone(mx, my);
+});
+sky.addEventListener('contextmenu', e => {
+  if (!state.edit || state.viewMode !== 'flat' || state.play) return;
+  const [mx, my] = eventPos(e);
+  const hit = pickDrone(mx, my);
+  if (hit < 0) return;
+  e.preventDefault();
+  state.selected = hit;
+  deleteSelected();
 });
 sky.addEventListener('wheel', e => {
   e.preventDefault();
+  if (state.viewMode === 'audience') {
+    state.cam.dist = Math.max(15, Math.min(600, currentDist() * Math.exp(e.deltaY * 0.0012)));
+    state.cam.userDist = true;
+    applyDistLabel();
+    state.dirty = true;
+    return;
+  }
+  if (state.viewMode === 'top') {
+    state.topView.zoom = Math.max(0.4, Math.min(14, state.topView.zoom * Math.exp(-e.deltaY * 0.0015)));
+    state.dirty = true;
+    return;
+  }
   const r = sky.getBoundingClientRect(), mx = e.clientX - r.left, my = e.clientY - r.top;
   const [wx, wy] = toWorld(mx, my);
   state.view.zoom = Math.max(0.3, Math.min(40, state.view.zoom * Math.exp(-e.deltaY * 0.0015)));
@@ -1722,19 +2367,39 @@ sky.addEventListener('wheel', e => {
   state.view.ox = mx - W / 2 - (wx - cx) * s; state.view.oy = my - H / 2 - (wy - cy) * s;
   state.dirty = true;
 }, { passive: false });
+window.addEventListener('keydown', e => {
+  const tag = (document.activeElement && document.activeElement.tagName) || '';
+  if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || pointer) return;
+  if ((e.key === 'Delete' || e.key === 'Backspace') && state.edit && state.viewMode === 'flat') {
+    e.preventDefault();
+    deleteSelected();
+  } else if (e.key === 'Escape' && state.edit) {
+    state.edit = false; state.place = false; state.selected = -1; state.ghost = null; state.dirty = true;
+    syncEditChrome();
+  } else if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'z' && !e.shiftKey) {
+    e.preventDefault();
+    undoEdit();
+  }
+});
 
 function hover(e) {
   const tip = $('tip');
   const r = sky.getBoundingClientRect(), mx = e.clientX - r.left, my = e.clientY - r.top;
-  if (drag || state.play || !state.drones.length || mx < 0 || my < 0 || mx > W || my > H) { tip.style.display = 'none'; return; }
-  let best = null, bd = 12 * 12;
+  if (pointer || state.play || state.viewMode !== 'flat' || !state.drones.length || mx < 0 || my < 0 || mx > W || my > H) {
+    tip.style.display = 'none';
+    if (!pointer) sky.style.cursor = '';
+    return;
+  }
+  let best = null, bd = 14 * 14;
   state.drones.forEach((d, i) => {
     const [sx, sy] = toScreen(d.x, d.y), dd = (sx - mx) ** 2 + (sy - my) ** 2;
     if (dd < bd) { bd = dd; best = i; }
   });
+  if (state.edit) sky.style.cursor = best !== null ? 'grab' : state.place ? 'crosshair' : '';
+  else sky.style.cursor = '';
   if (best === null) { tip.style.display = 'none'; return; }
   const d = state.drones[best], [x, y, z] = worldCoords(d);
-  tip.innerHTML = `<b>Drone #${best + 1}</b><br>x ${x.toFixed(2)} m · y ${y.toFixed(2)} m · alt ${z.toFixed(2)} m<br>nearest drone: ${d.nnIdx >= 0 ? '#' + (d.nnIdx + 1) + ' at ' : ''}<span style="color:rgb(${d.heat})">${f1(d.nn)}</span>`;
+  tip.innerHTML = `<b>Drone #${best + 1}</b>${state.edit && best === state.selected ? ' · selected' : ''}<br>x ${x.toFixed(2)} m · y ${y.toFixed(2)} m · alt ${z.toFixed(2)} m<br>nearest drone: ${d.nnIdx >= 0 ? '#' + (d.nnIdx + 1) + ' at ' : ''}<span style="color:rgb(${d.heat})">${f1(d.nn)}</span>${state.edit ? '<br>Drag to move' : ''}`;
   tip.style.display = 'block';
   tip.style.left = Math.min(mx + 14, W - tip.offsetWidth - 8) + 'px';
   tip.style.top = Math.min(my + 14, H - tip.offsetHeight - 8) + 'px';
@@ -1794,8 +2459,58 @@ $('dotSens').oninput = () => $('dotSensVal').textContent = $('dotSens').value;
 
 $('genBtn').onclick = generate;
 $('replayBtn').onclick = () => { state.animStart = performance.now(); };
-$('resetBtn').onclick = () => { state.view = { zoom: 1, ox: 0, oy: 0 }; state.dirty = true; };
+$('resetBtn').onclick = () => {
+  if (state.viewMode === 'audience') {
+    state.cam.yaw = 0; state.cam.userDist = false; applyDistLabel();
+  } else if (state.viewMode === 'top') {
+    state.topView = { zoom: 1, ox: 0, oy: 0 };
+  } else {
+    state.view = { zoom: 1, ox: 0, oy: 0 };
+  }
+  state.dirty = true;
+};
+function toggleEditMode(force) {
+  if (!state.drones.length) return;
+  if (state.play) stopShow();
+  const next = typeof force === 'boolean' ? force : !state.edit;
+  setViewMode('flat');
+  state.edit = next;
+  state.place = false;
+  state.selected = -1;
+  state.ghost = null;
+  state.animStart = -1e9;
+  state.view = { zoom: state.view.zoom, ox: state.view.ox, oy: state.view.oy };
+  state.dirty = true;
+  syncEditChrome();
+}
+$('editBtn').addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); toggleEditMode(); });
+$('placeBtn').addEventListener('click', e => {
+  e.preventDefault();
+  if (!state.edit) return;
+  state.place = !state.place;
+  state.ghost = null;
+  state.dirty = true;
+  syncEditChrome();
+});
+$('delBtn').addEventListener('click', e => { e.preventDefault(); deleteSelected(); });
+$('undoBtn').addEventListener('click', e => { e.preventDefault(); undoEdit(); });
+$('viewSeg').addEventListener('click', e => {
+  const btn = e.target.closest('button[data-view]');
+  if (!btn) return;
+  setViewMode(btn.dataset.view);
+});
+$('camDist').oninput = () => {
+  state.cam.dist = +$('camDist').value;
+  state.cam.userDist = true;
+  $('camDistVal').textContent = state.cam.dist + ' m';
+  state.dirty = true;
+};
+$('insets').onclick = e => {
+  const box = e.target.closest('[data-view]');
+  if (box) setViewMode(box.dataset.view);
+};
 $('sens').oninput = () => $('sensVal').textContent = $('sens').value;
+syncEditChrome();
 
 $('mode').addEventListener('change', () => {
   $('skipSmallRow').style.display = $('mode').value.startsWith('text') ? '' : 'none';
@@ -2152,12 +2867,14 @@ $('sceneList').addEventListener('click', e => {
 function startShow(from = 0) {
   const build = state.showBuild || buildShow(); if (!build) return;
   if (from >= build.total - 0.05) from = 0;
+  state.edit = false; state.place = false; state.selected = -1; state.ghost = null;
   state.play = { build, t0: performance.now(), offset: from, running: true };
   $('playBtn').textContent = '❚❚ Pause';
   ['hud', 'alert', 'tip', 'empty'].forEach(id => $(id).style.display = 'none');
   $('legend').style.display = 'none';
   state.view = { zoom: 1, ox: 0, oy: 0 };
   state.dirty = true;
+  syncEditChrome();
 }
 function pauseShow() {
   const pl = state.play; if (!pl || !pl.running) return;
@@ -2174,6 +2891,7 @@ function stopShow() {
   else if (!state.drones.length) $('empty').style.display = '';
   state.view = { zoom: 1, ox: 0, oy: 0 };
   state.dirty = true;
+  syncEditChrome();
 }
 $('playBtn').onclick = () => {
   if (state.play && state.play.running) pauseShow();
@@ -2201,16 +2919,31 @@ $('clearShowBtn').onclick = () => {
   state.show.scenes = []; saveShow(); stopShow(); renderTrack();
 };
 
-const PB = { x: null };
-function drawPlayback(now, sc) {
+function showFrame(now) {
   const pl = state.play, b = pl.build;
   let t = pl.running ? pl.offset + (now - pl.t0) / 1000 : pl.offset;
   if (t >= b.total) { t = b.total; if (pl.running) { pl.running = false; pl.offset = b.total; $('playBtn').textContent = '▶ Play show'; } }
   const seg = b.segs.find(s => t < s.start + s.dur) || b.segs[b.segs.length - 1];
   const fa = b.frames[seg.a], fb = b.frames[seg.b];
   const e = seg.kind === 'hold' ? 1 : ease(Math.max(0, Math.min(1, (t - seg.start) / seg.dur)));
+  return { t, seg, fa, fb, e, plan: seg.kind === 'move' ? seg.plan : null, b };
+}
+function updatePlayChrome(fr) {
+  const pl = state.play, { t, seg, b } = fr;
+  $('playTime').textContent = `${fmtT(t)} / ${fmtT(b.total)}`;
+  if (document.activeElement !== $('scrub')) $('scrub').value = Math.round(t / b.total * 1000);
+  const scenes = state.show.scenes, k = seg.scene;
+  const label = k < 0 ? 'Landing' : (seg.kind === 'move' ? (k === 0 ? 'Take-off → ' : 'Flying to ') : 'Showing ') + `scene ${k + 1}: ${esc(scenes[k]?.name || '')}`;
+  const lit = k < 0 ? 0 : b.info[k].used;
+  $('playBadge').innerHTML = `<div class="lbl" style="font-size:11px;letter-spacing:.8px;color:var(--muted)">DRONE SHOW ${pl.running ? '● LIVE' : '❚❚ PAUSED'}</div>
+    <b>${label}</b><div style="color:#c5cbe0;font-size:12px;margin-top:2px">Drones lit: ${lit} of ${b.N}</div>`;
+  $('playBadge').style.display = 'block';
+  document.querySelectorAll('#sceneList .scene').forEach(el => el.classList.toggle('now', +el.dataset.i === k));
+}
+function drawPlayback(now, sc) {
+  const fr = showFrame(now), { fa, fb, e, plan, b } = fr;
   const core0 = Math.min(7, Math.max(1.1, 0.28 * sc)), glow0 = Math.min(16, Math.max(3, 0.85 * sc));
-  const plan = seg.kind === 'move' ? seg.plan : null, q = [0, 0, 0];
+  const q = [0, 0, 0];
 
   ctx.globalCompositeOperation = 'lighter';
   for (let i = 0; i < b.N; i++) {
@@ -2230,17 +2963,7 @@ function drawPlayback(now, sc) {
     ctx.globalAlpha = light; ctx.beginPath(); ctx.arc(sx, sy, core, 0, 6.283); ctx.fill();
   }
   ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
-
-  // UI: time, scrubber, current scene
-  $('playTime').textContent = `${fmtT(t)} / ${fmtT(b.total)}`;
-  if (document.activeElement !== $('scrub')) $('scrub').value = Math.round(t / b.total * 1000);
-  const scenes = state.show.scenes, k = seg.scene;
-  const label = k < 0 ? 'Landing' : (seg.kind === 'move' ? (k === 0 ? 'Take-off → ' : 'Flying to ') : 'Showing ') + `scene ${k + 1}: ${esc(scenes[k]?.name || '')}`;
-  const lit = k < 0 ? 0 : b.info[k].used;
-  $('playBadge').innerHTML = `<div class="lbl" style="font-size:11px;letter-spacing:.8px;color:var(--muted)">DRONE SHOW ${pl.running ? '● LIVE' : '❚❚ PAUSED'}</div>
-    <b>${label}</b><div style="color:#c5cbe0;font-size:12px;margin-top:2px">Drones lit: ${lit} of ${b.N}</div>`;
-  $('playBadge').style.display = 'block';
-  document.querySelectorAll('#sceneList .scene').forEach(el => el.classList.toggle('now', +el.dataset.i === k));
+  updatePlayChrome(fr);
 }
 
 // CSV of every keyframe: one row per drone per scene, with arrive / leave times
