@@ -367,8 +367,11 @@ export default function ContactMain() {
                   <div className="info-label text-[0.6rem] tracking-[0.3em] uppercase text-gold-dim mb-1.5 font-sans">
                     Phone
                   </div>
+                  <div className="info-val font-sans text-[0.95rem] text-white/90 leading-normal">
+                    <a href="tel:+918238220357" className="hover:text-gold transition-colors">+91 82382 20357</a>
+                  </div>
                   <div className="info-val font-sans text-[0.95rem] text-white/90 leading-normal mb-1">
-                    +91 82382 20357
+                    <a href="tel:+918238220347" className="hover:text-gold transition-colors">+91 82382 20347</a>
                   </div>
                   <div className="flex items-center gap-3 mt-2">
                     <a href="tel:+918238220357" className="info-link inline-flex items-center gap-1.5 text-[0.66rem] tracking-[0.16em] uppercase text-gold-dim hover:text-gold transition-all duration-300 font-sans">
