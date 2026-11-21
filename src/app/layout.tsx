@@ -80,7 +80,7 @@ export default function RootLayout({
         "@id": "https://www.flybitdynamics.com/#localbusiness",
         "name": "FLYBIT Dynamics",
         "image": "https://www.flybitdynamics.com/logo.png",
-        "telephone": "+919979850863",
+        "telephone": "+918238220357",
         "url": "https://www.flybitdynamics.com",
         "address": {
           "@type": "PostalAddress",

@@ -207,13 +207,13 @@ export default function Footer({ onOpenModal }: FooterProps) {
           </div>
           <ul className="foot-links space-y-3.5">
             <li>
-              <a href="tel:+919979850863" className="text-white/90 hover:text-gold text-[0.82rem] font-sans transition-colors duration-200 md:cursor-none">
-                +91 99798 50863
+              <a href="tel:+918238220357" className="text-white/90 hover:text-gold text-[0.82rem] font-sans transition-colors duration-200 md:cursor-none">
+                +91 82382 20357
               </a>
             </li>
             <li>
-              <a href="tel:+919227428262" className="text-white/90 hover:text-gold text-[0.82rem] font-sans transition-colors duration-200 md:cursor-none">
-                +91 92274 28262
+              <a href="tel:+918238220347" className="text-white/90 hover:text-gold text-[0.82rem] font-sans transition-colors duration-200 md:cursor-none">
+                +91 82382 20347
               </a>
             </li>
             <li>

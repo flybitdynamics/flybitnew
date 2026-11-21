@@ -205,7 +205,7 @@ export default function ContactMain() {
 
                   <input
                     type="tel"
-                    placeholder="+91 99798 50863"
+                    placeholder="+91 82382 20357"
                     value={formData.phone}
                     onChange={(e) => handleInputChange('phone', e.target.value)}
                     className="form-input bg-dark-3 border text-text px-5 py-3.5 font-sans text-[0.85rem] rounded-[2px] outline-none transition-all w-full"
@@ -368,11 +368,17 @@ export default function ContactMain() {
                     Phone
                   </div>
                   <div className="info-val font-sans text-[0.95rem] text-white/90 leading-normal mb-1">
-                    +91 99798 50863
+                    +91 82382 20357
                   </div>
-                  <a href="tel:+919979850863" className="info-link inline-flex items-center gap-1.5 text-[0.66rem] tracking-[0.16em] uppercase text-gold-dim hover:text-gold transition-all duration-300 font-sans mt-2">
-                    Call Now →
-                  </a>
+                  <div className="flex items-center gap-3 mt-2">
+                    <a href="tel:+918238220357" className="info-link inline-flex items-center gap-1.5 text-[0.66rem] tracking-[0.16em] uppercase text-gold-dim hover:text-gold transition-all duration-300 font-sans">
+                      Call Now →
+                    </a>
+                    <span className="text-gold-dim/40 text-[0.66rem]">·</span>
+                    <a href="https://wa.me/918238220357?text=Hi%2C%20I%20want%20the%20enquiry%20for%20the%20drone%20show." target="_blank" rel="noopener noreferrer" className="info-link inline-flex items-center gap-1.5 text-[0.66rem] tracking-[0.16em] uppercase text-gold-dim hover:text-gold transition-all duration-300 font-sans">
+                      WhatsApp →
+                    </a>
+                  </div>
                 </div>
               </div>
 

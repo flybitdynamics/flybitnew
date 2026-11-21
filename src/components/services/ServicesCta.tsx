@@ -42,7 +42,7 @@ export default function ServicesCta({ onOpenModal }: ServicesCtaProps) {
           </button>
           
           <a
-            href="tel:+919979850863"
+            href="tel:+918238220357"
             className="bg-transparent border border-border hover:border-gold hover:text-gold text-text font-light px-10 py-4 text-[0.75rem] tracking-[0.18em] uppercase rounded-[2px] transition-all duration-300 hover:-translate-y-1 inline-block cursor-none"
           >
             Call Us Now

@@ -3,10 +3,10 @@
 import React from 'react';
 
 export default function WhatsAppButton() {
-  const phoneNumber = '919979850863';
+  const phoneNumber = '918238220357';
   const message = 'Hi, I want the enquiry for the drone show.';
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-  const callNumber = 'tel:+919979850863';
+  const callNumber = 'tel:+918238220357';
 
   return (
     <>

@@ -51,7 +51,7 @@ export default function CTA({ onOpenModal }: CTAProps) {
             Book a Show
           </button>
           <a
-            href="tel:+919979850863"
+            href="tel:+918238220357"
             className="border border-text/18 hover:border-gold text-text hover:text-gold font-light px-11 py-4 text-[0.75rem] tracking-[0.18em] uppercase rounded-[2px] transition-all duration-200 md:cursor-none hover:-translate-y-1 inline-block"
           >
             Call Us Now
