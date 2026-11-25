@@ -73,6 +73,22 @@ export default function RootLayout({
           "https://www.instagram.com/flybitdynamics",
           "https://www.youtube.com/@FlybitDynamics",
           "https://www.facebook.com/share/1DBPwVktrz/"
+        ],
+        "contactPoint": [
+          {
+            "@type": "ContactPoint",
+            "telephone": "+918238220357",
+            "contactType": "customer service",
+            "areaServed": "IN",
+            "availableLanguage": ["en", "hi", "gu"]
+          },
+          {
+            "@type": "ContactPoint",
+            "telephone": "+918238220347",
+            "contactType": "sales",
+            "areaServed": "IN",
+            "availableLanguage": ["en", "hi", "gu"]
+          }
         ]
       },
       {
@@ -80,7 +96,7 @@ export default function RootLayout({
         "@id": "https://www.flybitdynamics.com/#localbusiness",
         "name": "FLYBIT Dynamics",
         "image": "https://www.flybitdynamics.com/logo.png",
-        "telephone": "+918238220357",
+        "telephone": ["+918238220357", "+918238220347"],
         "url": "https://www.flybitdynamics.com",
         "address": {
           "@type": "PostalAddress",

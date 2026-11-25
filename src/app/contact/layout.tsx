@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: "Contact FLYBIT Dynamics | Best Drone Show Company in India",
-  description: "Get in touch with FLYBIT Dynamics to book premium drone light shows. Enquire for weddings, corporate events, and festivals in Delhi, Jaipur, Udaipur, Ahmedabad, Gujarat, Rajasthan, and nationwide.",
+  description: "Get in touch with FLYBIT Dynamics to book premium drone light shows. Call +91 82382 20357 / +91 82382 20347 for weddings, corporate events, and festivals in Delhi, Jaipur, Udaipur, Ahmedabad, Gujarat, Rajasthan, and nationwide.",
   keywords: [
     "drone show india",
     "Best drone show company in India",

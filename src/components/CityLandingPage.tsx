@@ -48,7 +48,7 @@ export default function CityLandingPage({
         "@id": `https://www.flybitdynamics.com/drone-show-${city.toLowerCase()}#localbusiness`,
         "name": `FLYBIT Dynamics Drone Shows ${city}`,
         "image": "https://www.flybitdynamics.com/logo.png",
-        "telephone": "+918238220357",
+        "telephone": ["+918238220357", "+918238220347"],
         "url": `https://www.flybitdynamics.com/drone-show-${city.toLowerCase()}`,
         "address": {
           "@type": "PostalAddress",
